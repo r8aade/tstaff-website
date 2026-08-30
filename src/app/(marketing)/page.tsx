@@ -57,6 +57,16 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="mx-auto max-w-6xl px-6 pb-16">
+        <p className="max-w-3xl text-ink-700">
+          <strong className="text-ink-900">TStaff is a full-service staffing agency</strong> that
+          sources, trains, and manages hourly staff for back-office, administrative, marketing,
+          sales, CRM, and light technical support work. Staff are billed at $10&ndash;$15/hr with no
+          monthly platform fee and no marketplace-style bidding &mdash; you get a managed team
+          member, not a freelancer you have to vet yourself.
+        </p>
+      </section>
+
       <section className="border-y border-ink-900/10 bg-ink-900/[0.02] py-16">
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-2xl font-bold text-ink-900">What we staff</h2>
@@ -87,6 +97,20 @@ export default function HomePage() {
               <p className="mt-2 text-sm text-ink-700">{step.description}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-6 py-16">
+        <div className="flex flex-wrap gap-4 text-sm">
+          <Link href="/industries/print-shops" className="font-semibold text-brand-600">
+            Staffing for print shops &rarr;
+          </Link>
+          <Link href="/industries/ecommerce" className="font-semibold text-brand-600">
+            Staffing for ecommerce sellers &rarr;
+          </Link>
+          <Link href="/faq" className="font-semibold text-brand-600">
+            Read the FAQ &rarr;
+          </Link>
         </div>
       </section>
 

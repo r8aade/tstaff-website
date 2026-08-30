@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Get Started",
+  description: "Tell TStaff about your business and the roles you need filled — we'll follow up to scope it out."
+};
+
 export default function ContactPage() {
   return (
     <div className="mx-auto max-w-2xl px-6 py-16">

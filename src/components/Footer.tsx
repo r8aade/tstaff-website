@@ -5,6 +5,15 @@ export default function Footer() {
         <div className="flex flex-col justify-between gap-4 md:flex-row">
           <p>&copy; {new Date().getFullYear()} TStaff (Talnt Staffing). All rights reserved.</p>
           <div className="flex gap-6">
+            <a href="/services" className="hover:text-white">
+              Services
+            </a>
+            <a href="/industries" className="hover:text-white">
+              Industries
+            </a>
+            <a href="/faq" className="hover:text-white">
+              FAQ
+            </a>
             <a href="mailto:hello@talntstaffing.com" className="hover:text-white">
               hello@talntstaffing.com
             </a>

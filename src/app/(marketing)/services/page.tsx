@@ -1,3 +1,12 @@
+import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+
+export const metadata: Metadata = {
+  title: "Services",
+  description:
+    "Full-service hourly staffing: back-office and admin, marketing/sales/CRM, and customer & technical support. $10-15/hr, no monthly fee."
+};
+
 const categories = [
   {
     title: "Back-Office & Administrative Support",
@@ -39,13 +48,29 @@ const categories = [
   }
 ];
 
+const serviceSchemas = categories
+  .filter((c) => c.title !== "Industry Playbooks")
+  .map((c) => ({
+    "@context": "https://schema.org",
+    "@type": "Service",
+    serviceType: c.title,
+    provider: { "@type": "EmploymentAgency", name: "TStaff" },
+    areaServed: "US",
+    description: c.items.join("; ")
+  }));
+
 export default function ServicesPage() {
   return (
     <div className="mx-auto max-w-6xl px-6 py-16">
+      {serviceSchemas.map((schema, i) => (
+        <JsonLd key={i} data={schema} />
+      ))}
       <h1 className="text-3xl font-bold text-ink-900">Services</h1>
       <p className="mt-3 max-w-2xl text-ink-700">
-        TStaff is a full-service staffing agency — like Office Beacon, scaled for small and growing
-        businesses. Below are the roles we place most often; if you need something else, ask us.
+        TStaff is a full-service staffing agency &mdash; not a single-task marketplace or a
+        single-industry shop. We place hourly, trained staff across four areas: back-office and
+        admin, marketing/sales/CRM, customer and technical support, and industry-specific
+        playbooks. Like Office Beacon, scaled for small and growing businesses.
       </p>
 
       <div className="mt-12 grid gap-8 md:grid-cols-2">

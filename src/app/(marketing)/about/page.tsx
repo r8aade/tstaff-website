@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About",
+  description:
+    "TStaff is owned and operated by Nirav Patel, with staff sourced from the Philippines and India and the Philippines office run by Angela De Juan."
+};
+
 export default function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
@@ -17,6 +25,11 @@ export default function AboutPage() {
           We work with businesses across many industries &mdash; print shops and ecommerce sellers are
           two examples where we've built repeatable playbooks, but our model is full-service, not a
           single-niche shop.
+        </p>
+        <p>
+          TStaff is newly launched, which cuts both ways: we don't have decades of case studies yet,
+          but you also get direct access to the people running it, not a rotating account manager at
+          a large BPO. Nirav is hands-on with every new client relationship.
         </p>
       </div>
     </div>
