@@ -16,8 +16,8 @@ export default async function Header() {
   return (
     <header className="border-b border-ink-900/10">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="text-lg font-bold tracking-tight text-ink-900">
-          TStaff
+        <Link href="/" className="font-display text-lg tracking-tight text-ink-900">
+          Talnt Staffing
         </Link>
         <nav className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (

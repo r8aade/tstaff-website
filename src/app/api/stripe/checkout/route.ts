@@ -38,7 +38,7 @@ export async function POST() {
       {
         price_data: {
           currency: "usd",
-          product_data: { name: "TStaff — Outstanding Balance" },
+          product_data: { name: "Talnt Staffing — Outstanding Balance" },
           unit_amount: balanceDueCents
         },
         quantity: 1

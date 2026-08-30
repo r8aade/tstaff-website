@@ -21,7 +21,7 @@ const serviceSchema = {
   "@context": "https://schema.org",
   "@type": "Service",
   serviceType: "Ecommerce Staffing Support",
-  provider: { "@type": "EmploymentAgency", name: "TStaff" },
+  provider: { "@type": "EmploymentAgency", name: "Talnt Staffing" },
   areaServed: "US",
   description:
     "Hourly virtual staff for ecommerce sellers covering listings, customer service, order management, and returns."
@@ -36,7 +36,7 @@ export default function EcommercePage() {
         Keep listings, orders, and customers handled while you run the business
       </h1>
       <p className="mt-4 text-ink-700">
-        Ecommerce runs on volume — listings to update, messages to answer, orders to track. TStaff
+        Ecommerce runs on volume — listings to update, messages to answer, orders to track. Talnt Staffing
         staff handle the repetitive parts for $10&ndash;$15/hr, with no monthly fee.
       </p>
 

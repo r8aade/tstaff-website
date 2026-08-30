@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Get Started",
-  description: "Tell TStaff about your business and the roles you need filled — we'll follow up to scope it out."
+  description: "Tell Talnt Staffing about your business and the roles you need filled — we'll follow up to scope it out."
 };
 
 export default function ContactPage() {

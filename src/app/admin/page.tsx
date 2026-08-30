@@ -3,10 +3,10 @@ import { prisma } from "@/lib/prisma";
 import { getClientSummary, formatCents } from "@/lib/billing";
 
 export default async function AdminHomePage() {
-  const clients = await prisma.user.findMany({
-    where: { role: "CLIENT" },
-    orderBy: { createdAt: "desc" }
-  });
+  const [clients, leads] = await Promise.all([
+    prisma.user.findMany({ where: { role: "CLIENT" }, orderBy: { createdAt: "desc" } }),
+    prisma.lead.findMany({ orderBy: { createdAt: "desc" }, take: 20 })
+  ]);
 
   const summaries = await Promise.all(
     clients.map(async (c) => ({ client: c, summary: await getClientSummary(c.id) }))
@@ -14,7 +14,45 @@ export default async function AdminHomePage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
+      <h1 className="text-2xl font-bold text-ink-900">Quote Requests</h1>
+      <div className="mt-4 overflow-hidden rounded-lg border border-ink-900/10 bg-white">
+        <table className="w-full text-sm">
+          <thead className="bg-ink-900/[0.03] text-left text-ink-700">
+            <tr>
+              <th className="px-4 py-3 font-medium">Date</th>
+              <th className="px-4 py-3 font-medium">Business Type</th>
+              <th className="px-4 py-3 font-medium">Hours/Week</th>
+              <th className="px-4 py-3 font-medium">Timezone</th>
+              <th className="px-4 py-3 font-medium">Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            {leads.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="px-4 py-6 text-center text-ink-700">
+                  No quote requests yet.
+                </td>
+              </tr>
+            ) : (
+              leads.map((lead) => (
+                <tr key={lead.id} className="border-t border-ink-900/10">
+                  <td className="px-4 py-3">{new Date(lead.createdAt).toLocaleDateString()}</td>
+                  <td className="px-4 py-3">{lead.businessType}</td>
+                  <td className="px-4 py-3">{lead.hoursPerWeek}</td>
+                  <td className="px-4 py-3">{lead.timezone}</td>
+                  <td className="px-4 py-3">
+                    <a href={`mailto:${lead.email}`} className="font-medium text-brand-600">
+                      {lead.email}
+                    </a>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="mt-10 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-ink-900">Clients</h1>
         <Link
           href="/admin/clients/new"

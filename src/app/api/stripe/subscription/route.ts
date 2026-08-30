@@ -41,7 +41,7 @@ export async function POST() {
       {
         price_data: {
           currency: "usd",
-          product_data: { name: "TStaff — Monthly Autopay" },
+          product_data: { name: "Talnt Staffing — Monthly Autopay" },
           unit_amount: monthlyAmountCents,
           recurring: { interval: "month" }
         },

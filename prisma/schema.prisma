@@ -53,6 +53,15 @@ model HoursEntry {
   @@index([userId])
 }
 
+model Lead {
+  id           String   @id @default(cuid())
+  businessType String
+  hoursPerWeek String
+  timezone     String
+  email        String
+  createdAt    DateTime @default(now())
+}
+
 model Payment {
   id                     String        @id @default(cuid())
   userId                 String

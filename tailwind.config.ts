@@ -6,26 +6,31 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          50: "#eef4ff",
-          100: "#d9e6ff",
-          200: "#b3ccff",
-          300: "#80a8ff",
-          400: "#4d7fff",
-          500: "#2657f5",
-          600: "#1a41cc",
-          700: "#1633a3",
-          800: "#152c80",
-          900: "#152863",
-          950: "#0c1638"
+          50: "#fdf3ee",
+          100: "#f4ddce",
+          200: "#e9bda0",
+          300: "#dd9a70",
+          400: "#d17b4c",
+          500: "#c15b2b",
+          600: "#a84a22",
+          700: "#873a1c",
+          800: "#6b2f18",
+          900: "#552615",
+          950: "#2e130a"
         },
         ink: {
-          900: "#0b1220",
-          800: "#111a2e",
-          700: "#1b2740"
+          900: "#16150f",
+          800: "#221f16",
+          700: "#4a4739"
+        },
+        paper: {
+          DEFAULT: "#faf8f4",
+          dim: "#f0ece2"
         }
       },
       fontFamily: {
-        sans: ["var(--font-sans)", "system-ui", "sans-serif"]
+        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "Arial Black", "sans-serif"]
       }
     }
   },

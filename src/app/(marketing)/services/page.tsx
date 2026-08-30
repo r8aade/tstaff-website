@@ -54,7 +54,7 @@ const serviceSchemas = categories
     "@context": "https://schema.org",
     "@type": "Service",
     serviceType: c.title,
-    provider: { "@type": "EmploymentAgency", name: "TStaff" },
+    provider: { "@type": "EmploymentAgency", name: "Talnt Staffing" },
     areaServed: "US",
     description: c.items.join("; ")
   }));
@@ -67,7 +67,7 @@ export default function ServicesPage() {
       ))}
       <h1 className="text-3xl font-bold text-ink-900">Services</h1>
       <p className="mt-3 max-w-2xl text-ink-700">
-        TStaff is a full-service staffing agency &mdash; not a single-task marketplace or a
+        Talnt Staffing is a full-service staffing agency &mdash; not a single-task marketplace or a
         single-industry shop. We place hourly, trained staff across four areas: back-office and
         admin, marketing/sales/CRM, customer and technical support, and industry-specific
         playbooks. Like Office Beacon, scaled for small and growing businesses.

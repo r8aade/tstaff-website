@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Industries We Staff",
   description:
-    "TStaff is a full-service staffing agency working across industries. See how we support print shops and ecommerce sellers, or ask about your industry."
+    "Talnt Staffing is a full-service staffing agency working across industries. See how we support print shops and ecommerce sellers, or ask about your industry."
 };
 
 const industries = [
@@ -25,7 +25,7 @@ export default function IndustriesPage() {
     <div className="mx-auto max-w-4xl px-6 py-16">
       <h1 className="text-3xl font-bold text-ink-900">Industries We Staff</h1>
       <p className="mt-3 max-w-2xl text-ink-700">
-        TStaff is a full-service agency, not a single-industry shop. Below are two industries
+        Talnt Staffing is a full-service agency, not a single-industry shop. Below are two industries
         where we've built specific playbooks — if yours isn't listed, we can still help.
       </p>
 

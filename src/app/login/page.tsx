@@ -38,7 +38,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-ink-900/[0.02] px-6">
       <div className="w-full max-w-sm rounded-lg border border-ink-900/10 bg-white p-8 shadow-sm">
         <Link href="/" className="text-lg font-bold text-ink-900">
-          TStaff
+          Talnt Staffing
         </Link>
         <h1 className="mt-4 text-xl font-semibold text-ink-900">Client Login</h1>
         <p className="mt-1 text-sm text-ink-700">View your hours and manage payments.</p>
@@ -83,7 +83,7 @@ export default function LoginPage() {
         </form>
 
         <p className="mt-6 text-xs text-ink-700">
-          Don't have an account? Your TStaff account is set up by our team &mdash; email{" "}
+          Don't have an account? Your Talnt Staffing account is set up by our team &mdash; email{" "}
           <a href="mailto:hello@talntstaffing.com" className="font-semibold text-brand-600">
             hello@talntstaffing.com
           </a>

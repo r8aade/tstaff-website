@@ -21,7 +21,7 @@ const serviceSchema = {
   "@context": "https://schema.org",
   "@type": "Service",
   serviceType: "Print Shop Staffing Support",
-  provider: { "@type": "EmploymentAgency", name: "TStaff" },
+  provider: { "@type": "EmploymentAgency", name: "Talnt Staffing" },
   areaServed: "US",
   description:
     "Hourly virtual staff for print shops covering order intake, proofing coordination, quote follow-up, and customer service."
@@ -37,7 +37,7 @@ export default function PrintShopsPage() {
       </h1>
       <p className="mt-4 text-ink-700">
         Print shops lose time to the same repetitive work every day: chasing proof approvals,
-        answering "where's my order" emails, and re-keying quote requests. TStaff staff take that
+        answering "where's my order" emails, and re-keying quote requests. Talnt Staffing staff take that
         off your plate for $10&ndash;$15/hr, with no monthly fee.
       </p>
 

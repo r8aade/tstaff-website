@@ -11,7 +11,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <header className="border-b border-ink-900/10 bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <Link href="/admin" className="text-lg font-bold text-ink-900">
-            TStaff Admin
+            Talnt Staffing Admin
           </Link>
           <div className="flex items-center gap-4">
             <span className="text-sm text-ink-700">{session?.user?.name}</span>
