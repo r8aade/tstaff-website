@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CLIENT
+  ADMIN
+}
+
+enum PaymentType {
+  ONE_TIME
+  SUBSCRIPTION
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+}
+
+model User {
+  id               String   @id @default(cuid())
+  email            String   @unique
+  passwordHash     String
+  name             String
+  companyName      String?
+  role             Role     @default(CLIENT)
+  hourlyRateCents  Int      @default(1200)
+  stripeCustomerId String?  @unique
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  hoursEntries HoursEntry[]
+  payments     Payment[]
+}
+
+model HoursEntry {
+  id             String   @id @default(cuid())
+  userId         String
+  date           DateTime
+  hours          Float
+  description    String?
+  rateCentsAtLog Int
+  createdAt      DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Payment {
+  id                     String        @id @default(cuid())
+  userId                 String
+  amountCents            Int
+  type                   PaymentType
+  status                 PaymentStatus @default(PENDING)
+  stripeCheckoutSessionId String?      @unique
+  stripePaymentIntentId  String?
+  stripeSubscriptionId   String?
+  createdAt              DateTime      @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
