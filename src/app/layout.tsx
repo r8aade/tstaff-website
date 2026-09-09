@@ -18,17 +18,17 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL("https://talntstaffing.com"),
   title: {
-    default: "Talnt Staffing — Hourly Staff for Print Shops & Ecommerce",
+    default: "Talnt Staffing — Full-Service Hourly Staffing for Every Industry",
     template: "%s | Talnt Staffing"
   },
   description:
-    "Customer service and back-office staff from the Philippines and India, billed hourly. No monthly fee, no long contract. Built for print shops and ecommerce sellers.",
+    "Back-office, admin, marketing, and technical support staff from the Philippines and India, billed hourly. No monthly fee, no long contract. Full-service across every industry.",
   openGraph: {
     type: "website",
     siteName: "Talnt Staffing",
-    title: "Talnt Staffing — Hourly Staff for Print Shops & Ecommerce",
+    title: "Talnt Staffing — Full-Service Hourly Staffing for Every Industry",
     description:
-      "Customer service and back-office staff, billed hourly. No monthly fee, no long contract."
+      "Back-office, admin, marketing, and technical support staff, billed hourly. No monthly fee, no long contract."
   }
 };
 
@@ -39,7 +39,7 @@ const orgSchema = {
   alternateName: "TStaff",
   url: "https://talntstaffing.com",
   description:
-    "Hourly virtual staffing for print shops and ecommerce businesses. Customer service and back-office support sourced from the Philippines and India.",
+    "Full-service hourly staffing agency — back-office, administrative, marketing/sales/CRM, and technical support staff sourced from the Philippines and India, serving businesses across every industry.",
   areaServed: "US",
   priceRange: "$10-$15/hr",
   email: "hello@talntstaffing.com"

@@ -32,7 +32,7 @@ export default function HomePage() {
         {/* HERO */}
         <header className="hero" id="top">
           <div>
-            <p className="eyebrow">Staffing for print shops &amp; ecommerce</p>
+            <p className="eyebrow">Full-service staffing for every industry</p>
             <h1 className="hero__title">
               Staff who understand your <span className="accent">actual business</span> — not a
               call-center seat.
@@ -73,26 +73,51 @@ export default function HomePage() {
         {/* WHO THIS IS FOR */}
         <section className="who reveal">
           <p className="eyebrow">Who this is for</p>
+          <p className="who__lead">
+            Full-service, like Office Beacon — not a single-industry shop. If your business needs
+            back-office, admin, marketing, or technical support handled, this fits.
+          </p>
           <div className="who__grid">
             <div className="who__item">
-              <h3>Print shops</h3>
-              <p>
-                Order intake, proof follow-ups, customer questions — someone who learns your
-                workflow instead of asking you to explain it twice.
-              </p>
+              <h3>Print &amp; Sign Shops</h3>
+              <p>Order intake, proof follow-ups, customer questions.</p>
               <Link href="/industries/print-shops" className="accent mt-2 inline-block text-sm font-semibold">
                 See print shop staffing &rarr;
               </Link>
             </div>
             <div className="who__item">
-              <h3>Ecommerce sellers</h3>
-              <p>Order status, returns, inbox triage, catalog upkeep. Coverage while you focus on the business, not the inbox.</p>
+              <h3>Ecommerce &amp; Retail</h3>
+              <p>Order status, returns, inbox triage, catalog upkeep.</p>
               <Link href="/industries/ecommerce" className="accent mt-2 inline-block text-sm font-semibold">
                 See ecommerce staffing &rarr;
               </Link>
             </div>
             <div className="who__item">
-              <h3>Small back-office teams</h3>
+              <h3>Real Estate &amp; Property Mgmt</h3>
+              <p>Listings coordination, tenant/vendor communication, scheduling.</p>
+            </div>
+            <div className="who__item">
+              <h3>Professional Services</h3>
+              <p>Client intake, scheduling, document prep, billing support.</p>
+            </div>
+            <div className="who__item">
+              <h3>Healthcare &amp; Wellness Admin</h3>
+              <p>Scheduling, client communication, records upkeep.</p>
+            </div>
+            <div className="who__item">
+              <h3>Construction &amp; Home Services</h3>
+              <p>Job scheduling, dispatch coordination, customer follow-up.</p>
+            </div>
+            <div className="who__item">
+              <h3>Marketing &amp; Creative Agencies</h3>
+              <p>Campaign coordination, reporting, client communication.</p>
+            </div>
+            <div className="who__item">
+              <h3>Insurance</h3>
+              <p>Policy admin support, client intake, follow-up coordination.</p>
+            </div>
+            <div className="who__item">
+              <h3>Any small back-office team</h3>
               <p>Scheduling, data entry, invoicing — the repeatable work that eats a founder's week.</p>
             </div>
           </div>
@@ -178,10 +203,10 @@ export default function HomePage() {
             </p>
             <div className="why__points">
               <div className="why__point">
-                <h4>Vertical fluency, not generic placement</h4>
+                <h4>Full-service, not a single niche</h4>
                 <p>
-                  We staff for print shops and ecommerce specifically — we know the difference
-                  between a proof revision and a return request.
+                  Back-office, admin, marketing, and technical support roles, built to fit any
+                  industry — not a shop that only knows one kind of business.
                 </p>
               </div>
               <div className="why__point">
