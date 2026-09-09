@@ -31,7 +31,7 @@ const faqs = [
   },
   {
     q: "Do you only work with print shops and ecommerce sellers?",
-    a: "No. Print shops and ecommerce are two industries where we've built specific playbooks, but Talnt Staffing is a full-service agency working across many industries — similar in breadth to an agency like Office Beacon, scaled for growing businesses."
+    a: "No. Print shops and ecommerce are two industries where we've built specific playbooks, but Talnt Staffing is a full-service agency working across many industries, not a single-niche shop."
   },
   {
     q: "How do I see my hours and pay my bill?",

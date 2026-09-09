@@ -70,9 +70,9 @@ export default function ServicesPage() {
       <p className="mt-3 max-w-2xl text-ink-700">
         Talnt Staffing is a full-service staffing agency &mdash; not a single-task marketplace or a
         single-industry shop. We place hourly, trained staff by role across four areas &mdash;
-        back-office, admin, marketing/sales/CRM, and technical support &mdash; like Office Beacon,
-        scaled for small and growing businesses. Below each category are the specific roles we
-        staff, not vague task buckets.
+        back-office, admin, marketing/sales/CRM, and technical support &mdash; scaled for small and
+        growing businesses. Below each category are the specific roles we staff, not vague task
+        buckets.
       </p>
 
       <div className="mt-12 grid gap-8 md:grid-cols-2">

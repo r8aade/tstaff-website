@@ -73,7 +73,7 @@ export default function HomePage() {
         <section className="who reveal">
           <p className="eyebrow">Who this is for</p>
           <p className="who__lead">
-            Full-service, like Office Beacon — not a single-industry shop. If your business needs
+            Full-service, not a single-industry shop. If your business needs
             back-office, admin, marketing, or technical support handled, this fits.
           </p>
           <div className="who__grid">
