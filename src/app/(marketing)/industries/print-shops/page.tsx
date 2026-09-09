@@ -46,6 +46,17 @@ export default function PrintShopsPage() {
         </p>
       </section>
 
+      <section className="platform-strip reveal">
+        <p className="platform-strip__label">Staff who can work inside</p>
+        <div className="platform-strip__row">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logos/adobe.svg" alt="Adobe" className="platform-strip__logo" />
+          <span className="platform-strip__wordmark">OnPrintShop</span>
+          <span className="platform-strip__wordmark">PlanProphet</span>
+          <span className="platform-strip__wordmark">PrintSmith Vision</span>
+        </div>
+      </section>
+
       <section className="detail-tasks reveal">
         <h2>What we handle</h2>
         <ul>
