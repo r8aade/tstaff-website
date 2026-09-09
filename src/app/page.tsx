@@ -97,36 +97,57 @@ export default function HomePage() {
               <Icon name="building" className="who__icon" />
               <h3>Real Estate &amp; Property Mgmt</h3>
               <p>Listings coordination, tenant/vendor communication, scheduling.</p>
+              <Link href="/industries/real-estate" className="accent mt-2 inline-block text-sm font-semibold">
+                See real estate staffing &rarr;
+              </Link>
             </div>
             <div className="who__item">
               <Icon name="briefcase" className="who__icon" />
               <h3>Professional Services</h3>
               <p>Client intake, scheduling, document prep, billing support.</p>
+              <Link href="/industries/professional-services" className="accent mt-2 inline-block text-sm font-semibold">
+                See professional services staffing &rarr;
+              </Link>
             </div>
             <div className="who__item">
               <Icon name="health" className="who__icon" />
               <h3>Healthcare &amp; Wellness Admin</h3>
               <p>Scheduling, client communication, records upkeep.</p>
+              <Link href="/industries/healthcare" className="accent mt-2 inline-block text-sm font-semibold">
+                See healthcare admin staffing &rarr;
+              </Link>
             </div>
             <div className="who__item">
               <Icon name="wrench" className="who__icon" />
               <h3>Construction &amp; Home Services</h3>
               <p>Job scheduling, dispatch coordination, customer follow-up.</p>
+              <Link href="/industries/construction" className="accent mt-2 inline-block text-sm font-semibold">
+                See construction staffing &rarr;
+              </Link>
             </div>
             <div className="who__item">
               <Icon name="megaphone" className="who__icon" />
               <h3>Marketing &amp; Creative Agencies</h3>
               <p>Campaign coordination, reporting, client communication.</p>
+              <Link href="/industries/marketing-agencies" className="accent mt-2 inline-block text-sm font-semibold">
+                See agency staffing &rarr;
+              </Link>
             </div>
             <div className="who__item">
               <Icon name="shield" className="who__icon" />
               <h3>Insurance</h3>
               <p>Policy admin support, client intake, follow-up coordination.</p>
+              <Link href="/industries/insurance" className="accent mt-2 inline-block text-sm font-semibold">
+                See insurance staffing &rarr;
+              </Link>
             </div>
             <div className="who__item">
               <Icon name="layers" className="who__icon" />
               <h3>Any small back-office team</h3>
               <p>Scheduling, data entry, invoicing — the repeatable work that eats a founder's week.</p>
+              <Link href="/industries/back-office" className="accent mt-2 inline-block text-sm font-semibold">
+                See back-office staffing &rarr;
+              </Link>
             </div>
           </div>
         </section>

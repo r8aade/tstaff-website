@@ -34,37 +34,51 @@ const industries: {
   {
     icon: "building",
     title: "Real Estate & Property Mgmt",
-    description: "Listings coordination, tenant/vendor communication, scheduling."
+    description: "Listings coordination, tenant/vendor communication, scheduling.",
+    href: "/industries/real-estate",
+    linkLabel: "See real estate staffing"
   },
   {
     icon: "briefcase",
     title: "Professional Services",
-    description: "Client intake, scheduling, document prep, billing support."
+    description: "Client intake, scheduling, document prep, billing support.",
+    href: "/industries/professional-services",
+    linkLabel: "See professional services staffing"
   },
   {
     icon: "health",
     title: "Healthcare & Wellness Admin",
-    description: "Scheduling, client communication, records upkeep."
+    description: "Scheduling, client communication, records upkeep.",
+    href: "/industries/healthcare",
+    linkLabel: "See healthcare admin staffing"
   },
   {
     icon: "wrench",
     title: "Construction & Home Services",
-    description: "Job scheduling, dispatch coordination, customer follow-up."
+    description: "Job scheduling, dispatch coordination, customer follow-up.",
+    href: "/industries/construction",
+    linkLabel: "See construction staffing"
   },
   {
     icon: "megaphone",
     title: "Marketing & Creative Agencies",
-    description: "Campaign coordination, reporting, client communication."
+    description: "Campaign coordination, reporting, client communication.",
+    href: "/industries/marketing-agencies",
+    linkLabel: "See agency staffing"
   },
   {
     icon: "shield",
     title: "Insurance",
-    description: "Policy admin support, client intake, follow-up coordination."
+    description: "Policy admin support, client intake, follow-up coordination.",
+    href: "/industries/insurance",
+    linkLabel: "See insurance staffing"
   },
   {
     icon: "layers",
     title: "Any small back-office team",
-    description: "Scheduling, data entry, invoicing — the repeatable work that eats a founder's week."
+    description: "Scheduling, data entry, invoicing — the repeatable work that eats a founder's week.",
+    href: "/industries/back-office",
+    linkLabel: "See back-office staffing"
   }
 ];
 
