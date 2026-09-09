@@ -17,7 +17,11 @@ export default function HomePage() {
         <div className="nav__links">
           <a href="#what-you-get">What you get</a>
           <a href="#pricing">Pricing</a>
-          <a href="#faq">FAQ</a>
+          <Link href="/services">Services</Link>
+          <Link href="/industries">Industries</Link>
+          <Link href="/faq">FAQ</Link>
+          <Link href="/about">About</Link>
+          <Link href="/contact">Contact</Link>
         </div>
         <a href="#quote" className="nav__cta">
           Get your rate

@@ -128,9 +128,10 @@ body {
 }
 .nav__links {
   display: flex;
-  gap: 2rem;
+  gap: 1.35rem;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  white-space: nowrap;
 }
 .nav__links a {
   color: var(--ink-soft);
@@ -151,7 +152,7 @@ body {
 .nav__cta:hover {
   background: var(--accent);
 }
-@media (max-width: 860px) {
+@media (max-width: 1040px) {
   .nav {
     padding: 1rem 1.2rem;
   }
