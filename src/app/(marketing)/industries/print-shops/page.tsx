@@ -47,7 +47,10 @@ export default function PrintShopsPage() {
       </section>
 
       <section className="platform-strip reveal">
-        <p className="platform-strip__label">Staff who can work inside</p>
+        <p className="platform-strip__tagline">
+          Independent staffing partner helping shops work efficiently inside Adobe, OnPrintShop,
+          PlanProphet, and PrintSmith Vision.
+        </p>
         <div className="platform-strip__row">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logos/adobe.svg" alt="Adobe" className="platform-strip__logo" />
@@ -55,6 +58,11 @@ export default function PrintShopsPage() {
           <span className="platform-strip__wordmark">PlanProphet</span>
           <span className="platform-strip__wordmark">PrintSmith Vision</span>
         </div>
+        <p className="platform-strip__disclaimer">
+          All trademarks, logos, and brand names are the property of their respective owners.
+          Talnt Staffing is an independent staffing provider and is not affiliated with,
+          endorsed by, or sponsored by any software platform listed above.
+        </p>
       </section>
 
       <section className="detail-tasks reveal">

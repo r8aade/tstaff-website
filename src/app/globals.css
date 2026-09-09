@@ -173,6 +173,21 @@ body {
   opacity: 0.7;
   margin-bottom: 1.6rem;
 }
+.platform-strip__tagline {
+  text-align: center;
+  font-size: 1rem;
+  color: var(--ink-soft);
+  max-width: 46ch;
+  margin: 0 auto 1.6rem;
+}
+.platform-strip__disclaimer {
+  text-align: center;
+  font-size: 0.76rem;
+  color: var(--ink-soft);
+  opacity: 0.55;
+  max-width: 52ch;
+  margin: 1.4rem auto 0;
+}
 .platform-strip__row {
   display: flex;
   flex-wrap: wrap;

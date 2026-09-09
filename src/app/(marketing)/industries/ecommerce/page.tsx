@@ -47,7 +47,10 @@ export default function EcommercePage() {
       </section>
 
       <section className="platform-strip reveal">
-        <p className="platform-strip__label">Staff who can work your storefronts on</p>
+        <p className="platform-strip__tagline">
+          Independent staffing partner helping sellers launch and scale on Amazon, Walmart, eBay,
+          TikTok Shop, and Shopify.
+        </p>
         <div className="platform-strip__row">
           {/* eslint-disable @next/next/no-img-element */}
           <img src="/logos/amazon.svg" alt="Amazon" className="platform-strip__logo" />
@@ -60,6 +63,11 @@ export default function EcommercePage() {
           <span className="platform-strip__wordmark">Rithum</span>
           <span className="platform-strip__wordmark">Shipwise</span>
         </div>
+        <p className="platform-strip__disclaimer">
+          All trademarks, logos, and brand names are the property of their respective owners.
+          Talnt Staffing is an independent staffing provider and is not affiliated with,
+          endorsed by, or sponsored by any platform listed above.
+        </p>
       </section>
 
       <section className="detail-tasks reveal">
