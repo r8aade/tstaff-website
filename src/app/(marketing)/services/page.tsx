@@ -7,49 +7,50 @@ export const metadata: Metadata = {
     "Full-service hourly staffing: back-office and admin, marketing/sales/CRM, and customer & technical support. $10-15/hr, no monthly fee."
 };
 
-const categories = [
+const categories: { title: string; items: string[]; vertical?: boolean }[] = [
   {
-    title: "Back-Office & Administrative Support",
+    title: "Back-Office Operations",
     items: [
-      "Data entry & database management",
-      "Calendar & inbox management",
-      "Order processing & fulfillment coordination",
-      "Bookkeeping support & invoicing",
-      "Document prep & file organization"
+      "Virtual Assistant — general admin support",
+      "Data Entry Specialist",
+      "Order Processing Coordinator",
+      "Customer Service Representative — phone, chat, email",
+      "Logistics & Fulfillment Coordinator"
     ]
   },
   {
-    title: "Marketing, Sales & CRM",
+    title: "Administrative Support",
     items: [
-      "CRM management & data cleanup",
-      "Email & SMS campaign execution",
-      "Social media scheduling & community management",
-      "Lead research & appointment setting",
-      "Sales pipeline follow-up"
+      "Bookkeeper — basic finance support",
+      "HR / Onboarding Coordinator — scheduling, paperwork",
+      "Executive Assistant — calendar & inbox management"
     ]
   },
   {
-    title: "Customer & Technical Support",
+    title: "Marketing, Sales & CRM Support",
     items: [
-      "Live chat & email support",
-      "Phone support (VoIP available)",
-      "Order & shipping inquiries",
-      "Light technical troubleshooting",
-      "Returns & refund handling"
+      "Social Media Manager",
+      "Lead Generation / Outreach Specialist",
+      "Website & Webstore Manager — updates, listings, content upkeep",
+      "Designer — marketing collateral, social graphics, print-ready file prep"
     ]
   },
   {
-    title: "Industry Playbooks",
+    title: "Technical Support",
+    items: ["CRM / Systems Data Administrator", "IT Helpdesk / Tools Support Specialist"]
+  },
+  {
+    title: "Print & Sign Shop Roles",
+    vertical: true,
     items: [
-      "Print shops — order intake, proofing coordination, customer follow-up",
-      "Ecommerce sellers — listings, customer service, order management",
-      "New verticals — we'll build a playbook around your workflow"
+      "Estimator — job costing, price sheets, RFQ/quote turnaround on ASI ESP, PPAI SAGE, commonsku",
+      "Any role above, print-shop-trained — especially Customer Service Rep and Order Processing Coordinator for proofing and order intake"
     ]
   }
 ];
 
 const serviceSchemas = categories
-  .filter((c) => c.title !== "Industry Playbooks")
+  .filter((c) => !c.vertical)
   .map((c) => ({
     "@context": "https://schema.org",
     "@type": "Service",
@@ -68,25 +69,53 @@ export default function ServicesPage() {
       <h1 className="text-3xl font-bold text-ink-900">Services</h1>
       <p className="mt-3 max-w-2xl text-ink-700">
         Talnt Staffing is a full-service staffing agency &mdash; not a single-task marketplace or a
-        single-industry shop. We place hourly, trained staff across four areas: back-office and
-        admin, marketing/sales/CRM, customer and technical support, and industry-specific
-        playbooks. Like Office Beacon, scaled for small and growing businesses.
+        single-industry shop. We place hourly, trained staff by role across four areas &mdash;
+        back-office, admin, marketing/sales/CRM, and technical support &mdash; like Office Beacon,
+        scaled for small and growing businesses. Below each category are the specific roles we
+        staff, not vague task buckets.
       </p>
 
       <div className="mt-12 grid gap-8 md:grid-cols-2">
-        {categories.map((cat) => (
-          <div key={cat.title} className="rounded-lg border border-ink-900/10 p-6">
-            <h2 className="font-semibold text-ink-900">{cat.title}</h2>
-            <ul className="mt-4 space-y-2 text-sm text-ink-700">
-              {cat.items.map((item) => (
-                <li key={item} className="flex gap-2">
-                  <span className="text-brand-600">&bull;</span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+        {categories
+          .filter((cat) => !cat.vertical)
+          .map((cat) => (
+            <div key={cat.title} className="rounded-lg border border-ink-900/10 p-6">
+              <h2 className="font-semibold text-ink-900">{cat.title}</h2>
+              <ul className="mt-4 space-y-2 text-sm text-ink-700">
+                {cat.items.map((item) => (
+                  <li key={item} className="flex gap-2">
+                    <span className="text-brand-600">&bull;</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+      </div>
+
+      <div className="mt-8 rounded-lg border border-brand-200 bg-brand-50 p-6">
+        {categories
+          .filter((cat) => cat.vertical)
+          .map((cat) => (
+            <div key={cat.title}>
+              <h2 className="font-semibold text-ink-900">{cat.title}</h2>
+              <ul className="mt-4 space-y-2 text-sm text-ink-700">
+                {cat.items.map((item) => (
+                  <li key={item} className="flex gap-2">
+                    <span className="text-brand-600">&bull;</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        <p className="mt-4 text-sm text-ink-700">
+          See all industry-specific staffing on the{" "}
+          <a href="/industries" className="font-semibold text-brand-600">
+            Industries
+          </a>{" "}
+          page.
+        </p>
       </div>
 
       <div className="mt-16 rounded-lg bg-ink-900/[0.03] p-8">
