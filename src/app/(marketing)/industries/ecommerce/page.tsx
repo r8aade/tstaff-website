@@ -46,6 +46,22 @@ export default function EcommercePage() {
         </p>
       </section>
 
+      <section className="platform-strip reveal">
+        <p className="platform-strip__label">Staff who can work your storefronts on</p>
+        <div className="platform-strip__row">
+          {/* eslint-disable @next/next/no-img-element */}
+          <img src="/logos/amazon.svg" alt="Amazon" className="platform-strip__logo" />
+          <img src="/logos/walmart.svg" alt="Walmart" className="platform-strip__logo" />
+          <img src="/logos/ebay.svg" alt="eBay" className="platform-strip__logo" />
+          <img src="/logos/tiktok.svg" alt="TikTok Shop" className="platform-strip__logo" />
+          <img src="/logos/shopify.svg" alt="Shopify" className="platform-strip__logo" />
+          {/* eslint-enable @next/next/no-img-element */}
+          <span className="platform-strip__wordmark">Whatnot</span>
+          <span className="platform-strip__wordmark">Rithum</span>
+          <span className="platform-strip__wordmark">Shipwise</span>
+        </div>
+      </section>
+
       <section className="detail-tasks reveal">
         <h2>What we handle</h2>
         <ul>

@@ -157,6 +157,59 @@ body {
   }
 }
 
+/* PLATFORM LOGO STRIP (ecommerce sub-page) */
+.platform-strip {
+  padding: 0.5rem 3rem 3rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.platform-strip__label {
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  opacity: 0.7;
+  margin-bottom: 1.6rem;
+}
+.platform-strip__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 2.2rem 3rem;
+}
+.platform-strip__logo {
+  height: 22px;
+  width: auto;
+  filter: grayscale(1);
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+.platform-strip__logo:hover {
+  opacity: 0.85;
+}
+.platform-strip__wordmark {
+  font-family: var(--display);
+  font-size: 1.05rem;
+  color: var(--ink-soft);
+  opacity: 0.55;
+  letter-spacing: -0.01em;
+  transition: opacity 0.2s;
+}
+.platform-strip__wordmark:hover {
+  opacity: 0.85;
+}
+@media (max-width: 860px) {
+  .platform-strip {
+    padding: 0.5rem 1.2rem 2rem;
+  }
+  .platform-strip__row {
+    gap: 1.6rem 2rem;
+  }
+}
+
 /* DETAIL PAGE TASK LIST (industry sub-pages) */
 .detail-tasks {
   max-width: 900px;
