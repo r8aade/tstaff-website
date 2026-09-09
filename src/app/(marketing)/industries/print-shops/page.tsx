@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
+import HomeScripts from "@/components/HomeScripts";
 
 export const metadata: Metadata = {
   title: "Virtual Assistants for Print Shops",
@@ -29,42 +30,42 @@ const serviceSchema = {
 
 export default function PrintShopsPage() {
   return (
-    <div className="mx-auto max-w-3xl px-6 py-16">
+    <>
       <JsonLd data={serviceSchema} />
-      <p className="text-sm font-semibold uppercase tracking-wide text-brand-600">For Print Shops</p>
-      <h1 className="mt-2 text-3xl font-bold text-ink-900">
-        Staff who keep orders moving, so you can focus on production
-      </h1>
-      <p className="mt-4 text-ink-700">
-        Print shops lose time to the same repetitive work every day: chasing proof approvals,
-        answering "where's my order" emails, and re-keying quote requests. Talnt Staffing staff take that
-        off your plate for $10&ndash;$15/hr, with no monthly fee.
-      </p>
+      <HomeScripts />
 
-      <div className="mt-10">
-        <h2 className="font-semibold text-ink-900">What we handle</h2>
-        <ul className="mt-4 space-y-2 text-sm text-ink-700">
+      <section className="page-hero">
+        <p className="eyebrow">For Print &amp; Sign Shops</p>
+        <h1>
+          Staff who keep orders moving, so you can focus on <span className="accent">production</span>
+        </h1>
+        <p className="page-hero__lead">
+          Print shops lose time to the same repetitive work every day: chasing proof approvals,
+          answering &ldquo;where&apos;s my order&rdquo; emails, and re-keying quote requests. Talnt
+          Staffing staff take that off your plate for $10&ndash;$15/hr, with no monthly fee.
+        </p>
+      </section>
+
+      <section className="detail-tasks reveal">
+        <h2>What we handle</h2>
+        <ul>
           {tasks.map((t) => (
-            <li key={t} className="flex gap-2">
-              <span className="text-brand-600">&bull;</span>
+            <li key={t}>
               <span>{t}</span>
             </li>
           ))}
         </ul>
-      </div>
+      </section>
 
-      <div className="mt-10 rounded-lg bg-ink-900/[0.03] p-6">
-        <p className="text-sm text-ink-700">
-          Every shop runs its process differently &mdash; tell us how yours works and we'll match
-          staff and train them around it.
-        </p>
-        <Link
-          href="/contact"
-          className="mt-4 inline-block rounded-md bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700"
-        >
-          Talk to us about your shop
-        </Link>
-      </div>
-    </div>
+      <section className="contact-cta reveal">
+        <div className="contact-cta__card">
+          <h2>Every shop runs differently</h2>
+          <p>Tell us how yours works and we&apos;ll match staff and train them around it.</p>
+          <Link href="/contact" className="btn btn--primary">
+            Talk to us about your shop
+          </Link>
+        </div>
+      </section>
+    </>
   );
 }

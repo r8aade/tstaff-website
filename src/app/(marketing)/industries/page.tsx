@@ -1,56 +1,128 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import JsonLd from "@/components/JsonLd";
+import HomeScripts from "@/components/HomeScripts";
+import Icon, { type IconName } from "@/components/Icon";
 
 export const metadata: Metadata = {
   title: "Industries We Staff",
   description:
-    "Talnt Staffing is a full-service staffing agency working across industries. See how we support print shops and ecommerce sellers, or ask about your industry."
+    "Talnt Staffing is a full-service staffing agency working across every industry — print shops, ecommerce, real estate, professional services, healthcare admin, construction, marketing agencies, insurance, and more."
 };
 
-const industries = [
+const industries: {
+  icon: IconName;
+  title: string;
+  description: string;
+  href?: string;
+  linkLabel?: string;
+}[] = [
   {
+    icon: "printer",
+    title: "Print & Sign Shops",
+    description: "Order intake, proof follow-ups, customer questions.",
     href: "/industries/print-shops",
-    title: "Print Shops",
-    description: "Order intake, proofing coordination, quote requests, and customer follow-up."
+    linkLabel: "See print shop staffing"
   },
   {
+    icon: "bag",
+    title: "Ecommerce & Retail",
+    description: "Order status, returns, inbox triage, catalog upkeep.",
     href: "/industries/ecommerce",
-    title: "Ecommerce Sellers",
-    description: "Listings management, order support, customer service, and returns handling."
+    linkLabel: "See ecommerce staffing"
+  },
+  {
+    icon: "building",
+    title: "Real Estate & Property Mgmt",
+    description: "Listings coordination, tenant/vendor communication, scheduling."
+  },
+  {
+    icon: "briefcase",
+    title: "Professional Services",
+    description: "Client intake, scheduling, document prep, billing support."
+  },
+  {
+    icon: "health",
+    title: "Healthcare & Wellness Admin",
+    description: "Scheduling, client communication, records upkeep."
+  },
+  {
+    icon: "wrench",
+    title: "Construction & Home Services",
+    description: "Job scheduling, dispatch coordination, customer follow-up."
+  },
+  {
+    icon: "megaphone",
+    title: "Marketing & Creative Agencies",
+    description: "Campaign coordination, reporting, client communication."
+  },
+  {
+    icon: "shield",
+    title: "Insurance",
+    description: "Policy admin support, client intake, follow-up coordination."
+  },
+  {
+    icon: "layers",
+    title: "Any small back-office team",
+    description: "Scheduling, data entry, invoicing — the repeatable work that eats a founder's week."
   }
 ];
 
+const industriesSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  itemListElement: industries.map((ind, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: ind.title,
+    description: ind.description
+  }))
+};
+
 export default function IndustriesPage() {
   return (
-    <div className="mx-auto max-w-4xl px-6 py-16">
-      <h1 className="text-3xl font-bold text-ink-900">Industries We Staff</h1>
-      <p className="mt-3 max-w-2xl text-ink-700">
-        Talnt Staffing is a full-service agency, not a single-industry shop. Below are two industries
-        where we've built specific playbooks — if yours isn't listed, we can still help.
-      </p>
+    <>
+      <JsonLd data={industriesSchema} />
+      <HomeScripts />
 
-      <div className="mt-10 grid gap-6 sm:grid-cols-2">
-        {industries.map((ind) => (
-          <Link
-            key={ind.href}
-            href={ind.href}
-            className="rounded-lg border border-ink-900/10 bg-white p-6 hover:border-brand-300"
-          >
-            <h2 className="font-semibold text-ink-900">{ind.title}</h2>
-            <p className="mt-2 text-sm text-ink-700">{ind.description}</p>
-          </Link>
-        ))}
-      </div>
-
-      <div className="mt-10 rounded-lg bg-ink-900/[0.03] p-6">
-        <p className="text-sm text-ink-700">
-          Don't see your industry? Email{" "}
-          <a href="mailto:hello@talntstaffing.com" className="font-semibold text-brand-600">
-            hello@talntstaffing.com
-          </a>{" "}
-          and tell us what you need — we'll scope it out.
+      <section className="page-hero">
+        <p className="eyebrow">Industries</p>
+        <h1>
+          Full-service staffing, built around <span className="accent">your</span> industry
+        </h1>
+        <p className="page-hero__lead">
+          Talnt Staffing is a full-service agency, not a single-industry shop. Below are the
+          areas we support most often. If your business isn&apos;t listed, we still want to hear
+          from you.
         </p>
-      </div>
-    </div>
+      </section>
+
+      <section className="who reveal">
+        <div className="who__grid">
+          {industries.map((ind) => (
+            <div className="who__item" key={ind.title}>
+              <Icon name={ind.icon} className="who__icon" />
+              <h3>{ind.title}</h3>
+              <p>{ind.description}</p>
+              {ind.href && (
+                <Link href={ind.href} className="accent mt-2 inline-block text-sm font-semibold">
+                  {ind.linkLabel} &rarr;
+                </Link>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="contact-cta reveal">
+        <div className="contact-cta__card">
+          <h2>Don&apos;t see your industry?</h2>
+          <p>Tell us what you need staffed — we&apos;ll scope it out and match the right person.</p>
+          <a href="mailto:hello@talntstaffing.com" className="btn btn--primary">
+            Email hello@talntstaffing.com
+          </a>
+        </div>
+      </section>
+    </>
   );
 }

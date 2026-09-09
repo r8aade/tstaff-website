@@ -99,6 +99,99 @@ body {
   transform: translateY(0);
 }
 
+/* SECONDARY PAGE HERO (services/industries/etc.) */
+.page-hero {
+  padding: 4.5rem 3rem 3rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.page-hero h1 {
+  font-family: var(--display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 1.1rem;
+}
+.page-hero__lead {
+  color: var(--ink-soft);
+  font-size: 1.08rem;
+  max-width: 60ch;
+}
+@media (max-width: 860px) {
+  .page-hero {
+    padding: 3rem 1.2rem 2rem;
+  }
+}
+
+/* CONTACT CTA CARD */
+.contact-cta {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 3rem 6rem;
+}
+.contact-cta__card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 2.4rem 2.5rem;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(22, 21, 15, 0.06);
+}
+.contact-cta__card h2 {
+  font-family: var(--display);
+  font-size: clamp(1.4rem, 2.4vw, 1.8rem);
+  color: var(--ink);
+  margin-bottom: 0.7rem;
+}
+.contact-cta__card p {
+  color: var(--ink-soft);
+  margin-bottom: 1.4rem;
+}
+@media (max-width: 860px) {
+  .contact-cta {
+    padding: 0 1.2rem 4rem;
+  }
+  .contact-cta__card {
+    padding: 2rem 1.6rem;
+  }
+}
+
+/* DETAIL PAGE TASK LIST (industry sub-pages) */
+.detail-tasks {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 3rem 3rem;
+}
+.detail-tasks h2 {
+  font-family: var(--display);
+  font-size: 1.3rem;
+  color: var(--ink);
+  margin-bottom: 1.2rem;
+}
+.detail-tasks ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.detail-tasks li {
+  display: flex;
+  gap: 0.7rem;
+  color: var(--ink-soft);
+  font-size: 0.98rem;
+}
+.detail-tasks li::before {
+  content: "\2713";
+  color: var(--accent);
+  font-weight: 700;
+  flex: none;
+}
+@media (max-width: 860px) {
+  .detail-tasks {
+    padding: 0 1.2rem 2rem;
+  }
+}
+
 /* NAV */
 .nav {
   position: sticky;
