@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { upsertHubspotContact } from "@/lib/hubspot";
+import { sendLeadNotification } from "@/lib/email";
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -28,6 +29,12 @@ export async function POST(req: Request) {
     });
   } catch (err) {
     console.error("HubSpot sync failed for lead:", err);
+  }
+
+  try {
+    await sendLeadNotification({ email, businessType, hoursPerWeek, timezone });
+  } catch (err) {
+    console.error("Lead notification email failed:", err);
   }
 
   return NextResponse.json({ ok: true });
