@@ -181,8 +181,9 @@ body {
   gap: 2.2rem 3rem;
 }
 .platform-strip__logo {
-  height: 22px;
+  height: 30px;
   width: auto;
+  max-width: 110px;
   filter: grayscale(1);
   opacity: 0.5;
   transition: opacity 0.2s;
