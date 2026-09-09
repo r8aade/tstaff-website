@@ -1,6 +1,8 @@
 import Link from "next/link";
 import HomeScripts from "@/components/HomeScripts";
 import QuoteForm from "@/components/QuoteForm";
+import LogoMark from "@/components/LogoMark";
+import Icon from "@/components/Icon";
 
 export default function HomePage() {
   return (
@@ -12,6 +14,7 @@ export default function HomePage() {
 
       <nav className="nav" id="home-nav">
         <a href="#top" className="nav__mark">
+          <LogoMark size={30} />
           Talnt<span className="nav__mark-sub">Staffing</span>
         </a>
         <div className="nav__links">
@@ -55,15 +58,11 @@ export default function HomePage() {
             </div>
           </div>
           <div className="hero__art" aria-hidden="true">
-            <div className="hero__card hero__card--1">
-              <span className="hero__card-label">Customer Service</span>
-              <span className="hero__card-detail">Order status, returns, inbox triage</span>
+            <div className="hero__art-frame">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/hero-network.svg" alt="" className="hero__art-img" />
             </div>
-            <div className="hero__card hero__card--2">
-              <span className="hero__card-label">Back Office</span>
-              <span className="hero__card-detail">Order entry, scheduling, invoicing</span>
-            </div>
-            <div className="hero__card hero__card--3">
+            <div className="hero__card hero__card--float">
               <span className="hero__card-label">Hourly, transparent</span>
               <span className="hero__card-detail">No monthly fee. Cancel anytime.</span>
             </div>
@@ -79,6 +78,7 @@ export default function HomePage() {
           </p>
           <div className="who__grid">
             <div className="who__item">
+              <Icon name="printer" className="who__icon" />
               <h3>Print &amp; Sign Shops</h3>
               <p>Order intake, proof follow-ups, customer questions.</p>
               <Link href="/industries/print-shops" className="accent mt-2 inline-block text-sm font-semibold">
@@ -86,6 +86,7 @@ export default function HomePage() {
               </Link>
             </div>
             <div className="who__item">
+              <Icon name="bag" className="who__icon" />
               <h3>Ecommerce &amp; Retail</h3>
               <p>Order status, returns, inbox triage, catalog upkeep.</p>
               <Link href="/industries/ecommerce" className="accent mt-2 inline-block text-sm font-semibold">
@@ -93,30 +94,37 @@ export default function HomePage() {
               </Link>
             </div>
             <div className="who__item">
+              <Icon name="building" className="who__icon" />
               <h3>Real Estate &amp; Property Mgmt</h3>
               <p>Listings coordination, tenant/vendor communication, scheduling.</p>
             </div>
             <div className="who__item">
+              <Icon name="briefcase" className="who__icon" />
               <h3>Professional Services</h3>
               <p>Client intake, scheduling, document prep, billing support.</p>
             </div>
             <div className="who__item">
+              <Icon name="health" className="who__icon" />
               <h3>Healthcare &amp; Wellness Admin</h3>
               <p>Scheduling, client communication, records upkeep.</p>
             </div>
             <div className="who__item">
+              <Icon name="wrench" className="who__icon" />
               <h3>Construction &amp; Home Services</h3>
               <p>Job scheduling, dispatch coordination, customer follow-up.</p>
             </div>
             <div className="who__item">
+              <Icon name="megaphone" className="who__icon" />
               <h3>Marketing &amp; Creative Agencies</h3>
               <p>Campaign coordination, reporting, client communication.</p>
             </div>
             <div className="who__item">
+              <Icon name="shield" className="who__icon" />
               <h3>Insurance</h3>
               <p>Policy admin support, client intake, follow-up coordination.</p>
             </div>
             <div className="who__item">
+              <Icon name="layers" className="who__icon" />
               <h3>Any small back-office team</h3>
               <p>Scheduling, data entry, invoicing — the repeatable work that eats a founder's week.</p>
             </div>
@@ -131,7 +139,7 @@ export default function HomePage() {
           </div>
           <div className="what__grid">
             <div className="what__card reveal">
-              <span className="what__num">01</span>
+              <Icon name="headset" className="what__icon" />
               <h3>Customer service staff</h3>
               <p>
                 Order status, returns, inbox and chat coverage, phone support. Trained on your
@@ -139,7 +147,7 @@ export default function HomePage() {
               </p>
             </div>
             <div className="what__card reveal">
-              <span className="what__num">02</span>
+              <Icon name="clipboard" className="what__icon" />
               <h3>Back-office support</h3>
               <p>
                 Order entry, scheduling, invoicing, data cleanup — the operational work that piles
@@ -168,23 +176,23 @@ export default function HomePage() {
           <p className="eyebrow reveal">How it works</p>
           <div className="how__steps">
             <div className="how__step reveal">
-              <span className="how__step-num">1</span>
-              <h3>Tell us the work</h3>
+              <span className="how__step-num"><Icon name="message" size={18} /></span>
+              <h3><span className="how__step-tag">1</span> Tell us the work</h3>
               <p>A short intake: what kind of business, what tasks, roughly how many hours a week.</p>
             </div>
             <div className="how__step reveal">
-              <span className="how__step-num">2</span>
-              <h3>We match a candidate</h3>
+              <span className="how__step-num"><Icon name="user-check" size={18} /></span>
+              <h3><span className="how__step-tag">2</span> We match a candidate</h3>
               <p>Someone with relevant experience — not a random name off a bench.</p>
             </div>
             <div className="how__step reveal">
-              <span className="how__step-num">3</span>
-              <h3>You meet them first</h3>
+              <span className="how__step-num"><Icon name="phone" size={18} /></span>
+              <h3><span className="how__step-tag">3</span> You meet them first</h3>
               <p>A call before you commit. If it's not a fit, we find someone else.</p>
             </div>
             <div className="how__step reveal">
-              <span className="how__step-num">4</span>
-              <h3>They start, billed hourly</h3>
+              <span className="how__step-num"><Icon name="clock" size={18} /></span>
+              <h3><span className="how__step-tag">4</span> They start, billed hourly</h3>
               <p>No monthly fee, no lock-in. You keep them as long as they're worth it to you.</p>
             </div>
           </div>

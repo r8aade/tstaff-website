@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import LogoMark from "@/components/LogoMark";
 
 const navLinks = [
   { href: "/services", label: "Services" },
@@ -16,7 +17,8 @@ export default async function Header() {
   return (
     <header className="border-b border-ink-900/10">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="font-display text-lg tracking-tight text-ink-900">
+        <Link href="/" className="flex items-center gap-2 font-display text-lg tracking-tight text-ink-900">
+          <LogoMark size={28} />
           Talnt Staffing
         </Link>
         <nav className="hidden items-center gap-8 md:flex">
