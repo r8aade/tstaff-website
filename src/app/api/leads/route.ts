@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { upsertHubspotContact } from "@/lib/hubspot";
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -17,6 +18,17 @@ export async function POST(req: Request) {
   await prisma.lead.create({
     data: { businessType, hoursPerWeek, timezone, email }
   });
+
+  try {
+    await upsertHubspotContact({
+      email,
+      business_type: businessType,
+      hours_per_week: hoursPerWeek,
+      preferred_timezone: timezone
+    });
+  } catch (err) {
+    console.error("HubSpot sync failed for lead:", err);
+  }
 
   return NextResponse.json({ ok: true });
 }
