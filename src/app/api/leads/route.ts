@@ -27,7 +27,9 @@ export async function POST(req: Request) {
       email,
       business_type: businessType,
       hours_per_week: hoursPerWeek,
-      preferred_timezone: timezone
+      preferred_timezone: timezone,
+      resources_needed: resourcesNeeded,
+      requirements
     });
   } catch (err) {
     console.error("HubSpot sync failed for lead:", err);

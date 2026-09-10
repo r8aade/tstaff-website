@@ -5,6 +5,8 @@ type LeadProperties = {
   business_type: string;
   hours_per_week: string;
   preferred_timezone: string;
+  resources_needed: string;
+  requirements?: string;
 };
 
 export async function upsertHubspotContact(properties: LeadProperties) {
