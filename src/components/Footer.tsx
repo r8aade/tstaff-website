@@ -11,6 +11,9 @@ export default function Footer() {
             <a href="/industries" className="hover:text-white">
               Industries
             </a>
+            <a href="/resources" className="hover:text-white">
+              Resources
+            </a>
             <a href="/faq" className="hover:text-white">
               FAQ
             </a>

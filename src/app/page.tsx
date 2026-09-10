@@ -22,6 +22,7 @@ export default function HomePage() {
           <a href="#pricing">Pricing</a>
           <Link href="/services">Services</Link>
           <Link href="/industries">Industries</Link>
+          <Link href="/resources">Resources</Link>
           <Link href="/faq">FAQ</Link>
           <Link href="/about">About</Link>
           <Link href="/contact">Contact</Link>
@@ -324,6 +325,7 @@ export default function HomePage() {
               </div>
               <div className="footer__meta">
                 <Link href="/services">Services</Link>
+                <Link href="/resources">Resources</Link>
                 <Link href="/login">Client Login</Link>
                 <a href="mailto:hire@talntstaffing.com">hire@talntstaffing.com</a>
                 <a href="tel:+17328256848">(732) 825-6848</a>
