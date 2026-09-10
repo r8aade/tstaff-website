@@ -48,8 +48,7 @@ export default function EcommercePage() {
 
       <section className="platform-strip reveal">
         <p className="platform-strip__tagline">
-          Independent staffing partner helping sellers launch and scale on Amazon, Walmart, eBay,
-          TikTok Shop, Shopify, Whatnot, Rithum, and ShipWise.
+          Hire Talnt &mdash; staff who can work across the marketplaces and stores below.
         </p>
         <div className="platform-strip__row">
           {/* eslint-disable @next/next/no-img-element */}
