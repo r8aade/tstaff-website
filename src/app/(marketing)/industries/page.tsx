@@ -132,8 +132,8 @@ export default function IndustriesPage() {
         <div className="contact-cta__card">
           <h2>Don&apos;t see your industry?</h2>
           <p>Tell us what you need staffed — we&apos;ll scope it out and match the right person.</p>
-          <a href="mailto:hello@talntstaffing.com" className="btn btn--primary">
-            Email hello@talntstaffing.com
+          <a href="mailto:hire@talntstaffing.com" className="btn btn--primary">
+            Email hire@talntstaffing.com
           </a>
         </div>
       </section>

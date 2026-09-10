@@ -3,6 +3,8 @@ type LeadNotification = {
   businessType: string;
   hoursPerWeek: string;
   timezone: string;
+  resourcesNeeded: string;
+  requirements?: string;
 };
 
 export async function sendLeadNotification(lead: LeadNotification) {
@@ -26,6 +28,8 @@ export async function sendLeadNotification(lead: LeadNotification) {
         `Business type: ${lead.businessType}`,
         `Hours needed / week: ${lead.hoursPerWeek}`,
         `Timezone: ${lead.timezone}`,
+        `Resources needed: ${lead.resourcesNeeded}`,
+        `Requirements: ${lead.requirements || "(none provided)"}`,
         `Email: ${lead.email}`
       ].join("\n")
     })

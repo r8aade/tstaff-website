@@ -325,6 +325,8 @@ export default function HomePage() {
               <div className="footer__meta">
                 <Link href="/services">Services</Link>
                 <Link href="/login">Client Login</Link>
+                <a href="mailto:hire@talntstaffing.com">hire@talntstaffing.com</a>
+                <a href="tel:+17328256848">(732) 825-6848</a>
                 <span>&copy; {new Date().getFullYear()} Talnt Staffing.</span>
               </div>
             </div>

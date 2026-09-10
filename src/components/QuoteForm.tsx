@@ -7,6 +7,8 @@ export default function QuoteForm() {
   const [hoursPerWeek, setHoursPerWeek] = useState("");
   const [timezone, setTimezone] = useState("");
   const [email, setEmail] = useState("");
+  const [resourcesNeeded, setResourcesNeeded] = useState("");
+  const [requirements, setRequirements] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -21,7 +23,14 @@ export default function QuoteForm() {
       const res = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ businessType, hoursPerWeek, timezone, email })
+        body: JSON.stringify({
+          businessType,
+          hoursPerWeek,
+          timezone,
+          email,
+          resourcesNeeded,
+          requirements
+        })
       });
       if (!res.ok) throw new Error("Request failed");
       setStatus("success");
@@ -93,6 +102,28 @@ export default function QuoteForm() {
           />
         </label>
       </div>
+      <label>
+        <span>Number of resources needed</span>
+        <input
+          type="number"
+          min="1"
+          required
+          disabled={disabled}
+          placeholder="e.g. 2"
+          value={resourcesNeeded}
+          onChange={(e) => setResourcesNeeded(e.target.value)}
+        />
+      </label>
+      <label>
+        <span>Anything else we should know? (optional)</span>
+        <textarea
+          rows={3}
+          disabled={disabled}
+          placeholder="Specific skills, software, hours, or requirements for the role"
+          value={requirements}
+          onChange={(e) => setRequirements(e.target.value)}
+        />
+      </label>
       <button type="submit" className="btn btn--primary btn--full" disabled={disabled}>
         {status === "submitting" ? "Sending..." : "Get your rate"}
       </button>
@@ -100,7 +131,7 @@ export default function QuoteForm() {
         {status === "success"
           ? "Got it — we'll reply within one business day."
           : status === "error"
-            ? "Something went wrong — email hello@talntstaffing.com directly instead."
+            ? "Something went wrong — email hire@talntstaffing.com directly instead."
             : "We reply within one business day. No spam, no sales calls you didn't ask for."}
       </p>
     </form>

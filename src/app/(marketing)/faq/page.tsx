@@ -43,7 +43,7 @@ const faqs = [
   },
   {
     q: "How do I get started?",
-    a: "Email hello@talntstaffing.com with what kind of business you run, the tasks you want help with, and roughly how many hours per week — we'll follow up to scope things out."
+    a: "Email hire@talntstaffing.com with what kind of business you run, the tasks you want help with, and roughly how many hours per week — we'll follow up to scope things out."
   }
 ];
 

@@ -23,13 +23,15 @@ export default async function AdminHomePage() {
               <th className="px-4 py-3 font-medium">Business Type</th>
               <th className="px-4 py-3 font-medium">Hours/Week</th>
               <th className="px-4 py-3 font-medium">Timezone</th>
+              <th className="px-4 py-3 font-medium"># Resources</th>
+              <th className="px-4 py-3 font-medium">Requirements</th>
               <th className="px-4 py-3 font-medium">Email</th>
             </tr>
           </thead>
           <tbody>
             {leads.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-6 text-center text-ink-700">
+                <td colSpan={7} className="px-4 py-6 text-center text-ink-700">
                   No quote requests yet.
                 </td>
               </tr>
@@ -40,6 +42,10 @@ export default async function AdminHomePage() {
                   <td className="px-4 py-3">{lead.businessType}</td>
                   <td className="px-4 py-3">{lead.hoursPerWeek}</td>
                   <td className="px-4 py-3">{lead.timezone}</td>
+                  <td className="px-4 py-3">{lead.resourcesNeeded ?? "—"}</td>
+                  <td className="px-4 py-3 max-w-xs truncate" title={lead.requirements ?? ""}>
+                    {lead.requirements ?? "—"}
+                  </td>
                   <td className="px-4 py-3">
                     <a href={`mailto:${lead.email}`} className="font-medium text-brand-600">
                       {lead.email}

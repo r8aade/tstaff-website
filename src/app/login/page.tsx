@@ -84,8 +84,8 @@ export default function LoginPage() {
 
         <p className="mt-6 text-xs text-ink-700">
           Don't have an account? Your Talnt Staffing account is set up by our team &mdash; email{" "}
-          <a href="mailto:hello@talntstaffing.com" className="font-semibold text-brand-600">
-            hello@talntstaffing.com
+          <a href="mailto:hire@talntstaffing.com" className="font-semibold text-brand-600">
+            hire@talntstaffing.com
           </a>
           .
         </p>

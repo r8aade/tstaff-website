@@ -42,7 +42,7 @@ const orgSchema = {
     "Full-service hourly staffing agency — back-office, administrative, marketing/sales/CRM, and technical support staff sourced from the Philippines and India, serving businesses across every industry.",
   areaServed: "US",
   priceRange: "$10-$15/hr",
-  email: "hello@talntstaffing.com"
+  email: "hire@talntstaffing.com"
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -14,8 +14,11 @@ export default function Footer() {
             <a href="/faq" className="hover:text-white">
               FAQ
             </a>
-            <a href="mailto:hello@talntstaffing.com" className="hover:text-white">
-              hello@talntstaffing.com
+            <a href="mailto:hire@talntstaffing.com" className="hover:text-white">
+              hire@talntstaffing.com
+            </a>
+            <a href="tel:+17328256848" className="hover:text-white">
+              (732) 825-6848
             </a>
           </div>
         </div>

@@ -797,7 +797,8 @@ body {
   color: rgba(250, 248, 244, 0.85);
 }
 .quote-form input,
-.quote-form select {
+.quote-form select,
+.quote-form textarea {
   background: rgba(250, 248, 244, 0.06);
   border: 1px solid rgba(250, 248, 244, 0.22);
   border-radius: 8px;
@@ -806,14 +807,20 @@ body {
   font-family: var(--sans);
   font-size: 0.95rem;
 }
-.quote-form input::placeholder {
+.quote-form textarea {
+  resize: vertical;
+  min-height: 4.5rem;
+}
+.quote-form input::placeholder,
+.quote-form textarea::placeholder {
   color: rgba(250, 248, 244, 0.4);
 }
 .quote-form select option {
   color: #16150f;
 }
 .quote-form input:focus,
-.quote-form select:focus {
+.quote-form select:focus,
+.quote-form textarea:focus {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
 }

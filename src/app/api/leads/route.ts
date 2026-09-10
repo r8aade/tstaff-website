@@ -5,19 +5,21 @@ import { sendLeadNotification } from "@/lib/email";
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { businessType, hoursPerWeek, timezone, email } = body as {
+  const { businessType, hoursPerWeek, timezone, email, resourcesNeeded, requirements } = body as {
     businessType?: string;
     hoursPerWeek?: string;
     timezone?: string;
     email?: string;
+    resourcesNeeded?: string;
+    requirements?: string;
   };
 
-  if (!businessType || !hoursPerWeek || !timezone || !email) {
+  if (!businessType || !hoursPerWeek || !timezone || !email || !resourcesNeeded) {
     return NextResponse.json({ error: "All fields are required." }, { status: 400 });
   }
 
   await prisma.lead.create({
-    data: { businessType, hoursPerWeek, timezone, email }
+    data: { businessType, hoursPerWeek, timezone, email, resourcesNeeded, requirements }
   });
 
   try {
@@ -32,7 +34,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    await sendLeadNotification({ email, businessType, hoursPerWeek, timezone });
+    await sendLeadNotification({ email, businessType, hoursPerWeek, timezone, resourcesNeeded, requirements });
   } catch (err) {
     console.error("Lead notification email failed:", err);
   }

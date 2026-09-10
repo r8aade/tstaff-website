@@ -16,8 +16,12 @@ export default function ContactPage() {
       <div className="mt-8 rounded-lg border border-ink-900/10 p-6">
         <p className="text-sm text-ink-700">
           Email us at{" "}
-          <a href="mailto:hello@talntstaffing.com" className="font-semibold text-brand-600">
-            hello@talntstaffing.com
+          <a href="mailto:hire@talntstaffing.com" className="font-semibold text-brand-600">
+            hire@talntstaffing.com
+          </a>{" "}
+          or call{" "}
+          <a href="tel:+17328256848" className="font-semibold text-brand-600">
+            (732) 825-6848
           </a>{" "}
           with:
         </p>

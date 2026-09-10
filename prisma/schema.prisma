@@ -54,12 +54,14 @@ model HoursEntry {
 }
 
 model Lead {
-  id           String   @id @default(cuid())
-  businessType String
-  hoursPerWeek String
-  timezone     String
-  email        String
-  createdAt    DateTime @default(now())
+  id              String   @id @default(cuid())
+  businessType    String
+  hoursPerWeek    String
+  timezone        String
+  email           String
+  resourcesNeeded String?
+  requirements    String?
+  createdAt       DateTime @default(now())
 }
 
 model Payment {
