@@ -1,4 +1,6 @@
 type LeadNotification = {
+  name: string;
+  phone: string;
   email: string;
   businessType: string;
   hoursPerWeek: string;
@@ -23,8 +25,10 @@ export async function sendLeadNotification(lead: LeadNotification) {
       from: "Talnt Staffing Website <notifications@talntstaffing.com>",
       to: [notifyTo],
       reply_to: lead.email,
-      subject: `New quote request: ${lead.businessType}`,
+      subject: `New quote request: ${lead.name} (${lead.businessType})`,
       text: [
+        `Name: ${lead.name}`,
+        `Phone: ${lead.phone}`,
         `Business type: ${lead.businessType}`,
         `Hours needed / week: ${lead.hoursPerWeek}`,
         `Timezone: ${lead.timezone}`,

@@ -3,6 +3,8 @@
 import { useState, type FormEvent } from "react";
 
 export default function QuoteForm() {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [businessType, setBusinessType] = useState("");
   const [hoursPerWeek, setHoursPerWeek] = useState("");
   const [timezone, setTimezone] = useState("");
@@ -24,6 +26,8 @@ export default function QuoteForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          name,
+          phone,
           businessType,
           hoursPerWeek,
           timezone,
@@ -43,6 +47,30 @@ export default function QuoteForm() {
 
   return (
     <form className="quote-form" onSubmit={handleSubmit}>
+      <div className="quote-form__row">
+        <label>
+          <span>Your name</span>
+          <input
+            type="text"
+            required
+            disabled={disabled}
+            placeholder="Jane Smith"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </label>
+        <label>
+          <span>Phone number</span>
+          <input
+            type="tel"
+            required
+            disabled={disabled}
+            placeholder="(555) 123-4567"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+          />
+        </label>
+      </div>
       <div className="quote-form__row">
         <label>
           <span>Business type</span>

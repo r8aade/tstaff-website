@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import HomeScripts from "@/components/HomeScripts";
+import QuoteForm from "@/components/QuoteForm";
 
 export const metadata: Metadata = {
   title: "Get Started",
@@ -7,37 +10,42 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="mx-auto max-w-2xl px-6 py-16">
-      <h1 className="text-3xl font-bold text-ink-900">Get Started</h1>
-      <p className="mt-3 text-ink-700">
-        Tell us a bit about your business and the roles you're looking to fill, and we'll follow up
-        to scope things out.
-      </p>
-      <div className="mt-8 rounded-lg border border-ink-900/10 p-6">
-        <p className="text-sm text-ink-700">
-          Email us at{" "}
-          <a href="mailto:hire@talntstaffing.com" className="font-semibold text-brand-600">
+    <>
+      <HomeScripts />
+
+      <section className="page-hero">
+        <p className="eyebrow">Get Started</p>
+        <h1>
+          Tell us what you need <span className="accent">staffed</span>
+        </h1>
+        <p className="page-hero__lead">
+          Fill out the form below, or email{" "}
+          <a href="mailto:hire@talntstaffing.com" className="accent font-semibold">
             hire@talntstaffing.com
           </a>{" "}
           or call{" "}
-          <a href="tel:+17328256848" className="font-semibold text-brand-600">
+          <a href="tel:+17328256848" className="accent font-semibold">
             (732) 825-6848
-          </a>{" "}
-          with:
-        </p>
-        <ul className="mt-4 space-y-2 text-sm text-ink-700">
-          <li>&bull; What kind of business you run</li>
-          <li>&bull; The roles/tasks you want help with</li>
-          <li>&bull; Roughly how many hours per week</li>
-        </ul>
-        <p className="mt-4 text-sm text-ink-700">
-          Already a client? Your login gives you access to hours and billing &mdash;{" "}
-          <a href="/login" className="font-semibold text-brand-600">
-            log in here
           </a>
-          .
+          . We&apos;ll follow up within one business day to scope things out.
         </p>
-      </div>
-    </div>
+      </section>
+
+      <section className="home-footer reveal">
+        <div className="footer__inner">
+          <QuoteForm />
+        </div>
+      </section>
+
+      <section className="contact-cta reveal">
+        <div className="contact-cta__card">
+          <h2>Already a client?</h2>
+          <p>Your login gives you access to hours and billing.</p>
+          <Link href="/login" className="btn btn--primary">
+            Log in here
+          </Link>
+        </div>
+      </section>
+    </>
   );
 }

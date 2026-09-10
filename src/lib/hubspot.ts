@@ -2,6 +2,9 @@ const HUBSPOT_API_BASE = "https://api.hubapi.com";
 
 type LeadProperties = {
   email: string;
+  firstname: string;
+  lastname: string;
+  phone: string;
   business_type: string;
   hours_per_week: string;
   preferred_timezone: string;

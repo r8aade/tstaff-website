@@ -55,6 +55,8 @@ model HoursEntry {
 
 model Lead {
   id              String   @id @default(cuid())
+  name            String?
+  phone           String?
   businessType    String
   hoursPerWeek    String
   timezone        String

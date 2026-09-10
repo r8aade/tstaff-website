@@ -20,6 +20,8 @@ export default async function AdminHomePage() {
           <thead className="bg-ink-900/[0.03] text-left text-ink-700">
             <tr>
               <th className="px-4 py-3 font-medium">Date</th>
+              <th className="px-4 py-3 font-medium">Name</th>
+              <th className="px-4 py-3 font-medium">Phone</th>
               <th className="px-4 py-3 font-medium">Business Type</th>
               <th className="px-4 py-3 font-medium">Hours/Week</th>
               <th className="px-4 py-3 font-medium">Timezone</th>
@@ -31,7 +33,7 @@ export default async function AdminHomePage() {
           <tbody>
             {leads.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-4 py-6 text-center text-ink-700">
+                <td colSpan={9} className="px-4 py-6 text-center text-ink-700">
                   No quote requests yet.
                 </td>
               </tr>
@@ -39,6 +41,16 @@ export default async function AdminHomePage() {
               leads.map((lead) => (
                 <tr key={lead.id} className="border-t border-ink-900/10">
                   <td className="px-4 py-3">{new Date(lead.createdAt).toLocaleDateString()}</td>
+                  <td className="px-4 py-3">{lead.name ?? "—"}</td>
+                  <td className="px-4 py-3">
+                    {lead.phone ? (
+                      <a href={`tel:${lead.phone}`} className="font-medium text-brand-600">
+                        {lead.phone}
+                      </a>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
                   <td className="px-4 py-3">{lead.businessType}</td>
                   <td className="px-4 py-3">{lead.hoursPerWeek}</td>
                   <td className="px-4 py-3">{lead.timezone}</td>

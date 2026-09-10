@@ -5,7 +5,9 @@ import { sendLeadNotification } from "@/lib/email";
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { businessType, hoursPerWeek, timezone, email, resourcesNeeded, requirements } = body as {
+  const { name, phone, businessType, hoursPerWeek, timezone, email, resourcesNeeded, requirements } = body as {
+    name?: string;
+    phone?: string;
     businessType?: string;
     hoursPerWeek?: string;
     timezone?: string;
@@ -14,17 +16,22 @@ export async function POST(req: Request) {
     requirements?: string;
   };
 
-  if (!businessType || !hoursPerWeek || !timezone || !email || !resourcesNeeded) {
+  if (!name || !phone || !businessType || !hoursPerWeek || !timezone || !email || !resourcesNeeded) {
     return NextResponse.json({ error: "All fields are required." }, { status: 400 });
   }
 
   await prisma.lead.create({
-    data: { businessType, hoursPerWeek, timezone, email, resourcesNeeded, requirements }
+    data: { name, phone, businessType, hoursPerWeek, timezone, email, resourcesNeeded, requirements }
   });
+
+  const [firstName, ...lastNameParts] = name.trim().split(/\s+/);
 
   try {
     await upsertHubspotContact({
       email,
+      firstname: firstName,
+      lastname: lastNameParts.join(" "),
+      phone,
       business_type: businessType,
       hours_per_week: hoursPerWeek,
       preferred_timezone: timezone,
@@ -36,7 +43,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    await sendLeadNotification({ email, businessType, hoursPerWeek, timezone, resourcesNeeded, requirements });
+    await sendLeadNotification({ name, phone, email, businessType, hoursPerWeek, timezone, resourcesNeeded, requirements });
   } catch (err) {
     console.error("Lead notification email failed:", err);
   }
