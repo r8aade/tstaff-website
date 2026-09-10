@@ -19,6 +19,11 @@ export default function Footer() {
             </a>
           </div>
         </div>
+        <p className="mt-6 text-xs text-white/40">
+          All trademarks, logos, and brand names referenced on this site are the property of
+          their respective owners. Talnt Staffing is an independent staffing provider and is not
+          affiliated with, endorsed by, or sponsored by any platform or company mentioned.
+        </p>
       </div>
     </footer>
   );

@@ -328,6 +328,12 @@ export default function HomePage() {
                 <span>&copy; {new Date().getFullYear()} Talnt Staffing.</span>
               </div>
             </div>
+            <p className="footer__legal">
+              All trademarks, logos, and brand names referenced on this site are the property of
+              their respective owners. Talnt Staffing is an independent staffing provider and is
+              not affiliated with, endorsed by, or sponsored by any platform or company
+              mentioned.
+            </p>
           </div>
         </footer>
       </main>

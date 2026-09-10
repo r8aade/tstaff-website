@@ -49,7 +49,7 @@ export default function EcommercePage() {
       <section className="platform-strip reveal">
         <p className="platform-strip__tagline">
           Independent staffing partner helping sellers launch and scale on Amazon, Walmart, eBay,
-          TikTok Shop, and Shopify.
+          TikTok Shop, Shopify, Whatnot, Rithum, and ShipWise.
         </p>
         <div className="platform-strip__row">
           {/* eslint-disable @next/next/no-img-element */}
@@ -58,16 +58,11 @@ export default function EcommercePage() {
           <img src="/logos/ebay.svg" alt="eBay" className="platform-strip__logo" />
           <img src="/logos/tiktok.svg" alt="TikTok Shop" className="platform-strip__logo" />
           <img src="/logos/shopify.svg" alt="Shopify" className="platform-strip__logo" />
+          <img src="/logos/whatnot.png" alt="Whatnot" className="platform-strip__logo" />
+          <img src="/logos/rithum.png" alt="Rithum" className="platform-strip__logo" />
+          <img src="/logos/shipwise.png" alt="ShipWise" className="platform-strip__logo" />
           {/* eslint-enable @next/next/no-img-element */}
-          <span className="platform-strip__wordmark">Whatnot</span>
-          <span className="platform-strip__wordmark">Rithum</span>
-          <span className="platform-strip__wordmark">Shipwise</span>
         </div>
-        <p className="platform-strip__disclaimer">
-          All trademarks, logos, and brand names are the property of their respective owners.
-          Talnt Staffing is an independent staffing provider and is not affiliated with,
-          endorsed by, or sponsored by any platform listed above.
-        </p>
       </section>
 
       <section className="detail-tasks reveal">
