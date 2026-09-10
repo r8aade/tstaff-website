@@ -48,8 +48,7 @@ export default function PrintShopsPage() {
 
       <section className="platform-strip reveal">
         <p className="platform-strip__tagline">
-          Independent staffing partner helping shops work efficiently inside Adobe, OnPrintShop,
-          PlanProphet, and PrintSmith Vision.
+          Hire Talnt &mdash; staff who can work inside the software below.
         </p>
         <div className="platform-strip__row">
           {/* eslint-disable-next-line @next/next/no-img-element */}
