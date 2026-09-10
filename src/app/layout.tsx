@@ -29,6 +29,9 @@ export const metadata: Metadata = {
     title: "Talnt Staffing — Full-Service Hourly Staffing for Every Industry",
     description:
       "Back-office, admin, marketing, and technical support staff, billed hourly. No monthly fee, no long contract."
+  },
+  verification: {
+    google: "mJSULw5av1Vv37uz57aQbGWCJeNykgpoTFK_hrLGRxg"
   }
 };
 
