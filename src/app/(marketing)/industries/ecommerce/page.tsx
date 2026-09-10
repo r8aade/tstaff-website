@@ -48,7 +48,8 @@ export default function EcommercePage() {
 
       <section className="platform-strip reveal">
         <p className="platform-strip__tagline">
-          Hire Talnt &mdash; staff who can work across the marketplaces and stores below.
+          Hire Talnt &mdash; staff who can work across the marketplaces and ecommerce platforms
+          below.
         </p>
         <div className="platform-strip__row">
           {/* eslint-disable @next/next/no-img-element */}
