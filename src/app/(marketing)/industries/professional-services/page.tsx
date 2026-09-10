@@ -4,7 +4,7 @@ import JsonLd from "@/components/JsonLd";
 import HomeScripts from "@/components/HomeScripts";
 
 export const metadata: Metadata = {
-  title: "Virtual Assistants for Professional Services",
+  title: "Professional Services Staffing Agency",
   description:
     "Hourly staff for professional services firms — client intake, scheduling, document prep, and billing support. $10-15/hr, no monthly fee."
 };
@@ -25,7 +25,7 @@ const serviceSchema = {
   provider: { "@type": "EmploymentAgency", name: "Talnt Staffing" },
   areaServed: "US",
   description:
-    "Hourly virtual staff for professional services firms covering client intake, scheduling, document prep, and billing support."
+    "Hourly staff for professional services firms covering client intake, scheduling, document prep, and billing support."
 };
 
 export default function ProfessionalServicesPage() {

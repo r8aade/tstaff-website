@@ -4,7 +4,7 @@ import JsonLd from "@/components/JsonLd";
 import HomeScripts from "@/components/HomeScripts";
 
 export const metadata: Metadata = {
-  title: "Virtual Assistants for Real Estate & Property Management",
+  title: "Real Estate & Property Management Staffing Agency",
   description:
     "Hourly staff for real estate and property management — listing coordination, tenant/vendor communication, and scheduling. $10-15/hr, no monthly fee."
 };
@@ -25,7 +25,7 @@ const serviceSchema = {
   provider: { "@type": "EmploymentAgency", name: "Talnt Staffing" },
   areaServed: "US",
   description:
-    "Hourly virtual staff for real estate and property management covering listing coordination, tenant/vendor communication, and scheduling."
+    "Hourly staff for real estate and property management covering listing coordination, tenant/vendor communication, and scheduling."
 };
 
 export default function RealEstatePage() {

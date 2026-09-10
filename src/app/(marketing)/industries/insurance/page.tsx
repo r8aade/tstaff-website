@@ -4,7 +4,7 @@ import JsonLd from "@/components/JsonLd";
 import HomeScripts from "@/components/HomeScripts";
 
 export const metadata: Metadata = {
-  title: "Virtual Assistants for Insurance Agencies",
+  title: "Insurance Agency Staffing",
   description:
     "Hourly administrative staff for insurance agencies — policy admin support, client intake, and follow-up coordination. $10-15/hr, no monthly fee."
 };
@@ -25,7 +25,7 @@ const serviceSchema = {
   provider: { "@type": "EmploymentAgency", name: "Talnt Staffing" },
   areaServed: "US",
   description:
-    "Hourly virtual administrative staff for insurance agencies covering policy admin support, client intake, and follow-up coordination."
+    "Hourly administrative staff for insurance agencies covering policy admin support, client intake, and follow-up coordination."
 };
 
 export default function InsurancePage() {

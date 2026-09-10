@@ -4,7 +4,7 @@ import JsonLd from "@/components/JsonLd";
 import HomeScripts from "@/components/HomeScripts";
 
 export const metadata: Metadata = {
-  title: "Virtual Assistants for Ecommerce Sellers",
+  title: "Ecommerce Staffing Agency",
   description:
     "Hourly staff for ecommerce sellers — listings, customer service, order management, and returns. $10-15/hr, no monthly fee."
 };
@@ -25,7 +25,7 @@ const serviceSchema = {
   provider: { "@type": "EmploymentAgency", name: "Talnt Staffing" },
   areaServed: "US",
   description:
-    "Hourly virtual staff for ecommerce sellers covering listings, customer service, order management, and returns."
+    "Hourly staff for ecommerce sellers covering listings, customer service, order management, and returns."
 };
 
 export default function EcommercePage() {

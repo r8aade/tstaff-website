@@ -11,7 +11,7 @@ const categories: { title: string; items: string[]; vertical?: boolean }[] = [
   {
     title: "Back-Office Operations",
     items: [
-      "Virtual Assistant — general admin support",
+      "Administrative Assistant — general admin support",
       "Data Entry Specialist",
       "Order Processing Coordinator",
       "Customer Service Representative — phone, chat, email",

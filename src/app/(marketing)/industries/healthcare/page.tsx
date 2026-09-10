@@ -4,7 +4,7 @@ import JsonLd from "@/components/JsonLd";
 import HomeScripts from "@/components/HomeScripts";
 
 export const metadata: Metadata = {
-  title: "Virtual Assistants for Healthcare & Wellness Admin",
+  title: "Healthcare & Wellness Admin Staffing Agency",
   description:
     "Hourly administrative staff for healthcare and wellness practices — scheduling, client communication, and records upkeep. $10-15/hr, no monthly fee."
 };
@@ -25,7 +25,7 @@ const serviceSchema = {
   provider: { "@type": "EmploymentAgency", name: "Talnt Staffing" },
   areaServed: "US",
   description:
-    "Hourly virtual administrative staff for healthcare and wellness practices covering scheduling, client communication, and records upkeep."
+    "Hourly administrative staff for healthcare and wellness practices covering scheduling, client communication, and records upkeep."
 };
 
 export default function HealthcarePage() {

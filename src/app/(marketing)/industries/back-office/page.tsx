@@ -4,7 +4,7 @@ import JsonLd from "@/components/JsonLd";
 import HomeScripts from "@/components/HomeScripts";
 
 export const metadata: Metadata = {
-  title: "Virtual Assistants for Small Back-Office Teams",
+  title: "Small Business Back-Office Staffing Agency",
   description:
     "Hourly staff for any small business back office — scheduling, data entry, and invoicing. $10-15/hr, no monthly fee."
 };
@@ -25,7 +25,7 @@ const serviceSchema = {
   provider: { "@type": "EmploymentAgency", name: "Talnt Staffing" },
   areaServed: "US",
   description:
-    "Hourly virtual staff for small business back offices covering scheduling, data entry, and invoicing."
+    "Hourly staff for small business back offices covering scheduling, data entry, and invoicing."
 };
 
 export default function BackOfficePage() {

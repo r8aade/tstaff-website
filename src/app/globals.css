@@ -312,10 +312,11 @@ body {
   border-radius: 999px;
   font-weight: 700;
   font-size: 0.85rem;
-  transition: background 0.2s;
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
 }
 .nav__cta:hover {
-  background: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(22, 21, 15, 0.25);
 }
 @media (max-width: 1040px) {
   .nav {
@@ -692,7 +693,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
-  margin-bottom: 2rem;
+  margin-bottom: 2.75rem;
 }
 .pricing__list li {
   font-weight: 600;

@@ -4,7 +4,7 @@ import JsonLd from "@/components/JsonLd";
 import HomeScripts from "@/components/HomeScripts";
 
 export const metadata: Metadata = {
-  title: "Virtual Assistants for Construction & Home Services",
+  title: "Construction & Home Services Staffing Agency",
   description:
     "Hourly staff for construction and home service businesses — job scheduling, dispatch coordination, and customer follow-up. $10-15/hr, no monthly fee."
 };
@@ -25,7 +25,7 @@ const serviceSchema = {
   provider: { "@type": "EmploymentAgency", name: "Talnt Staffing" },
   areaServed: "US",
   description:
-    "Hourly virtual staff for construction and home service businesses covering job scheduling, dispatch coordination, and customer follow-up."
+    "Hourly staff for construction and home service businesses covering job scheduling, dispatch coordination, and customer follow-up."
 };
 
 export default function ConstructionPage() {

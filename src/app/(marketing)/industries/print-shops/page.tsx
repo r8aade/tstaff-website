@@ -4,7 +4,7 @@ import JsonLd from "@/components/JsonLd";
 import HomeScripts from "@/components/HomeScripts";
 
 export const metadata: Metadata = {
-  title: "Virtual Assistants for Print Shops",
+  title: "Print Shop Staffing Agency",
   description:
     "Hourly staff for print shops — order intake, proofing coordination, quote follow-up, and customer service. $10-15/hr, no monthly fee."
 };
@@ -25,7 +25,7 @@ const serviceSchema = {
   provider: { "@type": "EmploymentAgency", name: "Talnt Staffing" },
   areaServed: "US",
   description:
-    "Hourly virtual staff for print shops covering order intake, proofing coordination, quote follow-up, and customer service."
+    "Hourly staff for print shops covering order intake, proofing coordination, quote follow-up, and customer service."
 };
 
 export default function PrintShopsPage() {

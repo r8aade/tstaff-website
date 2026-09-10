@@ -4,7 +4,7 @@ import JsonLd from "@/components/JsonLd";
 import HomeScripts from "@/components/HomeScripts";
 
 export const metadata: Metadata = {
-  title: "Virtual Assistants for Marketing & Creative Agencies",
+  title: "Marketing & Creative Agency Staffing",
   description:
     "Hourly staff for marketing and creative agencies — campaign coordination, reporting, and client communication. $10-15/hr, no monthly fee."
 };
@@ -25,7 +25,7 @@ const serviceSchema = {
   provider: { "@type": "EmploymentAgency", name: "Talnt Staffing" },
   areaServed: "US",
   description:
-    "Hourly virtual staff for marketing and creative agencies covering campaign coordination, reporting, and client communication."
+    "Hourly staff for marketing and creative agencies covering campaign coordination, reporting, and client communication."
 };
 
 export default function MarketingAgenciesPage() {
