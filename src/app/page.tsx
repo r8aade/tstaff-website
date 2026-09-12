@@ -30,6 +30,25 @@ export default function HomePage() {
         <a href="#quote" className="nav__cta">
           Get your rate
         </a>
+        <input type="checkbox" id="nav-toggle" className="nav__toggle" />
+        <label htmlFor="nav-toggle" className="nav__burger" aria-label="Open menu">
+          <span />
+          <span />
+          <span />
+        </label>
+        <div className="nav__mobile">
+          <a href="#what-you-get">What you get</a>
+          <a href="#pricing">Pricing</a>
+          <Link href="/services">Services</Link>
+          <Link href="/industries">Industries</Link>
+          <Link href="/resources">Resources</Link>
+          <Link href="/faq">FAQ</Link>
+          <Link href="/about">About</Link>
+          <Link href="/contact">Contact</Link>
+          <a href="#quote" className="nav__cta nav__cta--mobile">
+            Get your rate
+          </a>
+        </div>
       </nav>
 
       <main id="main">
