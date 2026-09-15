@@ -18,10 +18,9 @@ export default function HomePage() {
           Talnt<span className="nav__mark-sub">Staffing</span>
         </a>
         <div className="nav__links">
-          <a href="#what-you-get">What you get</a>
-          <a href="#pricing">Pricing</a>
           <Link href="/services">Services</Link>
           <Link href="/industries">Industries</Link>
+          <Link href="/pricing">Pricing</Link>
           <Link href="/resources">Resources</Link>
           <Link href="/faq">FAQ</Link>
           <Link href="/about">About</Link>
@@ -38,10 +37,9 @@ export default function HomePage() {
       </nav>
       <input type="checkbox" id="nav-toggle" className="nav__toggle" />
       <div className="nav__mobile">
-        <a href="#what-you-get">What you get</a>
-        <a href="#pricing">Pricing</a>
         <Link href="/services">Services</Link>
         <Link href="/industries">Industries</Link>
+        <Link href="/pricing">Pricing</Link>
         <Link href="/resources">Resources</Link>
         <Link href="/faq">FAQ</Link>
         <Link href="/about">About</Link>
@@ -172,46 +170,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* WHAT YOU GET */}
-        <section className="what" id="what-you-get">
-          <div className="what__head reveal">
-            <p className="eyebrow">What you get</p>
-            <h2>One hire. Two kinds of work.</h2>
-          </div>
-          <div className="what__grid">
-            <div className="what__card reveal">
-              <Icon name="headset" className="what__icon" />
-              <h3>Customer service staff</h3>
-              <p>
-                Order status, returns, inbox and chat coverage, phone support. Trained on your
-                specific process, not a generic script.
-              </p>
-            </div>
-            <div className="what__card reveal">
-              <Icon name="clipboard" className="what__icon" />
-              <h3>Back-office support</h3>
-              <p>
-                Order entry, scheduling, invoicing, data cleanup — the operational work that piles
-                up when there's no one dedicated to it.
-              </p>
-            </div>
-          </div>
-          <ul className="what__facts reveal">
-            <li>
-              <strong>Sourced from</strong> the Philippines (primary) and India
-            </li>
-            <li>
-              <strong>Billed</strong> hourly, $10–$25/hr
-            </li>
-            <li>
-              <strong>No</strong> monthly fee
-            </li>
-            <li>
-              <strong>No</strong> long-term contract
-            </li>
-          </ul>
-        </section>
-
         {/* HOW IT WORKS */}
         <section className="how" id="how-it-works">
           <p className="eyebrow reveal">How it works</p>
@@ -294,6 +252,9 @@ export default function HomePage() {
             <a href="#quote" className="btn btn--primary">
               Get your exact rate
             </a>
+            <Link href="/pricing" className="accent mt-2 inline-block text-sm font-semibold">
+              See pricing by role type &rarr;
+            </Link>
           </div>
         </section>
 
@@ -348,6 +309,7 @@ export default function HomePage() {
               </div>
               <div className="footer__meta">
                 <Link href="/services">Services</Link>
+                <Link href="/pricing">Pricing</Link>
                 <Link href="/resources">Resources</Link>
                 <Link href="/login">Client Login</Link>
                 <a href="mailto:hire@talntstaffing.com">hire@talntstaffing.com</a>

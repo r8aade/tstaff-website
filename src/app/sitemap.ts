@@ -6,6 +6,7 @@ const baseUrl = "https://talntstaffing.com";
 const routes = [
   "",
   "/services",
+  "/pricing",
   "/about",
   "/contact",
   "/faq",
