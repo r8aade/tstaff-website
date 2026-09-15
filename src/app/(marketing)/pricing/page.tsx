@@ -7,14 +7,13 @@ import Icon, { type IconName } from "@/components/Icon";
 export const metadata: Metadata = {
   title: "Pricing",
   description:
-    "Talnt Staffing pricing: $10-$25/hr depending on role complexity, no monthly fee, no long-term contract. See rates for general admin vs. specialized roles."
+    "Talnt Staffing pricing: $10-$25/hr depending on role complexity, no monthly fee, no long-term contract. One rate range across every role we staff."
 };
 
-const tiers: { icon: IconName; title: string; range: string; items: string[] }[] = [
+const tiers: { icon: IconName; title: string; items: string[] }[] = [
   {
     icon: "headset",
     title: "General & Administrative",
-    range: "$10–$15/hr",
     items: [
       "Customer service & support",
       "Data entry & order processing",
@@ -25,7 +24,6 @@ const tiers: { icon: IconName; title: string; range: string; items: string[] }[]
   {
     icon: "wrench",
     title: "Specialized & Technical",
-    range: "$18–$25/hr",
     items: [
       "Bookkeeping & basic finance support",
       "CRM / systems administration",
@@ -87,9 +85,7 @@ export default function PricingPage() {
           {tiers.map((tier) => (
             <div className="who__item" key={tier.title}>
               <Icon name={tier.icon} className="who__icon" />
-              <h3>
-                {tier.title} <span className="accent">{tier.range}</span>
-              </h3>
+              <h3>{tier.title}</h3>
               <ul>
                 {tier.items.map((item) => (
                   <li key={item}>{item}</li>
