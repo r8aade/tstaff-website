@@ -732,6 +732,15 @@ body {
 .how .eyebrow {
   color: #e2966a;
 }
+.how__flow {
+  max-width: 1300px;
+  margin: 2.5rem auto 0;
+}
+.how__flow svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
 .how__steps {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -777,6 +786,9 @@ body {
 @media (max-width: 900px) {
   .how {
     padding: 4rem 1.2rem;
+  }
+  .how__flow {
+    display: none;
   }
   .how__steps {
     grid-template-columns: 1fr 1fr;
