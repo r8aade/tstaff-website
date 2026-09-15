@@ -4,7 +4,7 @@ import JsonLd from "@/components/JsonLd";
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Full-service hourly staffing: back-office and admin, marketing/sales/CRM, and customer & technical support. $10-15/hr, no monthly fee."
+    "Full-service hourly staffing: back-office and admin, marketing/sales/CRM, and customer & technical support. $10-25/hr, no monthly fee."
 };
 
 const categories: { title: string; items: string[]; vertical?: boolean }[] = [
@@ -121,7 +121,7 @@ export default function ServicesPage() {
       <div className="mt-16 rounded-lg bg-ink-900/[0.03] p-8">
         <h2 className="font-semibold text-ink-900">Pricing</h2>
         <p className="mt-2 text-sm text-ink-700">
-          Staff are billed hourly at $10&ndash;$15/hr depending on role and experience &mdash; no monthly
+          Staff are billed hourly at $10&ndash;$25/hr depending on role and experience &mdash; no monthly
           platform fee, no long-term contract. Once you're a client, hours are logged for you and
           visible any time from your account.
         </p>

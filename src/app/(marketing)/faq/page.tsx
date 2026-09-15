@@ -19,7 +19,7 @@ const faqs = [
   },
   {
     q: "How much does Talnt Staffing cost?",
-    a: "Staff are billed hourly, typically $10-$15/hr depending on the role and experience required. There's no monthly platform fee — you pay for the hours actually worked."
+    a: "Staff are billed hourly, typically $10-$25/hr depending on the role and experience required. There's no monthly platform fee — you pay for the hours actually worked."
   },
   {
     q: "Where are Talnt Staffing's staff located?",

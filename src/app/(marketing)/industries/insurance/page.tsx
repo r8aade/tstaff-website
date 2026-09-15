@@ -6,7 +6,7 @@ import HomeScripts from "@/components/HomeScripts";
 export const metadata: Metadata = {
   title: "Insurance Agency Staffing",
   description:
-    "Hourly administrative staff for insurance agencies — policy admin support, client intake, and follow-up coordination. $10-15/hr, no monthly fee."
+    "Hourly administrative staff for insurance agencies — policy admin support, client intake, and follow-up coordination. $10-25/hr, no monthly fee."
 };
 
 const tasks = [
@@ -41,7 +41,7 @@ export default function InsurancePage() {
         </h1>
         <p className="page-hero__lead">
           Policy administration, client intake, and follow-up coordination pile up fast. Talnt
-          Staffing staff take on the repetitive work for $10&ndash;$15/hr, with no monthly fee.
+          Staffing staff take on the repetitive work for $10&ndash;$25/hr, with no monthly fee.
           Administrative support only &mdash; not licensed sales or claims roles.
         </p>
       </section>

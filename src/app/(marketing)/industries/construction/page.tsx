@@ -6,7 +6,7 @@ import HomeScripts from "@/components/HomeScripts";
 export const metadata: Metadata = {
   title: "Construction & Home Services Staffing Agency",
   description:
-    "Hourly staff for construction and home service businesses — job scheduling, dispatch coordination, and customer follow-up. $10-15/hr, no monthly fee."
+    "Hourly staff for construction and home service businesses — job scheduling, dispatch coordination, and customer follow-up. $10-25/hr, no monthly fee."
 };
 
 const tasks = [
@@ -41,7 +41,7 @@ export default function ConstructionPage() {
         </h1>
         <p className="page-hero__lead">
           Between dispatch, scheduling, and customer follow-up, the phone never really stops
-          ringing. Talnt Staffing staff handle the coordination for $10&ndash;$15/hr, with no
+          ringing. Talnt Staffing staff handle the coordination for $10&ndash;$25/hr, with no
           monthly fee.
         </p>
       </section>

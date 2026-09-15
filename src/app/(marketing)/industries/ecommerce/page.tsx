@@ -6,7 +6,7 @@ import HomeScripts from "@/components/HomeScripts";
 export const metadata: Metadata = {
   title: "Ecommerce Staffing Agency",
   description:
-    "Hourly staff for ecommerce sellers — listings, customer service, order management, and returns. $10-15/hr, no monthly fee."
+    "Hourly staff for ecommerce sellers — listings, customer service, order management, and returns. $10-25/hr, no monthly fee."
 };
 
 const tasks = [
@@ -41,7 +41,7 @@ export default function EcommercePage() {
         </h1>
         <p className="page-hero__lead">
           Ecommerce runs on volume — listings to update, messages to answer, orders to track.
-          Talnt Staffing staff handle the repetitive parts for $10&ndash;$15/hr, with no monthly
+          Talnt Staffing staff handle the repetitive parts for $10&ndash;$25/hr, with no monthly
           fee.
         </p>
       </section>

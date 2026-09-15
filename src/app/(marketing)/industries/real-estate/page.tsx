@@ -6,7 +6,7 @@ import HomeScripts from "@/components/HomeScripts";
 export const metadata: Metadata = {
   title: "Real Estate & Property Management Staffing Agency",
   description:
-    "Hourly staff for real estate and property management — listing coordination, tenant/vendor communication, and scheduling. $10-15/hr, no monthly fee."
+    "Hourly staff for real estate and property management — listing coordination, tenant/vendor communication, and scheduling. $10-25/hr, no monthly fee."
 };
 
 const tasks = [
@@ -41,7 +41,7 @@ export default function RealEstatePage() {
         </h1>
         <p className="page-hero__lead">
           Between showings, listings, and tenant requests, the coordination work never stops.
-          Talnt Staffing staff handle the back-and-forth for $10&ndash;$15/hr, with no monthly
+          Talnt Staffing staff handle the back-and-forth for $10&ndash;$25/hr, with no monthly
           fee.
         </p>
       </section>

@@ -44,7 +44,7 @@ const orgSchema = {
   description:
     "Full-service hourly staffing agency — back-office, administrative, marketing/sales/CRM, and technical support staff sourced from the Philippines and India, serving businesses across every industry.",
   areaServed: "US",
-  priceRange: "$10-$15/hr",
+  priceRange: "$10-$25/hr",
   email: "hire@talntstaffing.com"
 };
 

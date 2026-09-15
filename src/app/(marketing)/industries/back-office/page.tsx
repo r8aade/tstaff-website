@@ -6,7 +6,7 @@ import HomeScripts from "@/components/HomeScripts";
 export const metadata: Metadata = {
   title: "Small Business Back-Office Staffing Agency",
   description:
-    "Hourly staff for any small business back office — scheduling, data entry, and invoicing. $10-15/hr, no monthly fee."
+    "Hourly staff for any small business back office — scheduling, data entry, and invoicing. $10-25/hr, no monthly fee."
 };
 
 const tasks = [
@@ -41,7 +41,7 @@ export default function BackOfficePage() {
         </h1>
         <p className="page-hero__lead">
           Scheduling, data entry, invoicing &mdash; the repeatable work doesn&apos;t need to be
-          yours. Talnt Staffing staff take it off your plate for $10&ndash;$15/hr, with no
+          yours. Talnt Staffing staff take it off your plate for $10&ndash;$25/hr, with no
           monthly fee.
         </p>
       </section>

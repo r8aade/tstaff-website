@@ -6,7 +6,7 @@ import HomeScripts from "@/components/HomeScripts";
 export const metadata: Metadata = {
   title: "Professional Services Staffing Agency",
   description:
-    "Hourly staff for professional services firms — client intake, scheduling, document prep, and billing support. $10-15/hr, no monthly fee."
+    "Hourly staff for professional services firms — client intake, scheduling, document prep, and billing support. $10-25/hr, no monthly fee."
 };
 
 const tasks = [
@@ -42,7 +42,7 @@ export default function ProfessionalServicesPage() {
         <p className="page-hero__lead">
           Client intake, scheduling, billing, and document prep are the operational work that
           piles up around every engagement. Talnt Staffing staff take it off your plate for
-          $10&ndash;$15/hr, with no monthly fee.
+          $10&ndash;$25/hr, with no monthly fee.
         </p>
       </section>
 

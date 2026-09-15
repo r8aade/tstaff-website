@@ -75,7 +75,7 @@ export const resources: ResourcePost[] = [
       },
       {
         type: "quote",
-        text: "Talnt Staffing bills hourly at $10–$15/hr with no monthly fee and no long-term contract — the number you see is the number you pay."
+        text: "Talnt Staffing bills hourly at $10–$25/hr with no monthly fee and no long-term contract — the number you see is the number you pay."
       }
     ],
     relatedIndustry: { href: "/contact", label: "Get your exact rate" }
@@ -258,7 +258,7 @@ export const resources: ResourcePost[] = [
       { type: "h2", text: "What it costs" },
       {
         type: "p",
-        text: "Order intake, proofing coordination, and customer service roles for print shops typically run $10–$15/hour when billed hourly with no monthly fee — well below the cost of a part-time in-house hire once you factor in payroll overhead, and without the commitment of a full-time seat you may not need year-round."
+        text: "Order intake, proofing coordination, and customer service roles for print shops typically run $10–$25/hour when billed hourly with no monthly fee — well below the cost of a part-time in-house hire once you factor in payroll overhead, and without the commitment of a full-time seat you may not need year-round."
       }
     ],
     relatedIndustry: { href: "/industries/print-shops", label: "See print shop staffing" }

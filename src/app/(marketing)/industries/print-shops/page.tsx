@@ -6,7 +6,7 @@ import HomeScripts from "@/components/HomeScripts";
 export const metadata: Metadata = {
   title: "Print Shop Staffing Agency",
   description:
-    "Hourly staff for print shops — order intake, proofing coordination, quote follow-up, and customer service. $10-15/hr, no monthly fee."
+    "Hourly staff for print shops — order intake, proofing coordination, quote follow-up, and customer service. $10-25/hr, no monthly fee."
 };
 
 const tasks = [
@@ -42,7 +42,7 @@ export default function PrintShopsPage() {
         <p className="page-hero__lead">
           Print shops lose time to the same repetitive work every day: chasing proof approvals,
           answering &ldquo;where&apos;s my order&rdquo; emails, and re-keying quote requests. Talnt
-          Staffing staff take that off your plate for $10&ndash;$15/hr, with no monthly fee.
+          Staffing staff take that off your plate for $10&ndash;$25/hr, with no monthly fee.
         </p>
       </section>
 

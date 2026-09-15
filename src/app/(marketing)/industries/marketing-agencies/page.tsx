@@ -6,7 +6,7 @@ import HomeScripts from "@/components/HomeScripts";
 export const metadata: Metadata = {
   title: "Marketing & Creative Agency Staffing",
   description:
-    "Hourly staff for marketing and creative agencies — campaign coordination, reporting, and client communication. $10-15/hr, no monthly fee."
+    "Hourly staff for marketing and creative agencies — campaign coordination, reporting, and client communication. $10-25/hr, no monthly fee."
 };
 
 const tasks = [
@@ -42,7 +42,7 @@ export default function MarketingAgenciesPage() {
         <p className="page-hero__lead">
           Campaign coordination, reporting, and client communication take real hours away from
           the creative work. Talnt Staffing staff handle the operational side for
-          $10&ndash;$15/hr, with no monthly fee.
+          $10&ndash;$25/hr, with no monthly fee.
         </p>
       </section>
 

@@ -73,7 +73,7 @@ export default function HomePage() {
               </a>
             </div>
             <div className="hero__rate">
-              <span className="hero__rate-num">$10–$15</span>
+              <span className="hero__rate-num">$10–$25</span>
               <span className="hero__rate-unit">/ hour, no monthly fee</span>
             </div>
           </div>
@@ -201,7 +201,7 @@ export default function HomePage() {
               <strong>Sourced from</strong> the Philippines (primary) and India
             </li>
             <li>
-              <strong>Billed</strong> hourly, $10–$15/hr
+              <strong>Billed</strong> hourly, $10–$25/hr
             </li>
             <li>
               <strong>No</strong> monthly fee
@@ -279,7 +279,7 @@ export default function HomePage() {
           <div className="pricing__card reveal">
             <p className="eyebrow">Pricing</p>
             <h2>
-              $10–$15 <span>/ hour</span>
+              $10–$25 <span>/ hour</span>
             </h2>
             <p className="pricing__note">
               Rate depends on role complexity and experience level. No monthly fee. No setup

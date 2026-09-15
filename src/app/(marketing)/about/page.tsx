@@ -18,7 +18,7 @@ export default function AboutPage() {
         </p>
         <p>
           We source and train staff primarily from the Philippines, with additional talent from
-          India. Every hire is billed hourly at $10&ndash;$15/hr with no monthly platform fee, so you
+          India. Every hire is billed hourly at $10&ndash;$25/hr with no monthly platform fee, so you
           only pay for the work that gets done.
         </p>
         <p>
