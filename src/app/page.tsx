@@ -181,7 +181,7 @@ export default function HomePage() {
             <div className="how__step reveal">
               <span className="how__step-num"><Icon name="message" size={18} /></span>
               <h3><span className="how__step-tag">1</span> Tell us the work</h3>
-              <p>A short intake: what kind of business, what tasks, roughly how many hours a week.</p>
+              <p>A short intake: what kind of business, what tasks, what you need covered.</p>
             </div>
             <div className="how__step reveal">
               <span className="how__step-num"><Icon name="user-check" size={18} /></span>

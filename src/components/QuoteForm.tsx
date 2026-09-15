@@ -6,7 +6,6 @@ export default function QuoteForm() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [businessType, setBusinessType] = useState("");
-  const [hoursPerWeek, setHoursPerWeek] = useState("");
   const [timezone, setTimezone] = useState("");
   const [email, setEmail] = useState("");
   const [resourcesNeeded, setResourcesNeeded] = useState("");
@@ -31,7 +30,7 @@ export default function QuoteForm() {
           name,
           phone,
           businessType,
-          hoursPerWeek,
+          hoursPerWeek: "40 (full-time)",
           timezone,
           email,
           resourcesNeeded,
@@ -104,25 +103,6 @@ export default function QuoteForm() {
           </select>
         </label>
         <label>
-          <span>Hours needed / week</span>
-          <select
-            required
-            disabled={disabled}
-            value={hoursPerWeek}
-            onChange={(e) => setHoursPerWeek(e.target.value)}
-          >
-            <option value="" disabled>
-              Select one
-            </option>
-            <option>Under 10</option>
-            <option>10–20</option>
-            <option>20–40</option>
-            <option>40 (full-time)</option>
-          </select>
-        </label>
-      </div>
-      <div className="quote-form__row">
-        <label>
           <span>Your timezone</span>
           <input
             type="text"
@@ -133,6 +113,8 @@ export default function QuoteForm() {
             onChange={(e) => setTimezone(e.target.value)}
           />
         </label>
+      </div>
+      <div className="quote-form__row">
         <label>
           <span>Email</span>
           <input
@@ -144,19 +126,19 @@ export default function QuoteForm() {
             onChange={(e) => setEmail(e.target.value)}
           />
         </label>
+        <label>
+          <span>Number of resources needed</span>
+          <input
+            type="number"
+            min="1"
+            required
+            disabled={disabled}
+            placeholder="e.g. 2"
+            value={resourcesNeeded}
+            onChange={(e) => setResourcesNeeded(e.target.value)}
+          />
+        </label>
       </div>
-      <label>
-        <span>Number of resources needed</span>
-        <input
-          type="number"
-          min="1"
-          required
-          disabled={disabled}
-          placeholder="e.g. 2"
-          value={resourcesNeeded}
-          onChange={(e) => setResourcesNeeded(e.target.value)}
-        />
-      </label>
       <label>
         <span>Anything else we should know? (optional)</span>
         <textarea
