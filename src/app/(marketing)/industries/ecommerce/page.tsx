@@ -79,7 +79,7 @@ export default function EcommercePage() {
       <section className="contact-cta reveal">
         <div className="contact-cta__card">
           <h2>Tell us how you sell</h2>
-          <p>Tell us which platforms you sell on and what&apos;s eating your time, and we&apos;ll match staff and train them around your workflow.</p>
+          <p>Tell us which platforms you sell on and what&apos;s eating your time, and we&apos;ll match you with someone who fits — you train them on your workflow.</p>
           <Link href="/contact" className="btn btn--primary">
             Talk to us about your store
           </Link>

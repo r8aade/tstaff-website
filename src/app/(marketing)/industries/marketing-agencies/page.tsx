@@ -60,7 +60,7 @@ export default function MarketingAgenciesPage() {
       <section className="contact-cta reveal">
         <div className="contact-cta__card">
           <h2>Every agency runs differently</h2>
-          <p>Tell us how your team works and we&apos;ll match staff and train them around it.</p>
+          <p>Tell us how your team works and we&apos;ll match you with someone who fits — you train them on your tools.</p>
           <Link href="/contact" className="btn btn--primary">
             Talk to us about your agency
           </Link>

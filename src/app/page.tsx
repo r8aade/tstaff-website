@@ -282,10 +282,10 @@ export default function HomePage() {
               <p>We work with you to align coverage hours to your business, including US daytime overlap.</p>
             </details>
             <details className="faq__item reveal">
-              <summary>How much training does my hire need from me?</summary>
+              <summary>Who trains my hire on our tools and process?</summary>
               <p>
-                Some. No hire knows your specific systems on day one — plan for a short onboarding.
-                The better documented your process, the faster it goes.
+                You do. No hire knows your specific systems on day one — plan to walk them through
+                how you work, same as onboarding any new employee.
               </p>
             </details>
             <details className="faq__item reveal">

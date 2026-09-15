@@ -60,7 +60,7 @@ export default function ConstructionPage() {
       <section className="contact-cta reveal">
         <div className="contact-cta__card">
           <h2>Every crew runs differently</h2>
-          <p>Tell us how your jobs get scheduled and we&apos;ll match staff and train them around it.</p>
+          <p>Tell us how your jobs get scheduled and we&apos;ll match you with someone who fits — you train them on your tools.</p>
           <Link href="/contact" className="btn btn--primary">
             Talk to us about your crew
           </Link>

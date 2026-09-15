@@ -73,7 +73,7 @@ export default function PrintShopsPage() {
       <section className="contact-cta reveal">
         <div className="contact-cta__card">
           <h2>Every shop runs differently</h2>
-          <p>Tell us how yours works and we&apos;ll match staff and train them around it.</p>
+          <p>Tell us how yours works and we&apos;ll match you with someone who fits — you train them on your tools.</p>
           <Link href="/contact" className="btn btn--primary">
             Talk to us about your shop
           </Link>

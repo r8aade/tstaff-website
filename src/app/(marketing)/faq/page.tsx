@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const faqs = [
   {
     q: "What is Talnt Staffing?",
-    a: "Talnt Staffing is a full-service staffing agency. We source, train, and manage staff for back-office, administrative, marketing, sales, CRM, and light technical support work, so you get help without hiring and managing someone in-house."
+    a: "Talnt Staffing is a full-service staffing agency. We source, vet, and manage staff for back-office, administrative, marketing, sales, CRM, and light technical support work, so you get help without hiring and managing someone in-house. You train the hire on your specific tools and process."
   },
   {
     q: "What kinds of tasks can I outsource to Talnt Staffing?",
@@ -27,11 +27,11 @@ const faqs = [
   },
   {
     q: "How is Talnt Staffing different from a marketplace like Upwork or Fiverr?",
-    a: "Marketplaces connect you directly with independent freelancers you vet, manage, and contract yourself. Talnt Staffing sources, trains, and manages the staff member on your behalf, so you get an ongoing team member without doing the hiring and HR work yourself."
+    a: "Marketplaces connect you directly with independent freelancers you vet, manage, and contract yourself. Talnt Staffing sources, vets, and manages the staff member on your behalf, so you get an ongoing team member without doing the hiring and HR work yourself. You still train them on your specific tools and process, same as you would any new hire."
   },
   {
-    q: "How much training does my hire need from me?",
-    a: "Some. We match someone with relevant experience, but no hire — remote or in-house — knows your specific systems and workflow on day one. Plan for a short onboarding: a walkthrough of how you work, and closer review during the first week or two. The better documented your process, the faster it goes and the better the result."
+    q: "Who trains my hire on our tools and process?",
+    a: "You do. We match someone with relevant experience, but no hire — remote or in-house — knows your specific systems on day one. Plan to walk them through how you work, same as onboarding any new employee. The better documented your process, the faster it goes."
   },
   {
     q: "Do you only work with print shops and ecommerce sellers?",

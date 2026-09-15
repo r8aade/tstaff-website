@@ -17,8 +17,9 @@ export default function AboutPage() {
           light technical support.
         </p>
         <p>
-          We source and train staff primarily from the Philippines, with additional talent from
-          India. Every hire is billed hourly at $10&ndash;$25/hr with no monthly platform fee, so you
+          We source and vet staff primarily from the Philippines, with additional talent from
+          India — you train your hire on your own tools and process, same as any new team member.
+          Every hire is billed hourly at $10&ndash;$25/hr with no monthly platform fee, so you
           only pay for the work that gets done.
         </p>
         <p>
