@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 
 export default function QuoteForm() {
   const [name, setName] = useState("");
@@ -11,7 +11,9 @@ export default function QuoteForm() {
   const [email, setEmail] = useState("");
   const [resourcesNeeded, setResourcesNeeded] = useState("");
   const [requirements, setRequirements] = useState("");
+  const [company, setCompany] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const formLoadedAt = useRef(Date.now());
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -33,7 +35,9 @@ export default function QuoteForm() {
           timezone,
           email,
           resourcesNeeded,
-          requirements
+          requirements,
+          company,
+          formLoadedAt: formLoadedAt.current
         })
       });
       if (!res.ok) throw new Error("Request failed");
@@ -47,6 +51,17 @@ export default function QuoteForm() {
 
   return (
     <form className="quote-form" onSubmit={handleSubmit}>
+      <label className="quote-form__hp" aria-hidden="true">
+        <span>Company</span>
+        <input
+          type="text"
+          name="company"
+          tabIndex={-1}
+          autoComplete="off"
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
+        />
+      </label>
       <div className="quote-form__row">
         <label>
           <span>Your name</span>

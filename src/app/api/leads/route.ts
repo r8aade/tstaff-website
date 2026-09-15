@@ -5,7 +5,18 @@ import { sendLeadNotification } from "@/lib/email";
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { name, phone, businessType, hoursPerWeek, timezone, email, resourcesNeeded, requirements } = body as {
+  const {
+    name,
+    phone,
+    businessType,
+    hoursPerWeek,
+    timezone,
+    email,
+    resourcesNeeded,
+    requirements,
+    company,
+    formLoadedAt
+  } = body as {
     name?: string;
     phone?: string;
     businessType?: string;
@@ -14,7 +25,21 @@ export async function POST(req: Request) {
     email?: string;
     resourcesNeeded?: string;
     requirements?: string;
+    company?: string;
+    formLoadedAt?: number;
   };
+
+  // Honeypot field: real users never see or fill this. Bots that blindly fill every
+  // field trip it. Silently pretend success so bots don't learn to skip it.
+  if (company) {
+    return NextResponse.json({ ok: true });
+  }
+
+  // Time-trap: scripted submissions typically fire within milliseconds of load.
+  // Real users take at least a few seconds to read and fill the form.
+  if (typeof formLoadedAt === "number" && Date.now() - formLoadedAt < 3000) {
+    return NextResponse.json({ ok: true });
+  }
 
   if (!name || !phone || !businessType || !hoursPerWeek || !timezone || !email || !resourcesNeeded) {
     return NextResponse.json({ error: "All fields are required." }, { status: 400 });

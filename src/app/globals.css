@@ -979,6 +979,14 @@ body {
   gap: 1rem;
   margin-bottom: 3.5rem;
 }
+.quote-form__hp {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
 .quote-form__row {
   display: grid;
   grid-template-columns: 1fr 1fr;
