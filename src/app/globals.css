@@ -37,7 +37,7 @@ body {
   top: 1rem;
 }
 
-.home-page a {
+.home-page a:not(.btn):not(.nav__cta) {
   color: inherit;
   text-decoration: none;
 }
@@ -68,6 +68,7 @@ body {
   transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), background 0.2s var(--ease);
   cursor: pointer;
   border: none;
+  text-decoration: none;
 }
 .btn--primary {
   background: var(--accent);
@@ -433,6 +434,7 @@ body {
   border-radius: 999px;
   font-weight: 700;
   font-size: 0.85rem;
+  text-decoration: none;
   transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
 }
 .nav__cta:hover {
