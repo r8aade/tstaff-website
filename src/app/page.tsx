@@ -215,71 +215,9 @@ export default function HomePage() {
         {/* HOW IT WORKS */}
         <section className="how" id="how-it-works">
           <p className="eyebrow reveal">How it works</p>
-          <div className="how__flow reveal" aria-hidden="true">
-            <svg viewBox="0 0 1160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <line
-                x1="90"
-                y1="90"
-                x2="1070"
-                y2="90"
-                stroke="rgba(250,248,244,0.25)"
-                strokeWidth="2"
-                strokeDasharray="2 10"
-                strokeLinecap="round"
-              />
-              {[253.5, 580, 906.5].map((x) => (
-                <path
-                  key={x}
-                  d={`M${x - 6},82 L${x + 6},90 L${x - 6},98`}
-                  stroke="#c15b2b"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              ))}
-              {[
-                { cx: 90, num: 1, d: "M4 5h16v10H8l-4 4V5z" },
-                {
-                  cx: 417,
-                  num: 2,
-                  d: "M9 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z M3 21v-1a6 6 0 0 1 6-6 6 6 0 0 1 5.2 3 M15 13l2 2 4-4"
-                },
-                {
-                  cx: 743,
-                  num: 3,
-                  d: "M6 3h4l1 5-2.5 1.5a12 12 0 0 0 6 6L16 13l5 1v4a2 2 0 0 1-2 2C10.5 20 4 13.5 4 5a2 2 0 0 1 2-2z"
-                },
-                { cx: 1070, num: 4, d: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M12 7v5l4 2" }
-              ].map((step) => (
-                <g key={step.cx}>
-                  <circle cx={step.cx} cy="90" r="36" fill="#16150f" stroke="rgba(250,248,244,0.35)" strokeWidth="1.5" />
-                  <g transform={`translate(${step.cx - 14} 76) scale(1.1667)`}>
-                    {step.d.split(" M").map((segment, i) => (
-                      <path
-                        key={i}
-                        d={i === 0 ? segment : `M${segment}`}
-                        stroke="#faf8f4"
-                        strokeWidth="1.6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    ))}
-                  </g>
-                  <circle cx={step.cx + 26} cy="64" r="13" fill="#c15b2b" />
-                  <text
-                    x={step.cx + 26}
-                    y="64"
-                    textAnchor="middle"
-                    dominantBaseline="central"
-                    fontFamily="Arial Black, sans-serif"
-                    fontSize="13"
-                    fill="#16150f"
-                  >
-                    {step.num}
-                  </text>
-                </g>
-              ))}
-            </svg>
+          <div className="how__art reveal" aria-hidden="true">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/how-it-works.svg" alt="" className="how__art-img" />
           </div>
           <div className="how__steps">
             <div className="how__step reveal">
