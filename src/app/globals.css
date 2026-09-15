@@ -884,7 +884,7 @@ body {
   color: var(--ink-soft);
   margin: 1rem 0 1.6rem;
 }
-.pricing__list {
+.pricing__card .pricing__list {
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
