@@ -66,7 +66,7 @@ export default function EcommercePage() {
       </section>
 
       <section className="detail-tasks reveal">
-        <h2>What we handle</h2>
+        <h2>What your hire can take on</h2>
         <ul>
           {tasks.map((t) => (
             <li key={t}>

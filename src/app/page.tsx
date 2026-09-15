@@ -282,6 +282,13 @@ export default function HomePage() {
               <p>We work with you to align coverage hours to your business, including US daytime overlap.</p>
             </details>
             <details className="faq__item reveal">
+              <summary>How much training does my hire need from me?</summary>
+              <p>
+                Some. No hire knows your specific systems on day one — plan for a short onboarding.
+                The better documented your process, the faster it goes.
+              </p>
+            </details>
+            <details className="faq__item reveal">
               <summary>Do you charge a monthly fee?</summary>
               <p>No. Hourly billing only, currently with no monthly fee.</p>
             </details>

@@ -30,6 +30,10 @@ const faqs = [
     a: "Marketplaces connect you directly with independent freelancers you vet, manage, and contract yourself. Talnt Staffing sources, trains, and manages the staff member on your behalf, so you get an ongoing team member without doing the hiring and HR work yourself."
   },
   {
+    q: "How much training does my hire need from me?",
+    a: "Some. We match someone with relevant experience, but no hire — remote or in-house — knows your specific systems and workflow on day one. Plan for a short onboarding: a walkthrough of how you work, and closer review during the first week or two. The better documented your process, the faster it goes and the better the result."
+  },
+  {
     q: "Do you only work with print shops and ecommerce sellers?",
     a: "No. Print shops and ecommerce are two industries where we've built specific playbooks, but Talnt Staffing is a full-service agency working across many industries, not a single-niche shop."
   },
