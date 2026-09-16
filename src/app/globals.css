@@ -468,9 +468,6 @@ body {
   display: none;
 }
 @media (max-width: 1040px) {
-  .nav {
-    padding: 1rem 1.2rem;
-  }
   .nav__links,
   .nav__cta {
     display: none;
@@ -504,6 +501,11 @@ body {
     margin-top: 1rem;
     text-align: center;
     border-bottom: none;
+  }
+}
+@media (max-width: 860px) {
+  .nav {
+    padding: 1rem 1.2rem;
   }
 }
 
@@ -597,7 +599,7 @@ body {
   bottom: -1.2rem;
   max-width: 15rem;
 }
-@media (max-width: 900px) {
+@media (max-width: 860px) {
   .hero {
     grid-template-columns: 1fr;
     padding: 3rem 1.2rem 3.5rem;
