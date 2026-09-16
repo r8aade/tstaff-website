@@ -16,7 +16,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://talntstaffing.com"),
+  metadataBase: new URL("https://www.talntstaffing.com"),
   title: {
     default: "Talnt Staffing — Full-Service Hourly Staffing for Every Industry",
     template: "%s | Talnt Staffing"
@@ -40,7 +40,7 @@ const orgSchema = {
   "@type": "EmploymentAgency",
   name: "Talnt Staffing",
   alternateName: "TStaff",
-  url: "https://talntstaffing.com",
+  url: "https://www.talntstaffing.com",
   description:
     "Full-service hourly staffing agency — back-office, administrative, marketing/sales/CRM, and technical support staff sourced from the Philippines and India, serving businesses across every industry.",
   areaServed: "US",

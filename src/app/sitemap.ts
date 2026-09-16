@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { resources } from "@/content/resources";
 
-const baseUrl = "https://talntstaffing.com";
+const baseUrl = "https://www.talntstaffing.com";
 
 const routes = [
   "",
