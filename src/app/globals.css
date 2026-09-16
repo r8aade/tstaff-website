@@ -104,8 +104,6 @@ body {
 /* SECONDARY PAGE HERO (services/industries/etc.) */
 .page-hero {
   padding: 4.5rem 3rem 3rem;
-  max-width: 900px;
-  margin: 0 auto;
 }
 .page-hero h1 {
   font-family: var(--display);
