@@ -19,13 +19,6 @@ const industries: {
   linkLabel?: string;
 }[] = [
   {
-    icon: "printer",
-    title: "Print & Sign Shops",
-    description: "Order intake, proof follow-ups, customer questions.",
-    href: "/industries/print-shops",
-    linkLabel: "See print shop staffing"
-  },
-  {
     icon: "bag",
     title: "Ecommerce & Retail",
     description: "Order status, returns, inbox triage, catalog upkeep.",
@@ -73,6 +66,13 @@ const industries: {
     description: "Policy admin support, client intake, follow-up coordination.",
     href: "/industries/insurance",
     linkLabel: "See insurance staffing"
+  },
+  {
+    icon: "printer",
+    title: "Print & Sign Shops",
+    description: "Order intake, proof follow-ups, customer questions.",
+    href: "/industries/print-shops",
+    linkLabel: "See print shop staffing"
   },
   {
     icon: "layers",

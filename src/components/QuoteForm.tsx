@@ -2,10 +2,24 @@
 
 import { useRef, useState, type FormEvent } from "react";
 
+const businessTypes = [
+  "Print & Sign Shops",
+  "Ecommerce & Retail",
+  "Real Estate & Property Mgmt",
+  "Professional Services",
+  "Healthcare & Wellness Admin",
+  "Construction & Home Services",
+  "Marketing & Creative Agencies",
+  "Insurance",
+  "Any small back-office team",
+  "Other"
+];
+
 export default function QuoteForm() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [businessType, setBusinessType] = useState("");
+  const [businessTypeOther, setBusinessTypeOther] = useState("");
   const [timezone, setTimezone] = useState("");
   const [email, setEmail] = useState("");
   const [resourcesNeeded, setResourcesNeeded] = useState("");
@@ -29,7 +43,7 @@ export default function QuoteForm() {
         body: JSON.stringify({
           name,
           phone,
-          businessType,
+          businessType: businessType === "Other" ? businessTypeOther : businessType,
           hoursPerWeek: "40 (full-time)",
           timezone,
           email,
@@ -97,9 +111,9 @@ export default function QuoteForm() {
             <option value="" disabled>
               Select one
             </option>
-            <option>Print shop</option>
-            <option>Ecommerce</option>
-            <option>Other small business</option>
+            {businessTypes.map((type) => (
+              <option key={type}>{type}</option>
+            ))}
           </select>
         </label>
         <label>
@@ -114,6 +128,19 @@ export default function QuoteForm() {
           />
         </label>
       </div>
+      {businessType === "Other" && (
+        <label>
+          <span>What kind of business?</span>
+          <input
+            type="text"
+            required
+            disabled={disabled}
+            placeholder="Tell us what you do"
+            value={businessTypeOther}
+            onChange={(e) => setBusinessTypeOther(e.target.value)}
+          />
+        </label>
+      )}
       <div className="quote-form__row">
         <label>
           <span>Email</span>

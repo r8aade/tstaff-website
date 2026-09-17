@@ -96,14 +96,6 @@ export default function HomePage() {
           </p>
           <div className="who__grid">
             <div className="who__item">
-              <Icon name="printer" className="who__icon" />
-              <h3>Print &amp; Sign Shops</h3>
-              <p>Order intake, proof follow-ups, customer questions.</p>
-              <Link href="/industries/print-shops" className="accent mt-2 inline-block text-sm font-semibold">
-                See print shop staffing &rarr;
-              </Link>
-            </div>
-            <div className="who__item">
               <Icon name="bag" className="who__icon" />
               <h3>Ecommerce &amp; Retail</h3>
               <p>Order status, returns, inbox triage, catalog upkeep.</p>
@@ -157,6 +149,14 @@ export default function HomePage() {
               <p>Policy admin support, client intake, follow-up coordination.</p>
               <Link href="/industries/insurance" className="accent mt-2 inline-block text-sm font-semibold">
                 See insurance staffing &rarr;
+              </Link>
+            </div>
+            <div className="who__item">
+              <Icon name="printer" className="who__icon" />
+              <h3>Print &amp; Sign Shops</h3>
+              <p>Order intake, proof follow-ups, customer questions.</p>
+              <Link href="/industries/print-shops" className="accent mt-2 inline-block text-sm font-semibold">
+                See print shop staffing &rarr;
               </Link>
             </div>
             <div className="who__item">
