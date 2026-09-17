@@ -6,7 +6,8 @@ import HomeScripts from "@/components/HomeScripts";
 export const metadata: Metadata = {
   title: "Construction & Home Services Staffing Agency",
   description:
-    "Hourly staff for construction and home service businesses — job scheduling, dispatch coordination, and customer follow-up. $10-25/hr, no monthly fee."
+    "Hourly staff for construction and home service businesses — job scheduling, dispatch coordination, and customer follow-up. $10-25/hr, no monthly fee.",
+  alternates: { canonical: "/industries/construction" }
 };
 
 const tasks = [

@@ -7,7 +7,8 @@ import Icon, { type IconName } from "@/components/Icon";
 export const metadata: Metadata = {
   title: "Industries We Staff",
   description:
-    "Talnt Staffing is a full-service staffing agency working across every industry — print shops, ecommerce, real estate, professional services, healthcare admin, construction, marketing agencies, insurance, and more."
+    "Talnt Staffing is a full-service staffing agency working across every industry — print shops, ecommerce, real estate, professional services, healthcare admin, construction, marketing agencies, insurance, and more.",
+  alternates: { canonical: "/industries" }
 };
 
 const industries: {

@@ -6,7 +6,8 @@ import HomeScripts from "@/components/HomeScripts";
 export const metadata: Metadata = {
   title: "Real Estate & Property Management Staffing Agency",
   description:
-    "Hourly staff for real estate and property management — listing coordination, tenant/vendor communication, and scheduling. $10-25/hr, no monthly fee."
+    "Hourly staff for real estate and property management — listing coordination, tenant/vendor communication, and scheduling. $10-25/hr, no monthly fee.",
+  alternates: { canonical: "/industries/real-estate" }
 };
 
 const tasks = [

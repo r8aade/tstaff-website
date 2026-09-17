@@ -7,7 +7,8 @@ import Icon, { type IconName } from "@/components/Icon";
 export const metadata: Metadata = {
   title: "Pricing",
   description:
-    "Talnt Staffing pricing: $10-$25/hr depending on role complexity, no monthly fee, no long-term contract. One rate range across every role we staff."
+    "Talnt Staffing pricing: $10-$25/hr depending on role complexity, no monthly fee, no long-term contract. One rate range across every role we staff.",
+  alternates: { canonical: "/pricing" }
 };
 
 const tiers: { icon: IconName; title: string; items: string[] }[] = [

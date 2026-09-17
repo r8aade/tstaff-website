@@ -5,7 +5,8 @@ import JsonLd from "@/components/JsonLd";
 export const metadata: Metadata = {
   title: "Frequently Asked Questions",
   description:
-    "Answers to common questions about Talnt Staffing's hourly staffing model, pricing, where our staff are based, and how to get started."
+    "Answers to common questions about Talnt Staffing's hourly staffing model, pricing, where our staff are based, and how to get started.",
+  alternates: { canonical: "/faq" }
 };
 
 const faqs = [

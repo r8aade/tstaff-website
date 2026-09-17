@@ -14,7 +14,8 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   if (!post) return {};
   return {
     title: post.title,
-    description: post.description
+    description: post.description,
+    alternates: { canonical: `/resources/${post.slug}` }
   };
 }
 

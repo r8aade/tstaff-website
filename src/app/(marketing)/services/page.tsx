@@ -7,7 +7,8 @@ import Icon, { type IconName } from "@/components/Icon";
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Full-service hourly staffing: back-office and admin, marketing/sales/CRM, and customer & technical support. $10-25/hr, no monthly fee."
+    "Full-service hourly staffing: back-office and admin, marketing/sales/CRM, and customer & technical support. $10-25/hr, no monthly fee.",
+  alternates: { canonical: "/services" }
 };
 
 const categories: { icon: IconName; title: string; items: string[] }[] = [

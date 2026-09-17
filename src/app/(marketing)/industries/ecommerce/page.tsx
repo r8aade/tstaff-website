@@ -6,7 +6,8 @@ import HomeScripts from "@/components/HomeScripts";
 export const metadata: Metadata = {
   title: "Ecommerce Staffing Agency",
   description:
-    "Hourly staff for ecommerce sellers — listings, customer service, order management, and returns. $10-25/hr, no monthly fee."
+    "Hourly staff for ecommerce sellers — listings, customer service, order management, and returns. $10-25/hr, no monthly fee.",
+  alternates: { canonical: "/industries/ecommerce" }
 };
 
 const tasks = [

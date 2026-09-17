@@ -6,7 +6,8 @@ import { resources } from "@/content/resources";
 export const metadata: Metadata = {
   title: "Resources",
   description:
-    "Guides on hiring, pricing, and managing outsourced staff — hourly rates, staffing agencies vs. freelance marketplaces, sourcing regions, and industry-specific playbooks."
+    "Guides on hiring, pricing, and managing outsourced staff — hourly rates, staffing agencies vs. freelance marketplaces, sourcing regions, and industry-specific playbooks.",
+  alternates: { canonical: "/resources" }
 };
 
 export default function ResourcesPage() {

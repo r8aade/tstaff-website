@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Talnt Staffing is owned and operated by Nirav Patel, with staff sourced from the Philippines and India and the Philippines office run by Angela De Juan."
+    "Talnt Staffing is owned and operated by Nirav Patel, with staff sourced from the Philippines and India and the Philippines office run by Angela De Juan.",
+  alternates: { canonical: "/about" }
 };
 
 export default function AboutPage() {

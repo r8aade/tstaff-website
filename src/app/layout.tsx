@@ -32,7 +32,8 @@ export const metadata: Metadata = {
   },
   verification: {
     google: "mJSULw5av1Vv37uz57aQbGWCJeNykgpoTFK_hrLGRxg"
-  }
+  },
+  alternates: { canonical: "/" }
 };
 
 const orgSchema = {

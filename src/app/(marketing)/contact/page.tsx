@@ -5,7 +5,8 @@ import QuoteForm from "@/components/QuoteForm";
 
 export const metadata: Metadata = {
   title: "Get Started",
-  description: "Tell Talnt Staffing about your business and the roles you need filled — we'll follow up to scope it out."
+  description: "Tell Talnt Staffing about your business and the roles you need filled — we'll follow up to scope it out.",
+  alternates: { canonical: "/contact" }
 };
 
 export default function ContactPage() {

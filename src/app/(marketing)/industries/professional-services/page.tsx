@@ -6,7 +6,8 @@ import HomeScripts from "@/components/HomeScripts";
 export const metadata: Metadata = {
   title: "Professional Services Staffing Agency",
   description:
-    "Hourly staff for professional services firms — client intake, scheduling, document prep, and billing support. $10-25/hr, no monthly fee."
+    "Hourly staff for professional services firms — client intake, scheduling, document prep, and billing support. $10-25/hr, no monthly fee.",
+  alternates: { canonical: "/industries/professional-services" }
 };
 
 const tasks = [

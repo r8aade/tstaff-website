@@ -6,7 +6,8 @@ import HomeScripts from "@/components/HomeScripts";
 export const metadata: Metadata = {
   title: "Healthcare & Wellness Admin Staffing Agency",
   description:
-    "Hourly administrative staff for healthcare and wellness practices — scheduling, client communication, and records upkeep. $10-25/hr, no monthly fee."
+    "Hourly administrative staff for healthcare and wellness practices — scheduling, client communication, and records upkeep. $10-25/hr, no monthly fee.",
+  alternates: { canonical: "/industries/healthcare" }
 };
 
 const tasks = [

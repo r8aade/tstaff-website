@@ -6,7 +6,8 @@ import HomeScripts from "@/components/HomeScripts";
 export const metadata: Metadata = {
   title: "Small Business Back-Office Staffing Agency",
   description:
-    "Hourly staff for any small business back office — scheduling, data entry, and invoicing. $10-25/hr, no monthly fee."
+    "Hourly staff for any small business back office — scheduling, data entry, and invoicing. $10-25/hr, no monthly fee.",
+  alternates: { canonical: "/industries/back-office" }
 };
 
 const tasks = [

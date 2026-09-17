@@ -6,7 +6,8 @@ import HomeScripts from "@/components/HomeScripts";
 export const metadata: Metadata = {
   title: "Insurance Agency Staffing",
   description:
-    "Hourly administrative staff for insurance agencies — policy admin support, client intake, and follow-up coordination. $10-25/hr, no monthly fee."
+    "Hourly administrative staff for insurance agencies — policy admin support, client intake, and follow-up coordination. $10-25/hr, no monthly fee.",
+  alternates: { canonical: "/industries/insurance" }
 };
 
 const tasks = [

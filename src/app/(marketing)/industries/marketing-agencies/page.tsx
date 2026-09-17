@@ -6,7 +6,8 @@ import HomeScripts from "@/components/HomeScripts";
 export const metadata: Metadata = {
   title: "Marketing & Creative Agency Staffing",
   description:
-    "Hourly staff for marketing and creative agencies — campaign coordination, reporting, and client communication. $10-25/hr, no monthly fee."
+    "Hourly staff for marketing and creative agencies — campaign coordination, reporting, and client communication. $10-25/hr, no monthly fee.",
+  alternates: { canonical: "/industries/marketing-agencies" }
 };
 
 const tasks = [
