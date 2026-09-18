@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import LogoMark from "@/components/LogoMark";
+import HeaderAuthCta from "@/components/HeaderAuthCta";
 
 const navLinks = [
   { href: "/services", label: "Services" },
@@ -13,11 +12,7 @@ const navLinks = [
   { href: "/contact", label: "Contact" }
 ];
 
-export default async function Header() {
-  const session = await getServerSession(authOptions);
-  const authHref = session ? (session.user.role === "ADMIN" ? "/admin" : "/dashboard") : "/login";
-  const authLabel = session ? (session.user.role === "ADMIN" ? "Admin" : "My Account") : "Client Login";
-
+export default function Header() {
   return (
     <>
       <nav className="nav">
@@ -32,9 +27,7 @@ export default async function Header() {
             </Link>
           ))}
         </div>
-        <Link href={authHref} className="nav__cta">
-          {authLabel}
-        </Link>
+        <HeaderAuthCta className="nav__cta" />
         <label htmlFor="header-nav-toggle" className="nav__burger" aria-label="Open menu">
           <span />
           <span />
@@ -48,9 +41,7 @@ export default async function Header() {
             {link.label}
           </Link>
         ))}
-        <Link href={authHref} className="nav__cta nav__cta--mobile">
-          {authLabel}
-        </Link>
+        <HeaderAuthCta className="nav__cta nav__cta--mobile" />
       </div>
     </>
   );
