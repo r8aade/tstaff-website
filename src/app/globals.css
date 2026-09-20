@@ -1036,6 +1036,13 @@ body {
   color: var(--paper);
   font-family: var(--sans);
   font-size: 16px; /* 16px+ stops iOS Safari from zooming the page on focus */
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+.quote-form label,
+.quote-form__row > * {
+  min-width: 0;
 }
 .quote-form textarea {
   resize: vertical;
