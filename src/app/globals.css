@@ -1080,7 +1080,8 @@ body {
 }
 .footer__meta {
   display: flex;
-  gap: 1.2rem;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.2rem;
 }
 .footer__legal {
   font-size: 0.76rem;

@@ -4,7 +4,7 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-6 py-10 text-sm text-white/60">
         <div className="flex flex-col justify-between gap-4 md:flex-row">
           <p>&copy; {new Date().getFullYear()} Talnt Staffing. All rights reserved.</p>
-          <div className="flex gap-6">
+          <div className="flex flex-wrap gap-x-6 gap-y-2">
             <a href="/services" className="hover:text-white">
               Services
             </a>
