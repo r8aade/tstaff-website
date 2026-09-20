@@ -54,7 +54,7 @@ export default function LoginPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full rounded-md border border-ink-900/15 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none"
+              className="mt-1 w-full rounded-md border border-ink-900/15 px-3 py-2 text-base focus:border-brand-500 focus:outline-none"
             />
           </div>
           <div>
@@ -67,7 +67,7 @@ export default function LoginPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full rounded-md border border-ink-900/15 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none"
+              className="mt-1 w-full rounded-md border border-ink-900/15 px-3 py-2 text-base focus:border-brand-500 focus:outline-none"
             />
           </div>
 

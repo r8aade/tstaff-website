@@ -4,26 +4,26 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-6 py-10 text-sm text-white/60">
         <div className="flex flex-col justify-between gap-4 md:flex-row">
           <p>&copy; {new Date().getFullYear()} Talnt Staffing. All rights reserved.</p>
-          <div className="flex flex-wrap gap-x-6 gap-y-2">
-            <a href="/services" className="hover:text-white">
+          <div className="flex flex-wrap gap-x-6">
+            <a href="/services" className="inline-block py-2 hover:text-white">
               Services
             </a>
-            <a href="/industries" className="hover:text-white">
+            <a href="/industries" className="inline-block py-2 hover:text-white">
               Industries
             </a>
-            <a href="/pricing" className="hover:text-white">
+            <a href="/pricing" className="inline-block py-2 hover:text-white">
               Pricing
             </a>
-            <a href="/resources" className="hover:text-white">
+            <a href="/resources" className="inline-block py-2 hover:text-white">
               Resources
             </a>
-            <a href="/faq" className="hover:text-white">
+            <a href="/faq" className="inline-block py-2 hover:text-white">
               FAQ
             </a>
-            <a href="mailto:hire@talntstaffing.com" className="hover:text-white">
+            <a href="mailto:hire@talntstaffing.com" className="inline-block py-2 hover:text-white">
               hire@talntstaffing.com
             </a>
-            <a href="tel:+17328256848" className="hover:text-white">
+            <a href="tel:+17328256848" className="inline-block py-2 hover:text-white">
               (732) 825-6848
             </a>
           </div>
