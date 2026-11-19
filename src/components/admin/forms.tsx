@@ -18,6 +18,7 @@ import {
   resetPassword,
   reviewTimeOff,
   updateEmployee,
+  updateIntake,
   type ActionResult
 } from "@/app/admin/actions";
 import { TIMEZONE_OPTIONS, COUNTRY_TIMEZONES } from "@/lib/time";
@@ -559,5 +560,39 @@ export function RestoreEmployeeButton({ id }: { id: string }) {
       </button>
       <Err error={error} />
     </span>
+  );
+}
+
+export function IntakeStatusForm({ id, status, adminNote }: { id: string; status: string; adminNote: string }) {
+  const { pending, error, go } = useAction();
+  const [s, setS] = useState(status);
+  const [note, setNote] = useState(adminNote);
+  const [saved, setSaved] = useState(false);
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        setSaved(false);
+        go(() => updateIntake(id, { status: s, adminNote: note }), () => setSaved(true));
+      }}
+      className="space-y-3"
+    >
+      <label className="block text-sm font-medium text-ink-900">
+        Status
+        <select value={s} onChange={(e) => setS(e.target.value)} className={inputCls}>
+          <option value="NEW">New</option>
+          <option value="REVIEWED">Reviewed, talking to them</option>
+          <option value="CONVERTED">Signed, now a client</option>
+          <option value="CLOSED">Closed, not moving ahead</option>
+        </select>
+      </label>
+      <label className="block text-sm font-medium text-ink-900">
+        Internal notes
+        <textarea rows={4} value={note} onChange={(e) => setNote(e.target.value)} className={inputCls} />
+      </label>
+      <button disabled={pending} className={btnPrimary}>{pending ? "Saving..." : "Save"}</button>
+      {saved && !error && <p className="text-sm text-green-700">Saved.</p>}
+      {error && <p className="text-sm text-red-600">{error}</p>}
+    </form>
   );
 }

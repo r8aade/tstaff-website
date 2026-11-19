@@ -262,3 +262,32 @@ model EmployeeDocument {
 
   @@index([employeeId])
 }
+
+enum IntakeStatus {
+  NEW
+  REVIEWED
+  CONVERTED
+  CLOSED
+}
+
+/// Detailed client onboarding form: which roles they need and which skills each role must have.
+model ClientIntake {
+  id          String       @id @default(cuid())
+  companyName String
+  contactName String
+  email       String
+  phone       String
+  website     String?
+  industry    String
+  timezone    String
+  startDate   String? // "ASAP", "Within 2 weeks", etc.
+  roles       Json // [{ roleId, roleLabel, headcount, level, hoursPerWeek, shift, skills[], otherSkills, notes }]
+  notes       String?
+  heardFrom   String?
+  status      IntakeStatus @default(NEW)
+  adminNote   String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([status, createdAt])
+}

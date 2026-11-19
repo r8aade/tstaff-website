@@ -435,3 +435,19 @@ export async function deleteEmployeeDocument(id: string): Promise<ActionResult> 
     await prisma.employeeDocument.delete({ where: { id } });
   });
 }
+
+// ---------- Client onboarding forms ----------
+
+const INTAKE_STATUSES = ["NEW", "REVIEWED", "CONVERTED", "CLOSED"] as const;
+
+export async function updateIntake(id: string, input: { status: string; adminNote: string }): Promise<ActionResult> {
+  return run(async () => {
+    await admin();
+    const status = INTAKE_STATUSES.find((s) => s === input.status);
+    if (!status) throw new Error("Pick a status.");
+    await prisma.clientIntake.update({
+      where: { id },
+      data: { status, adminNote: input.adminNote.trim().slice(0, 3000) || null }
+    });
+  });
+}

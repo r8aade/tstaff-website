@@ -40,6 +40,16 @@ export default function ContactPage() {
 
       <section className="contact-cta reveal">
         <div className="contact-cta__card">
+          <h2>Know exactly who you need?</h2>
+          <p>Pick the roles and tick the skills each one needs. It takes about five minutes.</p>
+          <Link href="/onboarding" className="btn btn--primary">
+            Fill out the onboarding form
+          </Link>
+        </div>
+      </section>
+
+      <section className="contact-cta reveal">
+        <div className="contact-cta__card">
           <h2>Already a client?</h2>
           <p>Your login gives you access to hours and billing.</p>
           <Link href="/login" className="btn btn--primary">

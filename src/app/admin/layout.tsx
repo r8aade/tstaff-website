@@ -9,9 +9,10 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
-  const [timesheets, timeOff] = await Promise.all([
+  const [timesheets, timeOff, intakes] = await Promise.all([
     prisma.timeEntry.count({ where: { status: "SUBMITTED" } }),
-    prisma.timeOffRequest.count({ where: { status: "PENDING" } })
+    prisma.timeOffRequest.count({ where: { status: "PENDING" } }),
+    prisma.clientIntake.count({ where: { status: "NEW" } })
   ]);
 
   return (
@@ -28,7 +29,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <SignOutButton />
           </div>
         </div>
-        <AdminNav counts={{ timesheets, timeOff }} />
+        <AdminNav counts={{ timesheets, timeOff, intakes }} />
       </header>
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">{children}</main>
     </div>
