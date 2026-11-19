@@ -2,12 +2,20 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getClientSummary, formatCents } from "@/lib/billing";
 import PayButtons from "@/components/PayButtons";
+import ClientTeam from "@/components/ClientTeam";
+import { prisma } from "@/lib/prisma";
+import { fmtCalendarDate } from "@/lib/time";
+
+export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
   const userId = session!.user.id;
 
-  const { entries, payments, totalHours, balanceDueCents } = await getClientSummary(userId);
+  const [{ entries, payments, totalHours, balanceDueCents }, me] = await Promise.all([
+    getClientSummary(userId),
+    prisma.user.findUnique({ where: { id: userId } })
+  ]);
 
   return (
     <div>
@@ -28,10 +36,12 @@ export default async function DashboardPage() {
         </div>
       </div>
 
+      <ClientTeam clientId={userId} timezone={me?.timezone ?? "America/Chicago"} />
+
       <div className="mt-10">
         <h2 className="text-lg font-semibold text-ink-900">Hours</h2>
-        <div className="mt-4 overflow-hidden rounded-lg border border-ink-900/10 bg-white">
-          <table className="w-full text-sm">
+        <div className="mt-4 overflow-x-auto rounded-lg border border-ink-900/10 bg-white">
+          <table className="w-full min-w-[560px] text-sm">
             <thead className="bg-ink-900/[0.03] text-left text-ink-700">
               <tr>
                 <th className="px-4 py-3 font-medium">Date</th>
@@ -51,7 +61,7 @@ export default async function DashboardPage() {
               ) : (
                 entries.map((e) => (
                   <tr key={e.id} className="border-t border-ink-900/10">
-                    <td className="px-4 py-3">{new Date(e.date).toLocaleDateString()}</td>
+                    <td className="whitespace-nowrap px-4 py-3">{fmtCalendarDate(e.date)}</td>
                     <td className="px-4 py-3">{e.description ?? "—"}</td>
                     <td className="px-4 py-3">{e.hours.toFixed(2)}</td>
                     <td className="px-4 py-3">{formatCents(e.rateCentsAtLog)}/hr</td>
@@ -66,8 +76,8 @@ export default async function DashboardPage() {
 
       <div className="mt-10">
         <h2 className="text-lg font-semibold text-ink-900">Payment History</h2>
-        <div className="mt-4 overflow-hidden rounded-lg border border-ink-900/10 bg-white">
-          <table className="w-full text-sm">
+        <div className="mt-4 overflow-x-auto rounded-lg border border-ink-900/10 bg-white">
+          <table className="w-full min-w-[560px] text-sm">
             <thead className="bg-ink-900/[0.03] text-left text-ink-700">
               <tr>
                 <th className="px-4 py-3 font-medium">Date</th>

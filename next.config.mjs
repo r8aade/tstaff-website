@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    // Employee documents (contracts, IDs) are uploaded through server actions; files are capped at 4 MB.
+    serverActions: { bodySizeLimit: "4.5mb" }
+  },
   async headers() {
     return [
       {

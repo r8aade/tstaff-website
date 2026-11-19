@@ -19,9 +19,12 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) return null;
 
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email.toLowerCase().trim() }
+          where: { email: credentials.email.toLowerCase().trim() },
+          include: { employee: true }
         });
-        if (!user) return null;
+        if (!user || user.isInternal) return null;
+        // Rolled-off or paused employees can't sign in.
+        if (user.role === "EMPLOYEE" && user.employee?.status !== "ACTIVE") return null;
 
         const valid = await bcrypt.compare(credentials.password, user.passwordHash);
         if (!valid) return null;

@@ -11,12 +11,13 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json();
-  const { email, name, companyName, password, hourlyRate } = body as {
+  const { email, name, companyName, password, hourlyRate, timezone } = body as {
     email?: string;
     name?: string;
     companyName?: string;
     password?: string;
     hourlyRate?: number;
+    timezone?: string;
   };
 
   if (!email || !name || !password) {
@@ -37,7 +38,8 @@ export async function POST(req: Request) {
       companyName: companyName || null,
       passwordHash,
       role: "CLIENT",
-      hourlyRateCents: hourlyRate ? Math.round(hourlyRate * 100) : 1200
+      hourlyRateCents: hourlyRate ? Math.round(hourlyRate * 100) : 1200,
+      timezone: timezone || "America/Chicago"
     }
   });
 

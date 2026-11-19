@@ -10,6 +10,33 @@ datasource db {
 enum Role {
   CLIENT
   ADMIN
+  EMPLOYEE
+}
+
+enum EmployeeStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum TimeEntryStatus {
+  OPEN // clocked in, still working
+  SUBMITTED // clocked out, waiting for admin review
+  APPROVED // posted to the client's hours
+  REJECTED
+}
+
+enum TimeOffType {
+  VACATION
+  SICK
+  PERSONAL
+  OTHER
+}
+
+enum TimeOffStatus {
+  PENDING
+  APPROVED
+  DENIED
+  CANCELLED
 }
 
 enum PaymentType {
@@ -32,11 +59,116 @@ model User {
   role             Role     @default(CLIENT)
   hourlyRateCents  Int      @default(1200)
   stripeCustomerId String?  @unique
+  // IANA timezone this user sees times in (clients: their own; admins: company time)
+  timezone         String   @default("America/Chicago")
+  // true only for the built-in "Talnt Staffing (Overhead)" client: internal work, never billed, can't log in
+  isInternal       Boolean  @default(false)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
   hoursEntries HoursEntry[]
   payments     Payment[]
+
+  // Set when role = EMPLOYEE
+  employee            Employee?
+  // Set when role = CLIENT: employees assigned to this client
+  clientAssignments   Assignment[]       @relation("ClientAssignments")
+  reviewedTimeOff     TimeOffRequest[]   @relation("TimeOffReviewer")
+  reviewedTimeEntries TimeEntry[]        @relation("TimeEntryReviewer")
+  completedOnboarding OnboardingItem[]   @relation("OnboardingCompleter")
+  uploadedDocuments   EmployeeDocument[] @relation("DocumentUploader")
+}
+
+model Employee {
+  id             String         @id @default(cuid())
+  userId         String         @unique
+  title          String? // e.g. "Customer Service Representative"
+  country        String         @default("PH")
+  timezone       String         @default("Asia/Manila")
+  phone          String?
+  payRateCents   Int            @default(0) // what Talnt pays them per hour (record only)
+  status         EmployeeStatus @default(ACTIVE)
+  startDate      DateTime?
+  // Roll-off: set together when someone leaves. archivedAt moves them to the Archived tab.
+  endDate        DateTime?
+  rollOffReason  String?
+  rollOffNote    String?
+  rehireEligible Boolean?
+  archivedAt     DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assignments Assignment[]
+  timeEntries TimeEntry[]
+  timeOff     TimeOffRequest[]
+  onboarding  OnboardingItem[]
+  documents   EmployeeDocument[]
+}
+
+// Which employee works for which client, and what the client is billed per hour.
+model Assignment {
+  id            String    @id @default(cuid())
+  employeeId    String
+  clientId      String
+  billRateCents Int
+  active        Boolean   @default(true)
+  startDate     DateTime  @default(now())
+  endDate       DateTime?
+  createdAt     DateTime  @default(now())
+
+  employee    Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  client      User        @relation("ClientAssignments", fields: [clientId], references: [id], onDelete: Cascade)
+  timeEntries TimeEntry[]
+
+  @@index([employeeId])
+  @@index([clientId])
+}
+
+// One clock-in to clock-out session. All times stored in UTC.
+model TimeEntry {
+  id             String          @id @default(cuid())
+  employeeId     String
+  assignmentId   String
+  clockIn        DateTime
+  clockOut       DateTime?
+  breakMinutes   Int             @default(0)
+  breakStartedAt DateTime?
+  notes          String?
+  status         TimeEntryStatus @default(OPEN)
+  adminNote      String?
+  reviewedById   String?
+  reviewedAt     DateTime?
+  hoursEntryId   String?         @unique // the client billing line created on approval
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  employee   Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  assignment Assignment  @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  reviewedBy User?       @relation("TimeEntryReviewer", fields: [reviewedById], references: [id])
+  hoursEntry HoursEntry? @relation(fields: [hoursEntryId], references: [id])
+
+  @@index([employeeId, clockIn])
+  @@index([status])
+}
+
+model TimeOffRequest {
+  id           String        @id @default(cuid())
+  employeeId   String
+  startDate    DateTime // stored as a calendar date (UTC midnight)
+  endDate      DateTime
+  type         TimeOffType   @default(VACATION)
+  reason       String?
+  status       TimeOffStatus @default(PENDING)
+  reviewedById String?
+  reviewedAt   DateTime?
+  createdAt    DateTime      @default(now())
+
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  reviewedBy User?    @relation("TimeOffReviewer", fields: [reviewedById], references: [id])
+
+  @@index([employeeId])
+  @@index([status])
 }
 
 model HoursEntry {
@@ -48,7 +180,8 @@ model HoursEntry {
   rateCentsAtLog Int
   createdAt      DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  timeEntry TimeEntry?
 
   @@index([userId])
 }
@@ -67,17 +200,55 @@ model Lead {
 }
 
 model Payment {
-  id                     String        @id @default(cuid())
-  userId                 String
-  amountCents            Int
-  type                   PaymentType
-  status                 PaymentStatus @default(PENDING)
-  stripeCheckoutSessionId String?      @unique
-  stripePaymentIntentId  String?
-  stripeSubscriptionId   String?
-  createdAt              DateTime      @default(now())
+  id                      String        @id @default(cuid())
+  userId                  String
+  amountCents             Int
+  type                    PaymentType
+  status                  PaymentStatus @default(PENDING)
+  stripeCheckoutSessionId String?       @unique
+  stripePaymentIntentId   String?
+  stripeSubscriptionId    String?
+  createdAt               DateTime      @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+// Onboarding checklist, one row per step per employee. Created from a default list.
+model OnboardingItem {
+  id            String    @id @default(cuid())
+  employeeId    String
+  label         String
+  sortOrder     Int       @default(0)
+  needsDocument Boolean   @default(false)
+  completedAt   DateTime?
+  completedById String?
+  createdAt     DateTime  @default(now())
+
+  employee    Employee           @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  completedBy User?              @relation("OnboardingCompleter", fields: [completedById], references: [id])
+  documents   EmployeeDocument[]
+
+  @@index([employeeId])
+}
+
+// Files on an employee's profile (contract, NDA, ID). Stored in the database; only
+// admins and the employee can download them, through /api/documents/[id].
+model EmployeeDocument {
+  id               String   @id @default(cuid())
+  employeeId       String
+  onboardingItemId String?
+  fileName         String
+  mimeType         String
+  size             Int
+  data             Bytes
+  uploadedById     String
+  createdAt        DateTime @default(now())
+
+  employee       Employee        @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  onboardingItem OnboardingItem? @relation(fields: [onboardingItemId], references: [id], onDelete: SetNull)
+  uploadedBy     User            @relation("DocumentUploader", fields: [uploadedById], references: [id])
+
+  @@index([employeeId])
 }

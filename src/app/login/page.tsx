@@ -30,7 +30,7 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/dashboard");
+    router.push("/portal");
     router.refresh();
   }
 
@@ -40,8 +40,8 @@ export default function LoginPage() {
         <Link href="/" className="text-lg font-bold text-ink-900">
           Talnt Staffing
         </Link>
-        <h1 className="mt-4 text-xl font-semibold text-ink-900">Client Login</h1>
-        <p className="mt-1 text-sm text-ink-700">View your hours and manage payments.</p>
+        <h1 className="mt-4 text-xl font-semibold text-ink-900">Sign In</h1>
+        <p className="mt-1 text-sm text-ink-700">Clients, team members, and admins all sign in here.</p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>

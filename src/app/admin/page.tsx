@@ -4,7 +4,7 @@ import { getClientSummary, formatCents } from "@/lib/billing";
 
 export default async function AdminHomePage() {
   const [clients, leads] = await Promise.all([
-    prisma.user.findMany({ where: { role: "CLIENT" }, orderBy: { createdAt: "desc" } }),
+    prisma.user.findMany({ where: { role: "CLIENT", isInternal: false }, orderBy: { createdAt: "desc" } }),
     prisma.lead.findMany({ orderBy: { createdAt: "desc" }, take: 20 })
   ]);
 

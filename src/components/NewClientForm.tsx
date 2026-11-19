@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { TIMEZONE_OPTIONS } from "@/lib/time";
 
 export default function NewClientForm() {
   const router = useRouter();
@@ -10,6 +11,7 @@ export default function NewClientForm() {
   const [companyName, setCompanyName] = useState("");
   const [password, setPassword] = useState("");
   const [hourlyRate, setHourlyRate] = useState("12");
+  const [timezone, setTimezone] = useState("America/Chicago");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -26,7 +28,8 @@ export default function NewClientForm() {
         email,
         companyName,
         password,
-        hourlyRate: parseFloat(hourlyRate)
+        hourlyRate: parseFloat(hourlyRate),
+        timezone
       })
     });
 
@@ -92,6 +95,22 @@ export default function NewClientForm() {
           onChange={(e) => setHourlyRate(e.target.value)}
           className="mt-1 w-full rounded-md border border-ink-900/15 px-3 py-2 text-sm"
         />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-ink-900">Client&apos;s Timezone</label>
+        <select
+          value={timezone}
+          onChange={(e) => setTimezone(e.target.value)}
+          className="mt-1 w-full rounded-md border border-ink-900/15 px-3 py-2 text-sm"
+        >
+          {TIMEZONE_OPTIONS.map((t) => (
+            <option key={t.value} value={t.value}>
+              {t.label}
+            </option>
+          ))}
+        </select>
+        <p className="mt-1 text-xs text-ink-700">Their team&apos;s hours are shown to them in this timezone.</p>
       </div>
 
       {error && <p className="text-sm text-red-600">{error}</p>}

@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getClientSummary, formatCents } from "@/lib/billing";
 import AddHoursForm from "@/components/AddHoursForm";
+import ClientTeam from "@/components/ClientTeam";
+import { fmtCalendarDate, tzLabel } from "@/lib/time";
 
 export default async function ClientDetailPage({ params }: { params: { id: string } }) {
   const client = await prisma.user.findUnique({ where: { id: params.id } });
@@ -20,7 +22,7 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
           <h1 className="text-2xl font-bold text-ink-900">{client.name}</h1>
           <p className="text-sm text-ink-700">
             {client.email} {client.companyName ? `· ${client.companyName}` : ""} ·{" "}
-            {formatCents(client.hourlyRateCents)}/hr
+            {formatCents(client.hourlyRateCents)}/hr · {tzLabel(client.timezone)} time
           </p>
         </div>
         <div className="text-right">
@@ -29,8 +31,13 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
         </div>
       </div>
 
+      <ClientTeam clientId={client.id} timezone={client.timezone} />
+      <p className="mt-2 text-xs text-ink-700">
+        Assign employees from their page under <Link href="/admin/employees" className="text-brand-600">Employees</Link>.
+      </p>
+
       <div className="mt-8 rounded-lg border border-ink-900/10 bg-white p-6">
-        <h2 className="font-semibold text-ink-900">Log Hours</h2>
+        <h2 className="font-semibold text-ink-900">Log Hours Manually</h2>
         <div className="mt-4">
           <AddHoursForm userId={client.id} />
         </div>
@@ -59,7 +66,7 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
               ) : (
                 entries.map((e) => (
                   <tr key={e.id} className="border-t border-ink-900/10">
-                    <td className="px-4 py-3">{new Date(e.date).toLocaleDateString()}</td>
+                    <td className="whitespace-nowrap px-4 py-3">{fmtCalendarDate(e.date)}</td>
                     <td className="px-4 py-3">{e.description ?? "—"}</td>
                     <td className="px-4 py-3">{e.hours.toFixed(2)}</td>
                     <td className="px-4 py-3">{formatCents(e.rateCentsAtLog)}/hr</td>
