@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { requireEmployee } from "@/lib/session";
 import { calendarDate } from "@/lib/time";
 import { saveDocument } from "@/lib/onboarding";
+import { cleanGeo } from "@/lib/geo";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -22,7 +23,7 @@ async function openEntryFor(employeeId: string) {
   return prisma.timeEntry.findFirst({ where: { employeeId, status: "OPEN" } });
 }
 
-export async function clockIn(assignmentId: string): Promise<ActionResult> {
+export async function clockIn(assignmentId: string, geo?: unknown): Promise<ActionResult> {
   return run(async () => {
     const employee = await requireEmployee();
     if (await openEntryFor(employee.id)) throw new Error("You are already clocked in.");
@@ -32,8 +33,17 @@ export async function clockIn(assignmentId: string): Promise<ActionResult> {
     });
     if (!assignment) throw new Error("That client is not on your active list.");
 
+    const g = cleanGeo(geo);
     await prisma.timeEntry.create({
-      data: { employeeId: employee.id, assignmentId, clockIn: new Date() }
+      data: {
+        employeeId: employee.id,
+        assignmentId,
+        clockIn: new Date(),
+        clockInLat: g.lat,
+        clockInLng: g.lng,
+        clockInAccuracy: g.accuracy,
+        clockInGeoIssue: g.issue
+      }
     });
   });
 }
@@ -61,7 +71,7 @@ export async function endBreak(): Promise<ActionResult> {
   });
 }
 
-export async function clockOut(notes: string): Promise<ActionResult> {
+export async function clockOut(notes: string, geo?: unknown): Promise<ActionResult> {
   return run(async () => {
     const employee = await requireEmployee();
     const entry = await openEntryFor(employee.id);
@@ -71,6 +81,7 @@ export async function clockOut(notes: string): Promise<ActionResult> {
     const extraBreak = entry.breakStartedAt
       ? Math.round((now.getTime() - entry.breakStartedAt.getTime()) / 60000)
       : 0;
+    const g = cleanGeo(geo);
 
     await prisma.timeEntry.update({
       where: { id: entry.id },
@@ -79,6 +90,10 @@ export async function clockOut(notes: string): Promise<ActionResult> {
         breakStartedAt: null,
         breakMinutes: entry.breakMinutes + extraBreak,
         notes: notes.trim() || null,
+        clockOutLat: g.lat,
+        clockOutLng: g.lng,
+        clockOutAccuracy: g.accuracy,
+        clockOutGeoIssue: g.issue,
         status: "SUBMITTED"
       }
     });

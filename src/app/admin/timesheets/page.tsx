@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PunchLocation, { missingLocation } from "@/components/admin/PunchLocation";
 import { prisma } from "@/lib/prisma";
 import { formatCents } from "@/lib/billing";
 import {
@@ -85,6 +86,7 @@ export default async function TimesheetsPage({ searchParams }: { searchParams: {
                   <span className="text-ink-700">for {e.assignment.client.companyName || e.assignment.client.name}</span>
                   <StatusBadge status={e.status} />
                   {long && <span className="rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700">Over 12 hours, check it</span>}
+                  {missingLocation(e) && <span className="rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">No location</span>}
                 </div>
                 <div className="text-ink-900">
                   {fmtDate(e.clockIn, COMPANY_TIMEZONE)} · {fmtTime(e.clockIn, COMPANY_TIMEZONE)} –{" "}
@@ -101,6 +103,7 @@ export default async function TimesheetsPage({ searchParams }: { searchParams: {
                 <div className="text-xs text-ink-700">
                   Their time: {fmtDate(e.clockIn, empTz)} {fmtTime(e.clockIn, empTz)} – {e.clockOut ? fmtTime(e.clockOut, empTz) : "now"} ({tzAbbr(empTz, e.clockIn)})
                 </div>
+                <PunchLocation entry={e} />
                 {e.notes && <p className="break-words text-ink-700">“{e.notes}”</p>}
                 {e.adminNote && <p className="text-xs text-red-700">Rejected: {e.adminNote}</p>}
               </div>

@@ -4,6 +4,7 @@ import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { clockIn, clockOut, endBreak, startBreak, type ActionResult } from "@/app/app/actions";
 import { fmtDuration, fmtTime, tzAbbr, tzLabel } from "@/lib/time";
+import { readLocation, type GeoReading } from "@/lib/geo";
 
 type Assignment = { id: string; clientName: string; clientTz: string };
 type Open = {
@@ -52,6 +53,27 @@ export default function ClockPanel({
   const [selected, setSelected] = useState(assignments[0]?.id ?? "");
   const [notes, setNotes] = useState("");
   const [confirmOut, setConfirmOut] = useState(false);
+  const [locating, setLocating] = useState(false);
+  const [geoNote, setGeoNote] = useState<string | null>(null);
+
+  /** Get the phone's location first, then run the clock action with it. */
+  function actWithLocation(fn: (geo: GeoReading) => Promise<ActionResult>, after?: () => void) {
+    setError(null);
+    setGeoNote(null);
+    setLocating(true);
+    readLocation().then((geo) => {
+      setLocating(false);
+      if (!geo.ok) {
+        setGeoNote(
+          geo.issue === "denied"
+            ? "Location is blocked for this app, so Talnt will see this punch without a location. Turn on location for your browser in your phone settings."
+            : "We could not get your location this time. Your punch was still saved."
+        );
+      }
+      act(() => fn(geo), after);
+    });
+  }
+  const busy = pending || locating;
 
   function act(fn: () => Promise<ActionResult>, after?: () => void) {
     setError(null);
@@ -127,11 +149,11 @@ export default function ClockPanel({
                 </p>
               )}
               <button
-                disabled={pending || !selected}
-                onClick={() => act(() => clockIn(selected))}
+                disabled={busy || !selected}
+                onClick={() => actWithLocation((geo) => clockIn(selected, geo))}
                 className={`${btn} bg-brand-600 text-white hover:bg-brand-700`}
               >
-                {pending ? "Clocking in..." : "Clock In"}
+                {locating ? "Getting location..." : pending ? "Clocking in..." : "Clock In"}
               </button>
             </>
           )}
@@ -199,10 +221,10 @@ export default function ClockPanel({
                   Cancel
                 </button>
                 <button
-                  disabled={pending}
+                  disabled={busy}
                   onClick={() =>
-                    act(
-                      () => clockOut(notes),
+                    actWithLocation(
+                      (geo) => clockOut(notes, geo),
                       () => {
                         setNotes("");
                         setConfirmOut(false);
@@ -211,7 +233,7 @@ export default function ClockPanel({
                   }
                   className="rounded-xl bg-brand-600 px-3 py-3 text-base font-semibold text-white"
                 >
-                  {pending ? "Saving..." : "Confirm"}
+                  {locating ? "Locating..." : pending ? "Saving..." : "Confirm"}
                 </button>
               </div>
             </div>
@@ -220,6 +242,10 @@ export default function ClockPanel({
       )}
 
       {error && <p className="mt-3 text-center text-sm text-red-600">{error}</p>}
+      {geoNote && !error && <p className="mt-3 rounded-xl bg-brand-50 p-3 text-sm text-ink-900">{geoNote}</p>}
+      <p className="mt-4 text-center text-xs text-ink-700">
+        Your location is recorded only when you clock in and clock out. It is never tracked in between.
+      </p>
     </section>
   );
 }

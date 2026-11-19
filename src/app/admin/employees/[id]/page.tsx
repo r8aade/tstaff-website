@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PunchLocation from "@/components/admin/PunchLocation";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatCents } from "@/lib/billing";
@@ -170,6 +171,7 @@ export default async function EmployeeDetailPage({ params }: { params: { id: str
                     <td className="px-4 py-3">{name(t.assignment.client)}</td>
                     <td className="px-4 py-3">
                       {fmtTime(t.clockIn, COMPANY_TIMEZONE)} – {t.clockOut ? fmtTime(t.clockOut, COMPANY_TIMEZONE) : "now"}
+                      <PunchLocation entry={t} compact />
                     </td>
                     <td className="px-4 py-3">{fmtDuration(workedMinutes(t, now))}</td>
                     <td className="px-4 py-3"><StatusBadge status={t.status} /></td>

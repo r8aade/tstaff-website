@@ -135,6 +135,16 @@ model TimeEntry {
   breakMinutes   Int             @default(0)
   breakStartedAt DateTime?
   notes          String?
+  // Where the phone was at clock in / clock out. Null if the employee did not share it,
+  // with the reason in *GeoIssue ("denied", "unavailable", "timeout", "unsupported").
+  clockInLat       Float?
+  clockInLng       Float?
+  clockInAccuracy  Int? // metres
+  clockInGeoIssue  String?
+  clockOutLat      Float?
+  clockOutLng      Float?
+  clockOutAccuracy Int?
+  clockOutGeoIssue String?
   status         TimeEntryStatus @default(OPEN)
   adminNote      String?
   reviewedById   String?
