@@ -20,8 +20,8 @@ async function main() {
     }
   });
 
-  console.log(`Seeded admin user: ${admin.email}`);
-  console.log(`Login with password: ${adminPassword} (change it after first login)`);
+  // Never print the password: build logs are visible to anyone with access to the Vercel project.
+  console.log(`Admin user ready: ${admin.email}`);
 }
 
 main()
