@@ -74,7 +74,11 @@ function TimezoneSelect({ value, onChange }: { value: string; onChange: (v: stri
 
 // ---------- Employees ----------
 
-export function NewEmployeeForm() {
+export function NewEmployeeForm({
+  clients
+}: {
+  clients: { id: string; label: string; timezone: string; timezoneLabel: string }[];
+}) {
   const router = useRouter();
   const { pending, error, go } = useAction();
   const [f, setF] = useState({
@@ -85,9 +89,11 @@ export function NewEmployeeForm() {
     country: "PH",
     timezone: "Asia/Manila",
     phone: "",
-    payRate: ""
+    payRate: "",
+    clientId: ""
   });
   const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value });
+  const client = clients.find((c) => c.id === f.clientId);
 
   function submit(e: FormEvent) {
     e.preventDefault();
@@ -111,7 +117,22 @@ export function NewEmployeeForm() {
           <option value="OTHER">Other</option>
         </select>
       </Field>
-      <Field label="Their timezone"><TimezoneSelect value={f.timezone} onChange={(v) => setF({ ...f, timezone: v })} /></Field>
+      <Field label="Employee timezone (where they live)"><TimezoneSelect value={f.timezone} onChange={(v) => setF({ ...f, timezone: v })} /></Field>
+      <Field label="Client">
+        <select value={f.clientId} onChange={set("clientId")} className={inputCls}>
+          <option value="">Assign later</option>
+          {clients.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.label}
+            </option>
+          ))}
+        </select>
+      </Field>
+      <Field label="Client timezone (the hours they work)">
+        <p className={`${inputCls} bg-paper text-ink-700`}>
+          {client ? client.timezoneLabel : "Pick a client to see it"}
+        </p>
+      </Field>
       <Field label="Phone"><input value={f.phone} onChange={set("phone")} className={inputCls} /></Field>
       <Field label="Pay rate ($/hr, what Talnt pays them)">
         <input type="number" step="0.01" min="0" value={f.payRate} onChange={set("payRate")} className={inputCls} />
@@ -156,7 +177,7 @@ export function EditEmployeeForm({
           <option value="OTHER">Other</option>
         </select>
       </Field>
-      <Field label="Their timezone"><TimezoneSelect value={f.timezone} onChange={(v) => setF({ ...f, timezone: v })} /></Field>
+      <Field label="Employee timezone (where they live)"><TimezoneSelect value={f.timezone} onChange={(v) => setF({ ...f, timezone: v })} /></Field>
       <Field label="Phone"><input value={f.phone} onChange={set("phone")} className={inputCls} /></Field>
       <Field label="Pay rate ($/hr)"><input type="number" step="0.01" min="0" value={f.payRate} onChange={set("payRate")} className={inputCls} /></Field>
       <Field label="Status">

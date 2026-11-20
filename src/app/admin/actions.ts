@@ -43,10 +43,13 @@ export async function createEmployee(input: {
   timezone: string;
   phone: string;
   payRate: string;
+  clientId?: string;
 }): Promise<ActionResult> {
   return run(async () => {
     await admin();
     const email = input.email.toLowerCase().trim();
+    const client = input.clientId ? await prisma.user.findUnique({ where: { id: input.clientId } }) : null;
+    if (input.clientId && (!client || client.role !== "CLIENT")) throw new Error("Pick a client from the list.");
     if (!input.name.trim() || !email || input.password.length < 8) {
       throw new Error("Name, email, and a temporary password of at least 8 characters are required.");
     }
@@ -75,6 +78,15 @@ export async function createEmployee(input: {
       include: { employee: true }
     });
     await ensureOnboarding(user.employee!.id);
+    if (client) {
+      await prisma.assignment.create({
+        data: {
+          employeeId: user.employee!.id,
+          clientId: client.id,
+          billRateCents: client.isInternal ? 0 : client.hourlyRateCents
+        }
+      });
+    }
     return user.employee!.id;
   });
 }

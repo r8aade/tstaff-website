@@ -49,7 +49,7 @@ export default function QuoteForm() {
           email,
           resourcesNeeded,
           requirements,
-          company,
+          hpCheck: company,
           formLoadedAt: formLoadedAt.current
         })
       });
@@ -65,12 +65,14 @@ export default function QuoteForm() {
   return (
     <form className="quote-form" onSubmit={handleSubmit}>
       <label className="quote-form__hp" aria-hidden="true">
-        <span>Company</span>
+        <span>Leave this box empty</span>
         <input
           type="text"
-          name="company"
+          name="hp_check"
           tabIndex={-1}
           autoComplete="off"
+          data-1p-ignore
+          data-lpignore="true"
           value={company}
           onChange={(e) => setCompany(e.target.value)}
         />

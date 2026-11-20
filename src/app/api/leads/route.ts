@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     email,
     resourcesNeeded,
     requirements,
-    company,
+    hpCheck,
     formLoadedAt
   } = body as {
     name?: string;
@@ -25,19 +25,22 @@ export async function POST(req: Request) {
     email?: string;
     resourcesNeeded?: string;
     requirements?: string;
-    company?: string;
+    hpCheck?: string;
     formLoadedAt?: number;
   };
 
   // Honeypot field: real users never see or fill this. Bots that blindly fill every
   // field trip it. Silently pretend success so bots don't learn to skip it.
-  if (company) {
+  // (It used to be called "company", which browser autofill filled for real people.)
+  if (hpCheck) {
+    console.warn("Quote form blocked by spam trap (hidden box filled):", email ?? "no email");
     return NextResponse.json({ ok: true });
   }
 
   // Time-trap: scripted submissions typically fire within milliseconds of load.
   // Real users take at least a few seconds to read and fill the form.
   if (typeof formLoadedAt === "number" && Date.now() - formLoadedAt < 3000) {
+    console.warn("Quote form blocked by spam trap (sent too fast):", email ?? "no email");
     return NextResponse.json({ ok: true });
   }
 

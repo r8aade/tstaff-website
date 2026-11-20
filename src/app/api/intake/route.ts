@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { upsertHubspotContact } from "@/lib/hubspot";
 import { sendIntakeNotification } from "@/lib/email";
+import { verifyTurnstile } from "@/lib/turnstile";
 import {
   ROLE_BY_ID,
   LEVELS,
@@ -26,9 +27,22 @@ export async function POST(req: Request) {
   }
 
   // Same bot traps as the quote form: hidden honeypot field and a minimum fill time.
-  if (str(body.company)) return NextResponse.json({ ok: true });
-  if (typeof body.formLoadedAt === "number" && Date.now() - body.formLoadedAt < 5000) {
+  // (The hidden box used to be called "company", which browser autofill filled for real people.)
+  if (str(body.hpCheck)) {
+    console.warn("Onboarding form blocked by spam trap (hidden box filled):", str(body.email) || "no email");
     return NextResponse.json({ ok: true });
+  }
+  if (typeof body.formLoadedAt === "number" && Date.now() - body.formLoadedAt < 5000) {
+    console.warn("Onboarding form blocked by spam trap (sent too fast):", str(body.email) || "no email");
+    return NextResponse.json({ ok: true });
+  }
+
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || null;
+  if (!(await verifyTurnstile(body.turnstileToken, ip))) {
+    return NextResponse.json(
+      { error: "The \"I'm human\" check didn't go through. Please tick it again and resend." },
+      { status: 400 }
+    );
   }
 
   const companyName = str(body.companyName, 150);

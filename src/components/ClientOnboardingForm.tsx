@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState, type FormEvent } from "react";
+import Turnstile, { TURNSTILE_SITE_KEY, type TurnstileHandle } from "@/components/Turnstile";
 import {
   CATEGORIES,
   INDUSTRIES,
@@ -286,6 +287,8 @@ export default function ClientOnboardingForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
   const loadedAt = useRef(Date.now());
+  const [captcha, setCaptcha] = useState("");
+  const captchaRef = useRef<TurnstileHandle>(null);
   const nextKey = useRef(1);
 
   const people = useMemo(() => roles.reduce((n, r) => n + (r.headcount || 0), 0), [roles]);
@@ -326,6 +329,10 @@ export default function ClientOnboardingForm() {
       document.getElementById(`setup-${missing.id}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
+    if (TURNSTILE_SITE_KEY && !captcha) {
+      setError("Please complete the \"I'm human\" check just above the Send button.");
+      return;
+    }
     setError(null);
     setStatus("sending");
     try {
@@ -339,7 +346,8 @@ export default function ClientOnboardingForm() {
           setup,
           notes,
           heardFrom,
-          company,
+          hpCheck: company,
+          turnstileToken: captcha,
           formLoadedAt: loadedAt.current
         })
       });
@@ -350,6 +358,7 @@ export default function ClientOnboardingForm() {
     } catch (err) {
       setStatus("error");
       setError(err instanceof Error ? err.message : "Something went wrong.");
+      captchaRef.current?.reset(); // each check can only be used once
     }
   }
 
@@ -373,8 +382,17 @@ export default function ClientOnboardingForm() {
   return (
     <form onSubmit={submit} noValidate className="space-y-6">
       <label className="absolute left-[-9999px]" aria-hidden="true">
-        Company
-        <input type="text" tabIndex={-1} autoComplete="off" value={company} onChange={(e) => setCompany(e.target.value)} />
+        Leave this box empty
+        <input
+          type="text"
+          name="hp_check"
+          tabIndex={-1}
+          autoComplete="off"
+          data-1p-ignore
+          data-lpignore="true"
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
+        />
       </label>
 
       <Section n={1} title="Your business">
@@ -525,6 +543,12 @@ export default function ClientOnboardingForm() {
           </label>
         </div>
       </Section>
+
+      {TURNSTILE_SITE_KEY && (
+        <div className="flex justify-center">
+          <Turnstile ref={captchaRef} onToken={setCaptcha} />
+        </div>
+      )}
 
       <div className="rounded-2xl bg-ink-900 p-5 text-white sm:flex sm:items-center sm:justify-between sm:gap-4">
         <p className="text-sm">
