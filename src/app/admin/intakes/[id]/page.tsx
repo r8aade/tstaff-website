@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { COMPANY_TIMEZONE, fmtDateTime } from "@/lib/time";
-import { ROLE_BY_ID, type IntakeRole } from "@/lib/roles";
+import { ROLE_BY_ID, setupLines, type IntakeRole, type SetupAnswers } from "@/lib/roles";
 import { IntakeStatusForm } from "@/components/admin/forms";
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
@@ -18,6 +18,7 @@ export default async function IntakeDetail({ params }: { params: { id: string } 
   const i = await prisma.clientIntake.findUnique({ where: { id: params.id } });
   if (!i) notFound();
   const roles = i.roles as unknown as IntakeRole[];
+  const setup = setupLines(i.setup as unknown as SetupAnswers | null);
 
   return (
     <div className="space-y-6">
@@ -67,6 +68,19 @@ export default async function IntakeDetail({ params }: { params: { id: string } 
               </section>
             );
           })}
+          {setup.length > 0 && (
+            <section className="rounded-lg border border-ink-900/10 bg-white p-5">
+              <h2 className="font-semibold text-ink-900">Their setup</h2>
+              <dl className="mt-3 space-y-2 text-sm">
+                {setup.map((l) => (
+                  <div key={l.label} className="sm:flex sm:gap-3">
+                    <dt className="text-ink-700 sm:w-1/2">{l.label}</dt>
+                    <dd className="break-words font-medium text-ink-900 sm:w-1/2">{l.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          )}
           {i.notes && (
             <section className="rounded-lg border border-ink-900/10 bg-white p-5">
               <h2 className="font-semibold text-ink-900">Anything else</h2>

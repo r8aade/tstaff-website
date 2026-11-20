@@ -2,7 +2,18 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { upsertHubspotContact } from "@/lib/hubspot";
 import { sendIntakeNotification } from "@/lib/email";
-import { ROLE_BY_ID, LEVELS, SHIFTS, START_OPTIONS, INDUSTRIES, type IntakeRole } from "@/lib/roles";
+import {
+  ROLE_BY_ID,
+  LEVELS,
+  SHIFTS,
+  START_OPTIONS,
+  INDUSTRIES,
+  SETUP_QUESTIONS,
+  setupLines,
+  setupQuestionShown,
+  type IntakeRole,
+  type SetupAnswers
+} from "@/lib/roles";
 
 const str = (v: unknown, max = 300) => (typeof v === "string" ? v.trim().slice(0, max) : "");
 
@@ -43,7 +54,7 @@ export async function POST(req: Request) {
       .map((s) => str(s, 80))
       .filter((s) => allowed.has(s));
     const headcount = Math.min(50, Math.max(1, Math.round(Number(r.headcount) || 1)));
-    const hours = Math.min(60, Math.max(5, Math.round(Number(r.hoursPerWeek) || 40)));
+    const hours = 40; // full time only for now
     roles.push({
       roleId: role.id,
       roleLabel: role.label,
@@ -60,6 +71,30 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Add at least one role you want to hire for." }, { status: 400 });
   }
 
+  // Setup answers: keep only known options, drop questions that don't apply
+  // (e.g. phone system when they said no phone work), require the required ones.
+  const rawSetup = (body.setup && typeof body.setup === "object" ? body.setup : {}) as Record<string, unknown>;
+  const setup: SetupAnswers = {};
+  for (const q of SETUP_QUESTIONS) {
+    const a = (rawSetup[q.id] ?? {}) as Record<string, unknown>;
+    const picks = (Array.isArray(a.picks) ? a.picks : []).map((p) => str(p, 80)).filter((p) => q.options.includes(p));
+    setup[q.id] = { picks: q.multi ? Array.from(new Set(picks)) : picks.slice(0, 1), other: "" };
+    if (q.otherOption && setup[q.id].picks.includes(q.otherOption)) setup[q.id].other = str(a.other, 200);
+  }
+  for (const q of SETUP_QUESTIONS) {
+    if (!setupQuestionShown(q, setup)) {
+      delete setup[q.id];
+      continue;
+    }
+    if (q.required && setup[q.id].picks.length === 0) {
+      return NextResponse.json({ error: `Please answer: ${q.label}` }, { status: 400 });
+    }
+    if (setup[q.id].picks.length === 0) delete setup[q.id];
+  }
+  const setupText = setupLines(setup)
+    .map((l) => `${l.label} ${l.value}`)
+    .join("\n");
+
   const startDate = START_OPTIONS.includes(str(body.startDate) as (typeof START_OPTIONS)[number]) ? str(body.startDate) : null;
   const intake = await prisma.clientIntake.create({
     data: {
@@ -72,6 +107,7 @@ export async function POST(req: Request) {
       timezone,
       startDate,
       roles,
+      setup,
       notes: str(body.notes, 3000) || null,
       heardFrom: str(body.heardFrom, 200) || null
     }
@@ -93,14 +129,14 @@ export async function POST(req: Request) {
       hours_per_week: roles.map((r) => `${r.hoursPerWeek}`).join(", "),
       preferred_timezone: timezone,
       resources_needed: String(headcount),
-      requirements: `Onboarding form (${companyName})\n${summary}`.slice(0, 5000)
+      requirements: `Onboarding form (${companyName})\n${summary}\n\nSetup:\n${setupText}`.slice(0, 5000)
     });
   } catch (err) {
     console.error("HubSpot sync failed for intake:", err);
   }
 
   try {
-    await sendIntakeNotification({ id: intake.id, companyName, contactName, email, phone, industry, timezone, startDate, summary });
+    await sendIntakeNotification({ id: intake.id, companyName, contactName, email, phone, industry, timezone, startDate, summary: `${summary}\n\nSetup:\n${setupText}` });
   } catch (err) {
     console.error("Intake notification email failed:", err);
   }

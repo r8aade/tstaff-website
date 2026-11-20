@@ -282,6 +282,7 @@ model ClientIntake {
   timezone    String
   startDate   String? // "ASAP", "Within 2 weeks", etc.
   roles       Json // [{ roleId, roleLabel, headcount, level, hoursPerWeek, shift, skills[], otherSkills, notes }]
+  setup       Json? // { [questionId]: { picks[], other } } — email system, phone, chat apps, etc.
   notes       String?
   heardFrom   String?
   status      IntakeStatus @default(NEW)

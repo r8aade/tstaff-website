@@ -263,7 +263,7 @@ export const ROLES: RoleDef[] = [
     payRange: "$600-$2,000/mo; bookkeepers $5-$15/hr",
     groups: [
       { name: "Tasks", skills: ["Bank & card reconciliations", "Accounts payable", "Accounts receivable & invoicing", "Payroll support", "Month-end close", "E-commerce bookkeeping", "US tax prep support"] },
-      { name: "Software", skills: ["QuickBooks Online", "Xero", "Microsoft Excel", "Gusto", "Bill.com", "Dext / Hubdoc", "NetSuite"] },
+      { name: "Software", skills: ["QuickBooks Online", "Xero", "Sage", "Microsoft Excel", "Gusto", "Bill.com", "Dext / Hubdoc", "NetSuite"] },
       MUST_HAVES
     ]
   },
@@ -420,3 +420,139 @@ export const ROLES: RoleDef[] = [
 ];
 
 export const ROLE_BY_ID: Record<string, RoleDef> = Object.fromEntries(ROLES.map((r) => [r.id, r]));
+
+// ---------------------------------------------------------------------------
+// "Your setup" questions: the client's working environment.
+// One list drives the form, the API's validation, admin display and HubSpot.
+
+export type SetupQuestion = {
+  id: string;
+  label: string;
+  help?: string;
+  multi: boolean; // tick several vs pick one
+  required: boolean;
+  options: string[];
+  otherOption?: string; // picking this reveals a free-text box
+  showIf?: { id: string; notIn: string[] }; // hide unless another answer allows it
+};
+
+export type SetupAnswer = { picks: string[]; other: string };
+export type SetupAnswers = Record<string, SetupAnswer>;
+
+export const NO_PHONE = "No phone work";
+
+export const SETUP_QUESTIONS: SetupQuestion[] = [
+  {
+    id: "email",
+    label: "Which email system do you use?",
+    multi: false,
+    required: true,
+    options: ["Microsoft 365 / Outlook", "Google Workspace / Gmail", "Other", "Not sure"],
+    otherOption: "Other"
+  },
+  {
+    id: "mailbox",
+    label: "Will they need their own company email address?",
+    multi: false,
+    required: true,
+    options: ["Yes, we'll set one up", "Yes, please help us set it up", "No, they'll use a shared inbox", "No email needed"]
+  },
+  {
+    id: "phone",
+    label: "Will they make or take phone calls?",
+    multi: false,
+    required: true,
+    options: [NO_PHONE, "Outbound calls", "Inbound calls", "Both inbound and outbound"]
+  },
+  {
+    id: "phoneSystem",
+    label: "Which phone system do you use?",
+    multi: false,
+    required: true,
+    options: [
+      "RingCentral",
+      "Dialpad",
+      "Aircall",
+      "Zoom Phone",
+      "Microsoft Teams Phone",
+      "8x8",
+      "Vonage",
+      "Google Voice",
+      "Other",
+      "We don't have one yet"
+    ],
+    otherOption: "Other",
+    showIf: { id: "phone", notIn: ["", NO_PHONE] }
+  },
+  {
+    id: "texting",
+    label: "Will they also send text messages to your customers?",
+    multi: false,
+    required: false,
+    options: ["Yes", "No"],
+    showIf: { id: "phone", notIn: ["", NO_PHONE] }
+  },
+  {
+    id: "chat",
+    label: "How will you and your team talk to them day to day?",
+    help: "Tick all that apply.",
+    multi: true,
+    required: true,
+    options: ["Slack", "Microsoft Teams", "WhatsApp", "Telegram", "Google Chat", "Viber", "Email only", "Other"],
+    otherOption: "Other"
+  },
+  {
+    id: "meetings",
+    label: "Video calls",
+    help: "Tick all that apply.",
+    multi: true,
+    required: false,
+    options: ["Zoom", "Google Meet", "Microsoft Teams", "No video calls"]
+  },
+  {
+    id: "files",
+    label: "Where do you keep your files?",
+    help: "Tick all that apply.",
+    multi: true,
+    required: false,
+    options: ["Google Drive", "OneDrive / SharePoint", "Dropbox", "Box", "ShareFile", "Other"],
+    otherOption: "Other"
+  },
+  {
+    id: "access",
+    label: "How will they get into your systems?",
+    help: "Tick all that apply. Not sure is fine, we'll help you work it out.",
+    multi: true,
+    required: false,
+    options: [
+      "Logins we give them",
+      "Password manager (1Password, Bitwarden, LastPass)",
+      "Remote desktop into our computers",
+      "VPN",
+      "Two-factor sign-in (2FA)",
+      "Not sure yet"
+    ]
+  }
+];
+
+export const SETUP_BY_ID: Record<string, SetupQuestion> = Object.fromEntries(SETUP_QUESTIONS.map((q) => [q.id, q]));
+
+/** Whether a question applies, given the answers so far. */
+export function setupQuestionShown(q: SetupQuestion, answers: SetupAnswers): boolean {
+  if (!q.showIf) return true;
+  const pick = answers[q.showIf.id]?.picks[0] ?? "";
+  return !q.showIf.notIn.includes(pick);
+}
+
+/** One line per answered question, e.g. "Email: Google Workspace / Gmail". */
+export function setupLines(answers: SetupAnswers | null | undefined): { label: string; value: string }[] {
+  if (!answers) return [];
+  const out: { label: string; value: string }[] = [];
+  for (const q of SETUP_QUESTIONS) {
+    const a = answers[q.id];
+    if (!a || a.picks.length === 0) continue;
+    const vals = a.picks.map((p) => (p === q.otherOption && a.other ? `${p}: ${a.other}` : p));
+    out.push({ label: q.label, value: vals.join(", ") });
+  }
+  return out;
+}

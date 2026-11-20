@@ -7,10 +7,14 @@ import {
   LEVELS,
   ROLES,
   ROLE_BY_ID,
+  SETUP_QUESTIONS,
   SHIFTS,
   START_OPTIONS,
   US_TIMEZONES,
-  type RoleDef
+  setupQuestionShown,
+  type RoleDef,
+  type SetupAnswers,
+  type SetupQuestion
 } from "@/lib/roles";
 
 type RoleDraft = {
@@ -120,15 +124,10 @@ function RoleCard({
             onChange={(e) => set({ headcount: Number(e.target.value) })}
           />
         </label>
-        <label className={labelCls} htmlFor={id("hours")}>
+        <div className={labelCls}>
           Hours per week, each
-          <select id={id("hours")} className={input} value={draft.hoursPerWeek} onChange={(e) => set({ hoursPerWeek: Number(e.target.value) })}>
-            <option value={40}>40 (full time)</option>
-            <option value={30}>30</option>
-            <option value={20}>20 (part time)</option>
-            <option value={10}>10</option>
-          </select>
-        </label>
+          <p className="mt-1 rounded-lg border border-ink-900/10 bg-paper px-3 py-2.5 text-base text-ink-900">40 (full time)</p>
+        </div>
         <label className={labelCls} htmlFor={id("level")}>
           Experience
           <select id={id("level")} className={input} value={draft.level} onChange={(e) => set({ level: e.target.value })}>
@@ -206,6 +205,66 @@ function RoleCard({
   );
 }
 
+function SetupField({
+  q,
+  answer,
+  onChange
+}: {
+  q: SetupQuestion;
+  answer: { picks: string[]; other: string };
+  onChange: (a: { picks: string[]; other: string }) => void;
+}) {
+  const choose = (opt: string) => {
+    if (!q.multi) return onChange({ ...answer, picks: [opt] });
+    onChange({
+      ...answer,
+      picks: answer.picks.includes(opt) ? answer.picks.filter((p) => p !== opt) : [...answer.picks, opt]
+    });
+  };
+  const showOther = q.otherOption && answer.picks.includes(q.otherOption);
+  return (
+    <fieldset>
+      <legend className="text-sm font-medium text-ink-900">
+        {q.label}
+        {!q.required && <span className="font-normal text-ink-700"> (optional)</span>}
+      </legend>
+      {q.help && <p className="mt-0.5 text-xs text-ink-700">{q.help}</p>}
+      <div className="mt-2 flex flex-wrap gap-2" role={q.multi ? "group" : "radiogroup"}>
+        {q.options.map((opt) => {
+          const on = answer.picks.includes(opt);
+          return (
+            <button
+              type="button"
+              key={opt}
+              role={q.multi ? undefined : "radio"}
+              aria-pressed={q.multi ? on : undefined}
+              aria-checked={q.multi ? undefined : on}
+              onClick={() => choose(opt)}
+              className={`rounded-full border px-3 py-1.5 text-sm transition ${
+                on ? "border-brand-600 bg-brand-600 text-white" : "border-ink-900/15 bg-white text-ink-900 hover:border-brand-500"
+              }`}
+            >
+              {on ? "✓ " : ""}
+              {opt}
+            </button>
+          );
+        })}
+      </div>
+      {showOther && (
+        <input
+          className={input}
+          aria-label={`${q.label} (other)`}
+          placeholder="Tell us which one"
+          value={answer.other}
+          onChange={(e) => onChange({ ...answer, other: e.target.value })}
+        />
+      )}
+    </fieldset>
+  );
+}
+
+const EMPTY_ANSWER = { picks: [] as string[], other: "" };
+
 export default function ClientOnboardingForm() {
   const [biz, setBiz] = useState({
     companyName: "",
@@ -220,6 +279,7 @@ export default function ClientOnboardingForm() {
   });
   const [roles, setRoles] = useState<RoleDraft[]>([]);
   const [picking, setPicking] = useState(true);
+  const [setup, setSetup] = useState<SetupAnswers>({});
   const [notes, setNotes] = useState("");
   const [heardFrom, setHeardFrom] = useState("");
   const [company, setCompany] = useState(""); // honeypot
@@ -258,6 +318,14 @@ export default function ClientOnboardingForm() {
       setError("Pick at least one role you want to hire for.");
       return;
     }
+    const missing = SETUP_QUESTIONS.find(
+      (q) => q.required && setupQuestionShown(q, setup) && !(setup[q.id]?.picks.length)
+    );
+    if (missing) {
+      setError(`Please answer: ${missing.label}`);
+      document.getElementById(`setup-${missing.id}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
     setError(null);
     setStatus("sending");
     try {
@@ -268,6 +336,7 @@ export default function ClientOnboardingForm() {
           ...biz,
           industry: biz.industry === "Other" ? biz.industryOther : biz.industry,
           roles,
+          setup,
           notes,
           heardFrom,
           company,
@@ -420,14 +489,32 @@ export default function ClientOnboardingForm() {
         </div>
       </Section>
 
-      <Section n={3} title="Anything else?">
+      <Section
+        n={3}
+        title="Your setup"
+        sub="So we can match people who already know your tools, and have them ready to work on day one."
+      >
+        <div className="space-y-6">
+          {SETUP_QUESTIONS.filter((q) => setupQuestionShown(q, setup)).map((q) => (
+            <div key={q.id} id={`setup-${q.id}`} className="scroll-mt-24">
+              <SetupField
+                q={q}
+                answer={setup[q.id] ?? EMPTY_ANSWER}
+                onChange={(a) => setSetup((s) => ({ ...s, [q.id]: a }))}
+              />
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section n={4} title="Anything else?">
         <div className="space-y-4">
           <label className={labelCls}>
             Anything we should know (optional)
             <textarea
               rows={4}
               className={input}
-              placeholder="Systems they'll log into, how you'll train them, must-haves, deal breakers"
+              placeholder="Main software they'll log into, how you'll train them, must-haves, deal breakers"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
             />
