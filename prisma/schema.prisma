@@ -77,6 +77,7 @@ model User {
   reviewedTimeEntries TimeEntry[]        @relation("TimeEntryReviewer")
   completedOnboarding OnboardingItem[]   @relation("OnboardingCompleter")
   uploadedDocuments   EmployeeDocument[] @relation("DocumentUploader")
+  reviewedAdjustments TimeAdjustment[]   @relation("AdjustmentReviewer")
 }
 
 model Employee {
@@ -102,6 +103,7 @@ model Employee {
   assignments Assignment[]
   timeEntries TimeEntry[]
   timeOff     TimeOffRequest[]
+  adjustments TimeAdjustment[]
   onboarding  OnboardingItem[]
   documents   EmployeeDocument[]
 }
@@ -117,9 +119,10 @@ model Assignment {
   endDate       DateTime?
   createdAt     DateTime  @default(now())
 
-  employee    Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  client      User        @relation("ClientAssignments", fields: [clientId], references: [id], onDelete: Cascade)
+  employee    Employee         @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  client      User             @relation("ClientAssignments", fields: [clientId], references: [id], onDelete: Cascade)
   timeEntries TimeEntry[]
+  adjustments TimeAdjustment[]
 
   @@index([employeeId])
   @@index([clientId])
@@ -127,14 +130,14 @@ model Assignment {
 
 // One clock-in to clock-out session. All times stored in UTC.
 model TimeEntry {
-  id             String          @id @default(cuid())
-  employeeId     String
-  assignmentId   String
-  clockIn        DateTime
-  clockOut       DateTime?
-  breakMinutes   Int             @default(0)
-  breakStartedAt DateTime?
-  notes          String?
+  id               String          @id @default(cuid())
+  employeeId       String
+  assignmentId     String
+  clockIn          DateTime
+  clockOut         DateTime?
+  breakMinutes     Int             @default(0)
+  breakStartedAt   DateTime?
+  notes            String?
   // Where the phone was at clock in / clock out. Null if the employee did not share it,
   // with the reason in *GeoIssue ("denied", "unavailable", "timeout", "unsupported").
   clockInLat       Float?
@@ -145,21 +148,59 @@ model TimeEntry {
   clockOutLng      Float?
   clockOutAccuracy Int?
   clockOutGeoIssue String?
-  status         TimeEntryStatus @default(OPEN)
-  adminNote      String?
-  reviewedById   String?
-  reviewedAt     DateTime?
-  hoursEntryId   String?         @unique // the client billing line created on approval
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  status           TimeEntryStatus @default(OPEN)
+  adminNote        String?
+  reviewedById     String?
+  reviewedAt       DateTime?
+  hoursEntryId     String?         @unique // the client billing line created on approval
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
 
-  employee   Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  assignment Assignment  @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
-  reviewedBy User?       @relation("TimeEntryReviewer", fields: [reviewedById], references: [id])
-  hoursEntry HoursEntry? @relation(fields: [hoursEntryId], references: [id])
+  employee    Employee         @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  assignment  Assignment       @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  reviewedBy  User?            @relation("TimeEntryReviewer", fields: [reviewedById], references: [id])
+  hoursEntry  HoursEntry?      @relation(fields: [hoursEntryId], references: [id])
+  adjustments TimeAdjustment[]
 
   @@index([employeeId, clockIn])
   @@index([status])
+}
+
+enum AdjustmentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+// An employee asking to fix a shift's times, or to add a shift they forgot to clock.
+// timeEntryId null = missed shift. Times are UTC; orig* is what the shift said when they asked.
+model TimeAdjustment {
+  id               String           @id @default(cuid())
+  employeeId       String
+  assignmentId     String
+  timeEntryId      String?
+  clockIn          DateTime
+  clockOut         DateTime
+  breakMinutes     Int              @default(0)
+  origClockIn      DateTime?
+  origClockOut     DateTime?
+  origBreakMinutes Int?
+  reason           String
+  status           AdjustmentStatus @default(PENDING)
+  adminNote        String?
+  reviewedById     String?
+  reviewedAt       DateTime?
+  createdAt        DateTime         @default(now())
+
+  employee   Employee   @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  timeEntry  TimeEntry? @relation(fields: [timeEntryId], references: [id], onDelete: Cascade)
+  reviewedBy User?      @relation("AdjustmentReviewer", fields: [reviewedById], references: [id])
+
+  @@index([status, createdAt])
+  @@index([employeeId])
+  @@index([timeEntryId])
 }
 
 model TimeOffRequest {

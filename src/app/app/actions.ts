@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireEmployee } from "@/lib/session";
-import { calendarDate } from "@/lib/time";
+import { calendarDate, fromLocalInput } from "@/lib/time";
+import { checkShiftTimes, findOverlap } from "@/lib/timeApproval";
 import { saveDocument } from "@/lib/onboarding";
 import { cleanGeo } from "@/lib/geo";
 
@@ -149,5 +150,82 @@ export async function uploadMyDocument(formData: FormData): Promise<ActionResult
       file: formData.get("file") as File,
       uploadedById: employee.userId
     });
+  });
+}
+
+// ---------- Time fixes ----------
+
+/**
+ * Ask Talnt to fix a shift (timeEntryId) or add one they forgot to clock (assignmentId).
+ * Times come in as wall-clock "YYYY-MM-DDTHH:mm" in the employee's own timezone.
+ */
+export async function requestAdjustment(input: {
+  timeEntryId?: string;
+  assignmentId?: string;
+  clockIn: string;
+  clockOut: string;
+  breakMinutes: string;
+  reason: string;
+}): Promise<ActionResult> {
+  return run(async () => {
+    const employee = await requireEmployee();
+    const reason = (input.reason ?? "").trim().slice(0, 500);
+    if (reason.length < 3) throw new Error("Tell us briefly what happened.");
+    const clockIn = fromLocalInput(input.clockIn, employee.timezone);
+    const clockOut = fromLocalInput(input.clockOut, employee.timezone);
+    const breakMinutes = Math.round(Number(input.breakMinutes) || 0);
+    const problem = checkShiftTimes(clockIn, clockOut, breakMinutes);
+    if (problem) throw new Error(problem);
+
+    let assignmentId: string;
+    let orig: { clockIn: Date; clockOut: Date | null; breakMinutes: number } | null = null;
+    if (input.timeEntryId) {
+      const entry = await prisma.timeEntry.findFirst({ where: { id: input.timeEntryId, employeeId: employee.id } });
+      if (!entry) throw new Error("Shift not found.");
+      if (entry.status === "OPEN") throw new Error("Clock out first, then ask for the fix.");
+      const pending = await prisma.timeAdjustment.findFirst({ where: { timeEntryId: entry.id, status: "PENDING" } });
+      if (pending) throw new Error("You already asked to fix this shift. Cancel that request to send a new one.");
+      if (
+        entry.clockIn.getTime() === clockIn.getTime() &&
+        entry.clockOut?.getTime() === clockOut.getTime() &&
+        entry.breakMinutes === breakMinutes
+      ) {
+        throw new Error("Those are the same times the shift already has.");
+      }
+      assignmentId = entry.assignmentId;
+      orig = entry;
+    } else {
+      const a = await prisma.assignment.findFirst({ where: { id: input.assignmentId ?? "", employeeId: employee.id } });
+      if (!a) throw new Error("Pick the client you worked for.");
+      assignmentId = a.id;
+    }
+
+    if (await findOverlap(employee.id, clockIn, clockOut, input.timeEntryId)) {
+      throw new Error("Those times overlap another shift you already have. Fix that shift instead.");
+    }
+
+    await prisma.timeAdjustment.create({
+      data: {
+        employeeId: employee.id,
+        assignmentId,
+        timeEntryId: input.timeEntryId || null,
+        clockIn,
+        clockOut,
+        breakMinutes,
+        origClockIn: orig?.clockIn ?? null,
+        origClockOut: orig?.clockOut ?? null,
+        origBreakMinutes: orig ? orig.breakMinutes : null,
+        reason
+      }
+    });
+  });
+}
+
+export async function cancelAdjustment(id: string): Promise<ActionResult> {
+  return run(async () => {
+    const employee = await requireEmployee();
+    const adj = await prisma.timeAdjustment.findFirst({ where: { id, employeeId: employee.id } });
+    if (!adj || adj.status !== "PENDING") throw new Error("This request was already handled.");
+    await prisma.timeAdjustment.update({ where: { id }, data: { status: "CANCELLED" } });
   });
 }

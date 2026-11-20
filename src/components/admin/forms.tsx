@@ -16,6 +16,7 @@ import {
   rejectEntry,
   reopenEntry,
   resetPassword,
+  reviewAdjustment,
   reviewTimeOff,
   updateEmployee,
   updateIntake,
@@ -457,6 +458,48 @@ export function TimeOffReview({ id }: { id: string }) {
           Deny
         </button>
       </div>
+      <Err error={error} />
+    </div>
+  );
+}
+
+export function AdjustmentReview({ id }: { id: string }) {
+  const { pending, error, go } = useAction();
+  const [rejecting, setRejecting] = useState(false);
+  const [note, setNote] = useState("");
+  return (
+    <div className="flex flex-col items-end gap-2">
+      <div className="flex gap-2">
+        <button
+          disabled={pending}
+          onClick={() => go(() => reviewAdjustment(id, true, ""))}
+          className="rounded-md bg-green-700 px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-60"
+        >
+          {pending ? "Saving..." : "Approve"}
+        </button>
+        <button disabled={pending} onClick={() => setRejecting(!rejecting)} className={btnGhost}>
+          Reject
+        </button>
+      </div>
+      {rejecting && (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            go(() => reviewAdjustment(id, false, note));
+          }}
+          className="flex w-full max-w-xs flex-col gap-2"
+        >
+          <input
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="Why? (they will see this)"
+            className={inputCls}
+          />
+          <button disabled={pending} className={btnGhost}>
+            Send rejection
+          </button>
+        </form>
+      )}
       <Err error={error} />
     </div>
   );

@@ -2,7 +2,7 @@ import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
 const HOME_BY_ROLE: Record<string, string> = {
-  ADMIN: "/admin",
+  ADMIN: "/admin/approvals",
   CLIENT: "/dashboard",
   EMPLOYEE: "/app"
 };

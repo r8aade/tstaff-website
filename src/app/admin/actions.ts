@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/session";
 import { getOverheadClient } from "@/lib/overhead";
 import { ensureOnboarding, saveDocument } from "@/lib/onboarding";
+import { approveAndPost, findOverlap } from "@/lib/timeApproval";
 import {
   COMPANY_TIMEZONE,
   COUNTRY_TIMEZONES,
@@ -162,42 +163,72 @@ export async function approveEntries(ids: string[]): Promise<ActionResult> {
   return run(async () => {
     const me = await admin();
     const entries = await prisma.timeEntry.findMany({
-      where: { id: { in: ids }, status: { in: ["SUBMITTED", "REJECTED"] } },
-      include: { assignment: { include: { client: true } }, employee: { include: { user: true } } }
+      where: { id: { in: ids }, status: { in: ["SUBMITTED", "REJECTED"] }, clockOut: { not: null } },
+      select: { id: true }
     });
     if (entries.length === 0) throw new Error("Nothing to approve.");
-
     for (const e of entries) {
-      if (!e.clockOut) continue;
-      if (e.assignment.client.isInternal) {
-        // Overhead: approved and counted as cost, never billed to anyone.
-        await prisma.timeEntry.update({
-          where: { id: e.id },
-          data: { status: "APPROVED", reviewedById: me.id, reviewedAt: new Date(), adminNote: null }
-        });
-        continue;
-      }
-      const hours = minutesToHours(workedMinutes(e));
-      const tz = e.assignment.client.timezone;
-      const span = `${fmtTime(e.clockIn, tz)}–${fmtTime(e.clockOut, tz)}`;
-      const description = [e.employee.user.name, span, e.notes].filter(Boolean).join(" · ");
+      await prisma.$transaction((tx) => approveAndPost(tx, e.id, me.id));
+    }
+  });
+}
 
-      await prisma.$transaction(async (tx) => {
-        const line = await tx.hoursEntry.create({
+/**
+ * An employee's fix or missed-shift request. Approving applies the new times and approves the
+ * shift (re-posting the client's billing line if it was already billed).
+ */
+export async function reviewAdjustment(id: string, approve: boolean, note: string): Promise<ActionResult> {
+  return run(async () => {
+    const me = await admin();
+    const adj = await prisma.timeAdjustment.findUnique({ where: { id }, include: { timeEntry: true } });
+    if (!adj || adj.status !== "PENDING") throw new Error("This request was already handled.");
+
+    if (!approve) {
+      await prisma.timeAdjustment.update({
+        where: { id },
+        data: { status: "REJECTED", adminNote: note.trim() || null, reviewedById: me.id, reviewedAt: new Date() }
+      });
+      return;
+    }
+
+    if (adj.timeEntryId && !adj.timeEntry) throw new Error("That shift no longer exists. Reject this request.");
+    if (adj.timeEntry?.status === "OPEN") throw new Error("They are still clocked in on that shift. Clock them out first.");
+    const overlap = await findOverlap(adj.employeeId, adj.clockIn, adj.clockOut, adj.timeEntryId);
+    if (overlap) throw new Error("The new times overlap another shift of theirs. Fix that shift in Timesheets first.");
+
+    await prisma.$transaction(async (tx) => {
+      let entryId = adj.timeEntryId;
+      if (entryId) {
+        await tx.timeEntry.update({
+          where: { id: entryId },
+          data: { clockIn: adj.clockIn, clockOut: adj.clockOut, breakMinutes: adj.breakMinutes, breakStartedAt: null }
+        });
+      } else {
+        const created = await tx.timeEntry.create({
           data: {
-            userId: e.assignment.clientId,
-            date: calendarDate(ymdInTz(e.clockIn, tz)),
-            hours,
-            description: description.slice(0, 500),
-            rateCentsAtLog: e.assignment.billRateCents
+            employeeId: adj.employeeId,
+            assignmentId: adj.assignmentId,
+            clockIn: adj.clockIn,
+            clockOut: adj.clockOut,
+            breakMinutes: adj.breakMinutes,
+            notes: `Missed shift: ${adj.reason}`.slice(0, 500),
+            status: "SUBMITTED"
           }
         });
-        await tx.timeEntry.update({
-          where: { id: e.id },
-          data: { status: "APPROVED", hoursEntryId: line.id, reviewedById: me.id, reviewedAt: new Date(), adminNote: null }
-        });
+        entryId = created.id;
+      }
+      await approveAndPost(tx, entryId, me.id);
+      await tx.timeAdjustment.update({
+        where: { id },
+        data: {
+          status: "APPROVED",
+          timeEntryId: entryId,
+          adminNote: note.trim() || null,
+          reviewedById: me.id,
+          reviewedAt: new Date()
+        }
       });
-    }
+    });
   });
 }
 

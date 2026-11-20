@@ -9,17 +9,18 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions);
-  const [timesheets, timeOff, intakes] = await Promise.all([
+  const [timesheets, timeOff, intakes, adjustments] = await Promise.all([
     prisma.timeEntry.count({ where: { status: "SUBMITTED" } }),
     prisma.timeOffRequest.count({ where: { status: "PENDING" } }),
-    prisma.clientIntake.count({ where: { status: "NEW" } })
+    prisma.clientIntake.count({ where: { status: "NEW" } }),
+    prisma.timeAdjustment.count({ where: { status: "PENDING" } })
   ]);
 
   return (
     <div className="min-h-screen bg-ink-900/[0.02]">
       <header className="border-b border-ink-900/10 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-          <Link href="/admin" className="text-lg font-bold text-ink-900">
+          <Link href="/admin/approvals" className="text-lg font-bold text-ink-900">
             Talnt Staffing Admin
           </Link>
           <div className="flex items-center gap-4">
@@ -29,7 +30,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <SignOutButton />
           </div>
         </div>
-        <AdminNav counts={{ timesheets, timeOff, intakes }} />
+        <AdminNav counts={{ timesheets, timeOff, intakes, adjustments }} />
       </header>
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">{children}</main>
     </div>

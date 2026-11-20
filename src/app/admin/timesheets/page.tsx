@@ -26,7 +26,11 @@ export default async function TimesheetsPage({ searchParams }: { searchParams: {
   const status = TABS.find((t) => t.key === searchParams.status)?.key ?? "SUBMITTED";
   const entries = await prisma.timeEntry.findMany({
     where: { status },
-    include: { employee: { include: { user: true } }, assignment: { include: { client: true } } },
+    include: {
+      employee: { include: { user: true } },
+      assignment: { include: { client: true } },
+      adjustments: { where: { status: "PENDING" }, select: { id: true } }
+    },
     orderBy: { clockIn: status === "SUBMITTED" ? "asc" : "desc" },
     take: status === "APPROVED" ? 100 : 300
   });
@@ -85,6 +89,11 @@ export default async function TimesheetsPage({ searchParams }: { searchParams: {
                   </Link>
                   <span className="text-ink-700">for {e.assignment.client.companyName || e.assignment.client.name}</span>
                   <StatusBadge status={e.status} />
+                  {e.adjustments.length > 0 && (
+                    <Link href="/admin/approvals" className="rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-800">
+                      Fix requested, see Approvals
+                    </Link>
+                  )}
                   {long && <span className="rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700">Over 12 hours, check it</span>}
                   {missingLocation(e) && <span className="rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">No location</span>}
                 </div>
