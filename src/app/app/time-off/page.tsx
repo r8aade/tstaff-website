@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { requireEmployee } from "@/lib/session";
-import { fmtCalendarDate, ymdInTz } from "@/lib/time";
+import { calendarDate, fmtCalendarDate, ymdInTz } from "@/lib/time";
+import { bankFor, fmtDays, requestHours, vacationEligibleFrom } from "@/lib/timeoff";
 import StatusBadge from "@/components/employee/StatusBadge";
 import TimeOffForm, { CancelTimeOffButton } from "@/components/employee/TimeOffForm";
 
@@ -21,11 +22,25 @@ export default async function TimeOffPage() {
     take: 30
   });
 
+  const active = await prisma.timeOffRequest.findMany({
+    where: { employeeId: employee.id, status: { in: ["PENDING", "APPROVED"] } }
+  });
+  const asOf = employee.balancesAsOf ? fmtCalendarDate(employee.balancesAsOf) : null;
+  const vacation = { ...bankFor("VACATION", employee.vacationHours, employee.balancesAsOf, active), asOf };
+  const sick = { ...bankFor("SICK", employee.sickHours, employee.balancesAsOf, active), asOf };
+  const eligibleFrom = vacationEligibleFrom(employee.startDate);
+
   return (
     <div className="space-y-4">
       <h1 className="text-xl font-bold text-ink-900">Time Off</h1>
 
-      <TimeOffForm today={ymdInTz(new Date(), employee.timezone)} />
+      <TimeOffForm
+        today={ymdInTz(new Date(), employee.timezone)}
+        vacation={vacation}
+        sick={sick}
+        vacationEligibleFrom={eligibleFrom}
+        vacationEligibleLabel={eligibleFrom ? fmtCalendarDate(calendarDate(eligibleFrom)) : null}
+      />
 
       <section className="rounded-2xl border border-ink-900/10 bg-white p-4">
         <h2 className="font-semibold text-ink-900">My requests</h2>
@@ -45,7 +60,8 @@ export default async function TimeOffPage() {
                         {same ? "" : ` – ${fmtCalendarDate(r.endDate)}`}
                       </div>
                       <div className="text-ink-700">
-                        {TYPE_LABEL[r.type]} · {days} day{days === 1 ? "" : "s"}
+                        {TYPE_LABEL[r.type]} · {fmtDays(requestHours(r))}
+                        {days !== requestHours(r) / 8 ? ` (${days} calendar days)` : ""}
                       </div>
                       {r.reason && <p className="mt-1 break-words text-ink-700">{r.reason}</p>}
                     </div>

@@ -2,9 +2,11 @@ import Link from "next/link";
 import PunchLocation from "@/components/admin/PunchLocation";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { VACATION_CAP_HOURS, VACATION_ELIGIBLE_MONTHS, bankFor, fmtHrs, vacationEligibleFrom } from "@/lib/timeoff";
 import { formatCents } from "@/lib/billing";
 import {
   COMPANY_TIMEZONE,
+  calendarDate,
   fmtCalendarDate,
   fmtDate,
   fmtDuration,
@@ -19,6 +21,7 @@ import { loadOnboarding } from "@/lib/onboarding-view";
 import {
   AssignForm,
   AssignOverheadButton,
+  BalancesForm,
   EditEmployeeForm,
   RestoreEmployeeButton,
   RollOffForm,
@@ -38,7 +41,7 @@ export default async function EmployeeDetailPage({ params }: { params: { id: str
         orderBy: { clockIn: "desc" },
         take: 30
       },
-      timeOff: { orderBy: { startDate: "desc" }, take: 10 }
+      timeOff: { orderBy: { startDate: "desc" }, take: 50 }
     }
   });
   if (!employee) notFound();
@@ -50,6 +53,9 @@ export default async function EmployeeDetailPage({ params }: { params: { id: str
   const archived = !!employee.archivedAt;
   const onboarding = await loadOnboarding(employee.id, employee.userId, COMPANY_TIMEZONE);
   const onOverhead = active.some((a) => a.client.isInternal);
+  const eligibleFrom = vacationEligibleFrom(employee.startDate);
+  const vac = bankFor("VACATION", employee.vacationHours, employee.balancesAsOf, employee.timeOff);
+  const sick = bankFor("SICK", employee.sickHours, employee.balancesAsOf, employee.timeOff);
 
   // Last 14 days, not rejected: hours, client billing, and pay cost.
   const since = new Date(now.getTime() - 14 * 86400000);
@@ -186,11 +192,57 @@ export default async function EmployeeDetailPage({ params }: { params: { id: str
         </p>
       </section>
 
-      {employee.timeOff.length > 0 && (
-        <section className="rounded-lg border border-ink-900/10 bg-white p-6">
+      <section className="rounded-lg border border-ink-900/10 bg-white p-6">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h2 className="font-semibold text-ink-900">Time off</h2>
-          <ul className="mt-3 divide-y divide-ink-900/10">
-            {employee.timeOff.map((r) => (
+          <p className="text-sm text-ink-700">
+            Started {employee.startDate ? fmtCalendarDate(employee.startDate) : "— not set"} ·{" "}
+            {!eligibleFrom
+              ? "set a start date to work out vacation eligibility"
+              : eligibleFrom <= ymdInTz(now, COMPANY_TIMEZONE)
+                ? "eligible for vacation"
+                : `vacation unlocks ${fmtCalendarDate(calendarDate(eligibleFrom))}`}
+          </p>
+        </div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          {([
+            ["Vacation", vac, employee.vacationHours],
+            ["Sick", sick, employee.sickHours]
+          ] as const).map(([label, b, raw]) => (
+            <div key={label} className="rounded-lg bg-ink-900/[0.03] p-4 text-sm">
+              <p className="font-medium text-ink-900">{label}</p>
+              {raw == null ? (
+                <p className="mt-1 text-ink-700">Not entered yet.</p>
+              ) : (
+                <>
+                  <p className="mt-1 text-2xl font-bold tabular-nums text-ink-900">{fmtHrs(b.available ?? 0)}</p>
+                  <p className="text-xs text-ink-700">
+                    available · Gusto {fmtHrs(b.balance)}
+                    {b.approvedSince > 0 ? ` − ${fmtHrs(b.approvedSince)} approved, not in Gusto yet` : ""}
+                    {b.pending > 0 ? ` − ${fmtHrs(b.pending)} pending` : ""}
+                  </p>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="mt-5 border-t border-ink-900/10 pt-4">
+          <p className="mb-3 text-sm text-ink-700">
+            Copy the balances from Gusto (Gusto does the accrual). Vacation is paid, capped at {VACATION_CAP_HOURS} hours,
+            and unlocks {VACATION_ELIGIBLE_MONTHS} months after the start date.
+          </p>
+          <BalancesForm
+            employeeId={employee.id}
+            initial={{
+              vacationHours: employee.vacationHours == null ? "" : String(employee.vacationHours),
+              sickHours: employee.sickHours == null ? "" : String(employee.sickHours),
+              asOf: (employee.balancesAsOf ?? calendarDate(ymdInTz(now, COMPANY_TIMEZONE))).toISOString().slice(0, 10)
+            }}
+          />
+        </div>
+        {employee.timeOff.length > 0 && (
+          <ul className="mt-5 divide-y divide-ink-900/10 border-t border-ink-900/10">
+            {employee.timeOff.slice(0, 10).map((r) => (
               <li key={r.id} className="flex items-center justify-between py-2 text-sm">
                 <span>
                   {fmtCalendarDate(r.startDate)}
@@ -201,8 +253,8 @@ export default async function EmployeeDetailPage({ params }: { params: { id: str
               </li>
             ))}
           </ul>
-        </section>
-      )}
+        )}
+      </section>
 
       <section className="rounded-lg border border-ink-900/10 bg-white p-6">
         <h2 className="font-semibold text-ink-900">Details</h2>
@@ -216,7 +268,8 @@ export default async function EmployeeDetailPage({ params }: { params: { id: str
               timezone: employee.timezone,
               phone: employee.phone ?? "",
               payRate: (employee.payRateCents / 100).toFixed(2),
-              status: employee.status
+              status: employee.status,
+              startDate: employee.startDate ? employee.startDate.toISOString().slice(0, 10) : ""
             }}
           />
         </div>

@@ -89,7 +89,11 @@ model Employee {
   phone          String?
   payRateCents   Int            @default(0) // what Talnt pays them per hour (record only)
   status         EmployeeStatus @default(ACTIVE)
-  startDate      DateTime?
+  startDate      DateTime? // calendar date (UTC midnight); vacation unlocks 6 months after this
+  // Time off balances copied from Gusto (Gusto does the accrual). Null = not entered yet.
+  vacationHours  Float?
+  sickHours      Float?
+  balancesAsOf   DateTime?
   // Roll-off: set together when someone leaves. archivedAt moves them to the Archived tab.
   endDate        DateTime?
   rollOffReason  String?

@@ -19,6 +19,7 @@ import {
   reviewAdjustment,
   reviewAdjustments,
   reviewTimeOff,
+  updateBalances,
   updateEmployee,
   updateIntake,
   type ActionResult
@@ -92,7 +93,8 @@ export function NewEmployeeForm({
     timezone: "Asia/Manila",
     phone: "",
     payRate: "",
-    clientId: ""
+    clientId: "",
+    startDate: new Date().toLocaleDateString("en-CA")
   });
   const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value });
   const client = clients.find((c) => c.id === f.clientId);
@@ -120,6 +122,9 @@ export function NewEmployeeForm({
         </select>
       </Field>
       <Field label="Employee timezone (where they live)"><TimezoneSelect value={f.timezone} onChange={(v) => setF({ ...f, timezone: v })} /></Field>
+      <Field label="Start date">
+        <input type="date" required value={f.startDate} onChange={set("startDate")} className={inputCls} />
+      </Field>
       <Field label="Client">
         <select value={f.clientId} onChange={set("clientId")} className={inputCls}>
           <option value="">Assign later</option>
@@ -152,7 +157,17 @@ export function NewEmployeeForm({
 export function EditEmployeeForm({
   employee
 }: {
-  employee: { id: string; name: string; title: string; country: string; timezone: string; phone: string; payRate: string; status: string };
+  employee: {
+    id: string;
+    name: string;
+    title: string;
+    country: string;
+    timezone: string;
+    phone: string;
+    payRate: string;
+    status: string;
+    startDate: string;
+  };
 }) {
   const { pending, error, go } = useAction();
   const [saved, setSaved] = useState(false);
@@ -182,6 +197,9 @@ export function EditEmployeeForm({
       <Field label="Employee timezone (where they live)"><TimezoneSelect value={f.timezone} onChange={(v) => setF({ ...f, timezone: v })} /></Field>
       <Field label="Phone"><input value={f.phone} onChange={set("phone")} className={inputCls} /></Field>
       <Field label="Pay rate ($/hr)"><input type="number" step="0.01" min="0" value={f.payRate} onChange={set("payRate")} className={inputCls} /></Field>
+      <Field label="Start date (vacation unlocks 6 months after)">
+        <input type="date" value={f.startDate} onChange={set("startDate")} className={inputCls} />
+      </Field>
       <Field label="Status">
         <select value={f.status} onChange={set("status")} className={inputCls}>
           <option value="ACTIVE">Active (can log in and clock in)</option>
@@ -577,6 +595,48 @@ export function BulkRequestButtons({ ids }: { ids: string[] }) {
       </div>
       <Err error={error} />
     </div>
+  );
+}
+
+export function BalancesForm({
+  employeeId,
+  initial
+}: {
+  employeeId: string;
+  initial: { vacationHours: string; sickHours: string; asOf: string };
+}) {
+  const { pending, error, go } = useAction();
+  const [f, setF] = useState(initial);
+  const [saved, setSaved] = useState(false);
+  const set = (k: keyof typeof f) => (e: { target: { value: string } }) => {
+    setSaved(false);
+    setF({ ...f, [k]: e.target.value });
+  };
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        go(() => updateBalances(employeeId, f), () => setSaved(true));
+      }}
+      className="grid gap-3 sm:grid-cols-3"
+    >
+      <Field label="Vacation (hours)">
+        <input type="number" step="0.01" min="0" value={f.vacationHours} onChange={set("vacationHours")} placeholder="from Gusto" className={inputCls} />
+      </Field>
+      <Field label="Sick (hours)">
+        <input type="number" step="0.01" min="0" value={f.sickHours} onChange={set("sickHours")} placeholder="from Gusto" className={inputCls} />
+      </Field>
+      <Field label="Gusto balance as of">
+        <input type="date" required value={f.asOf} onChange={set("asOf")} className={inputCls} />
+      </Field>
+      <div className="flex items-center gap-3 sm:col-span-3">
+        <button type="submit" disabled={pending} className={btnPrimary}>
+          {pending ? "Saving..." : "Save balances"}
+        </button>
+        {saved && <span className="text-sm text-green-700">Saved.</span>}
+        <Err error={error} />
+      </div>
+    </form>
   );
 }
 

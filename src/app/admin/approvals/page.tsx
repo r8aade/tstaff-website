@@ -16,6 +16,7 @@ import {
   ymdInTz
 } from "@/lib/time";
 import StatusBadge from "@/components/employee/StatusBadge";
+import TimeOffBankNote from "@/components/admin/TimeOffBankNote";
 import PunchLocation, { missingLocation } from "@/components/admin/PunchLocation";
 import { AdjustmentReview, BulkApproveButton, EntryActions, TimeOffReview } from "@/components/admin/forms";
 
@@ -71,7 +72,7 @@ export default async function ApprovalsPage() {
     }),
     prisma.timeOffRequest.findMany({
       where: { status: "PENDING" },
-      include: { employee: { include: { user: true } } },
+      include: { employee: { include: { user: true, timeOff: { where: { status: { in: ["PENDING", "APPROVED"] } } } } } },
       orderBy: { startDate: "asc" }
     }),
     prisma.clientIntake.findMany({ where: { status: "NEW" }, orderBy: { createdAt: "desc" } })
@@ -225,6 +226,7 @@ export default async function ApprovalsPage() {
                   {days > 1 ? ` – ${fmtCalendarDate(r.endDate)}` : ""} · {days} day{days === 1 ? "" : "s"} · {r.type.toLowerCase()}
                 </div>
                 {r.reason && <p className="break-words text-ink-700">“{r.reason}”</p>}
+                <TimeOffBankNote request={r} employee={r.employee} />
               </div>
               <TimeOffReview id={r.id} />
             </div>

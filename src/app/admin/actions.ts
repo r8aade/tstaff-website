@@ -45,6 +45,7 @@ export async function createEmployee(input: {
   phone: string;
   payRate: string;
   clientId?: string;
+  startDate?: string;
 }): Promise<ActionResult> {
   return run(async () => {
     await admin();
@@ -72,7 +73,9 @@ export async function createEmployee(input: {
             timezone,
             phone: input.phone.trim() || null,
             payRateCents: input.payRate ? cents(input.payRate) : 0,
-            startDate: new Date()
+            startDate: /^\d{4}-\d{2}-\d{2}$/.test(input.startDate ?? "")
+              ? calendarDate(input.startDate!)
+              : calendarDate(ymdInTz(new Date(), COMPANY_TIMEZONE))
           }
         }
       },
@@ -94,7 +97,16 @@ export async function createEmployee(input: {
 
 export async function updateEmployee(
   id: string,
-  input: { name: string; title: string; country: string; timezone: string; phone: string; payRate: string; status: string }
+  input: {
+    name: string;
+    title: string;
+    country: string;
+    timezone: string;
+    phone: string;
+    payRate: string;
+    status: string;
+    startDate: string;
+  }
 ): Promise<ActionResult> {
   return run(async () => {
     await admin();
@@ -108,12 +120,38 @@ export async function updateEmployee(
         timezone: input.timezone,
         phone: input.phone.trim() || null,
         payRateCents: cents(input.payRate || 0),
+        startDate: /^\d{4}-\d{2}-\d{2}$/.test(input.startDate) ? calendarDate(input.startDate) : emp.startDate,
         status: input.status === "INACTIVE" ? "INACTIVE" : "ACTIVE",
         // Setting an archived employee back to Active restores them from the archive.
         ...(emp.archivedAt && input.status !== "INACTIVE"
           ? { archivedAt: null, endDate: null, rollOffReason: null, rollOffNote: null, rehireEligible: null }
           : {}),
         user: { update: { name: input.name.trim(), timezone: input.timezone } }
+      }
+    });
+  });
+}
+
+/** Vacation and sick balances copied from Gusto, so the app shows the same numbers. Blank = not tracked. */
+export async function updateBalances(
+  id: string,
+  input: { vacationHours: string; sickHours: string; asOf: string }
+): Promise<ActionResult> {
+  return run(async () => {
+    await admin();
+    const num = (v: string, label: string) => {
+      if (v.trim() === "") return null;
+      const n = Number(v);
+      if (!isFinite(n) || n < 0 || n > 2000) throw new Error(`${label} must be a number of hours.`);
+      return Math.round(n * 100) / 100;
+    };
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(input.asOf)) throw new Error("Pick the date the Gusto balance is from.");
+    await prisma.employee.update({
+      where: { id },
+      data: {
+        vacationHours: num(input.vacationHours, "Vacation"),
+        sickHours: num(input.sickHours, "Sick"),
+        balancesAsOf: calendarDate(input.asOf)
       }
     });
   });

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { calendarDate, COMPANY_TIMEZONE, fmtCalendarDate, ymdInTz } from "@/lib/time";
 import StatusBadge from "@/components/employee/StatusBadge";
 import { TimeOffReview } from "@/components/admin/forms";
+import TimeOffBankNote from "@/components/admin/TimeOffBankNote";
 
 function Range({ start, end }: { start: Date; end: Date }) {
   const days = Math.round((end.getTime() - start.getTime()) / 86400000) + 1;
@@ -18,7 +19,13 @@ function Range({ start, end }: { start: Date; end: Date }) {
 export default async function AdminTimeOffPage() {
   const today = calendarDate(ymdInTz(new Date(), COMPANY_TIMEZONE));
   const include = {
-    employee: { include: { user: true, assignments: { where: { active: true }, include: { client: true } } } }
+    employee: {
+      include: {
+        user: true,
+        assignments: { where: { active: true }, include: { client: true } },
+        timeOff: { where: { status: { in: ["PENDING", "APPROVED"] as ("PENDING" | "APPROVED")[] } } }
+      }
+    }
   } as const;
 
   const [pending, upcoming] = await Promise.all([
@@ -49,6 +56,7 @@ export default async function AdminTimeOffPage() {
                 </Link>
                 <div><Range start={r.startDate} end={r.endDate} /> · {r.type.toLowerCase()}</div>
                 {r.reason && <p className="break-words text-ink-700">“{r.reason}”</p>}
+                <TimeOffBankNote request={r} employee={r.employee} />
                 <p className="text-xs text-ink-700">
                   Covers: {r.employee.assignments.map((a) => a.client.companyName || a.client.name).join(", ") || "no client"}
                 </p>

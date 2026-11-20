@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireEmployee } from "@/lib/session";
-import { calendarDate, fromLocalInput } from "@/lib/time";
+import { calendarDate, fmtCalendarDate, fromLocalInput } from "@/lib/time";
+import { VACATION_ELIGIBLE_MONTHS, requestHours, vacationEligibleFrom } from "@/lib/timeoff";
 import { checkShiftTimes, findOverlap } from "@/lib/timeApproval";
 import { saveDocument } from "@/lib/onboarding";
 import { cleanGeo } from "@/lib/geo";
@@ -116,12 +117,28 @@ export async function requestTimeOff(input: {
     }
     if (input.endDate < input.startDate) throw new Error("End date is before the start date.");
     const type = TIME_OFF_TYPES.find((t) => t === input.type) ?? "OTHER";
+    const start = calendarDate(input.startDate);
+    const end = calendarDate(input.endDate);
+    const hours = requestHours({ startDate: start, endDate: end });
+    if (hours === 0) throw new Error("Those dates are all weekend days. Pick at least one weekday.");
+
+    if (type === "VACATION") {
+      const eligibleFrom = vacationEligibleFrom(employee.startDate);
+      if (!eligibleFrom) throw new Error("Your start date isn't set yet. Ask Talnt Staffing to add it before booking vacation.");
+      if (input.startDate < eligibleFrom) {
+        throw new Error(
+          `Vacation unlocks on ${fmtCalendarDate(calendarDate(eligibleFrom))}, ${VACATION_ELIGIBLE_MONTHS} months after you started. You can still request sick days.`
+        );
+      }
+      // No bank check: they can ask for more than they have. Gusto only pays what's in the bank,
+      // and the admin sees "over the bank by ..." on the request.
+    }
 
     await prisma.timeOffRequest.create({
       data: {
         employeeId: employee.id,
-        startDate: calendarDate(input.startDate),
-        endDate: calendarDate(input.endDate),
+        startDate: start,
+        endDate: end,
         type,
         reason: input.reason.trim() || null
       }

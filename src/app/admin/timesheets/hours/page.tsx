@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { COMPANY_TIMEZONE, fmtTime, tzAbbr, workedMinutes, ymdInTz } from "@/lib/time";
+import { COMPANY_TIMEZONE, calendarDate, fmtTime, tzAbbr, workedMinutes, ymdInTz } from "@/lib/time";
 import {
   OT_WEEKLY_MINUTES,
   addDays,
@@ -13,6 +13,7 @@ import {
   type HoursView
 } from "@/lib/hours";
 import StatusBadge from "@/components/employee/StatusBadge";
+import { HOURS_PER_DAY, PAID_TIME_OFF_TYPES } from "@/lib/timeoff";
 
 export const dynamic = "force-dynamic";
 
@@ -64,7 +65,7 @@ export default async function HoursPage({
   for (let i = 0; i < days.length; i += 7) weeks.push(days.slice(i, i + 7));
   const now = new Date();
 
-  const [shifts, employees, pendingRequests] = await Promise.all([
+  const [shifts, employees, pendingRequests, vacations] = await Promise.all([
     prisma.timeEntry.findMany({
       where: {
         status: { not: "REJECTED" },
@@ -74,12 +75,34 @@ export default async function HoursPage({
       orderBy: { clockIn: "asc" }
     }),
     prisma.employee.findMany({ include: { user: true }, orderBy: { user: { name: "asc" } } }),
-    prisma.timeAdjustment.count({ where: { status: "PENDING" } })
+    prisma.timeAdjustment.count({ where: { status: "PENDING" } }),
+    // Approved paid time off (vacation) overlapping the view: 8 paid hours per weekday.
+    prisma.timeOffRequest.findMany({
+      where: {
+        status: "APPROVED",
+        type: { in: [...PAID_TIME_OFF_TYPES] },
+        startDate: { lte: calendarDate(r.last) },
+        endDate: { gte: calendarDate(r.first) }
+      }
+    })
   ]);
+  const ptoByEmployee = new Map<string, number>(); // minutes in the view
+  for (const v of vacations) {
+    for (const d of days) {
+      const t = calendarDate(d);
+      const dow = t.getUTCDay();
+      if (t >= v.startDate && t <= v.endDate && dow !== 0 && dow !== 6) {
+        ptoByEmployee.set(v.employeeId, (ptoByEmployee.get(v.employeeId) ?? 0) + HOURS_PER_DAY * 60);
+      }
+    }
+  }
 
   const hours = computeHours(shifts, r.loadFrom, r.loadTo, now);
   const unapproved = computeHours(shifts.filter((s) => s.status !== "APPROVED"), r.loadFrom, r.loadTo, now);
-  const rows = employees.filter((e) => e.status === "ACTIVE" || sumDays(hours.get(e.id), days).minutes >= 0.5);
+  const rows = employees.filter(
+    (e) => e.status === "ACTIVE" || sumDays(hours.get(e.id), days).minutes >= 0.5 || (ptoByEmployee.get(e.id) ?? 0) > 0
+  );
+  const ptoTotal = rows.reduce((t, e) => t + (ptoByEmployee.get(e.id) ?? 0), 0);
 
   const totals = rows.reduce(
     (t, e) => {
@@ -174,10 +197,15 @@ export default async function HoursPage({
           </span>
           <span className="text-ink-700">Overtime</span>
         </span>
+        <span className="self-center text-ink-700">+</span>
+        <span>
+          <span className="block text-lg font-semibold tabular-nums text-ink-900">{decHours(ptoTotal)}</span>
+          <span className="text-ink-700">Paid time off</span>
+        </span>
         <span className="self-center text-ink-700">=</span>
         <span>
-          <span className="block text-lg font-semibold tabular-nums text-ink-900">{decHours(totals.minutes)}</span>
-          <span className="text-ink-700">Total hours</span>
+          <span className="block text-lg font-semibold tabular-nums text-ink-900">{decHours(totals.minutes + ptoTotal)}</span>
+          <span className="text-ink-700">Total paid hours</span>
         </span>
         <span className="ml-auto">
           <span className="block text-lg font-semibold tabular-nums text-ink-900">{decHours(pendingMinutes)}</span>
@@ -278,6 +306,7 @@ export default async function HoursPage({
                   Regular
                 </th>
                 <th className="px-2 py-2 text-center font-semibold text-ink-900">Overtime</th>
+                <th className="px-2 py-2 text-center font-semibold text-ink-900">Paid time off</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-ink-900/10">
@@ -322,6 +351,9 @@ export default async function HoursPage({
                     </td>
                     <td className={`px-2 py-2 text-center tabular-nums ${all.otMinutes >= 0.5 ? "font-semibold text-amber-700" : ""}`}>
                       {all.otMinutes >= 0.5 ? decHours(all.otMinutes) : "--"}
+                    </td>
+                    <td className="px-2 py-2 text-center tabular-nums">
+                      {(ptoByEmployee.get(e.id) ?? 0) > 0 ? decHours(ptoByEmployee.get(e.id)!) : "--"}
                     </td>
                   </tr>
                 );
