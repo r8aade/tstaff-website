@@ -89,7 +89,7 @@ export default async function ApprovalsPage() {
         </p>
       </div>
 
-      <Section title="Time fixes and missed shifts" count={adjustments.length}>
+      <Section title="Time fixes and missed shifts" count={adjustments.length} href="/admin/requests">
         {adjustments.map((a) => {
           const empTz = a.employee.timezone;
           const newMins = workedMinutes({ ...a, breakStartedAt: null });

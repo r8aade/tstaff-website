@@ -17,6 +17,7 @@ import {
   reopenEntry,
   resetPassword,
   reviewAdjustment,
+  reviewAdjustments,
   reviewTimeOff,
   updateEmployee,
   updateIntake,
@@ -500,6 +501,80 @@ export function AdjustmentReview({ id }: { id: string }) {
           </button>
         </form>
       )}
+      <Err error={error} />
+    </div>
+  );
+}
+
+/** Requests page: one request's Approve / Decline, with an optional note the employee sees. */
+export function RequestDecision({ id, nextHref }: { id: string; nextHref: string }) {
+  const router = useRouter();
+  const { pending, error, go } = useAction();
+  const [note, setNote] = useState("");
+  const [withNote, setWithNote] = useState(false);
+  const decide = (approve: boolean) => go(() => reviewAdjustment(id, approve, note), () => router.push(nextHref));
+  return (
+    <div className="flex flex-col items-stretch gap-2 sm:items-end">
+      <div className="flex flex-wrap gap-2 sm:justify-end">
+        <button
+          disabled={pending}
+          onClick={() => decide(false)}
+          className="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60"
+        >
+          Decline
+        </button>
+        <button
+          disabled={pending}
+          onClick={() => decide(true)}
+          className="rounded-md bg-green-700 px-4 py-2 text-sm font-semibold text-white hover:bg-green-800 disabled:opacity-60"
+        >
+          {pending ? "Saving..." : "Approve"}
+        </button>
+        {!withNote && (
+          <button type="button" onClick={() => setWithNote(true)} className={btnGhost}>
+            Add a note
+          </button>
+        )}
+      </div>
+      {withNote && (
+        <input
+          autoFocus
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder="Note to the employee (they will see it)"
+          className={`${inputCls} sm:w-80`}
+        />
+      )}
+      <Err error={error} />
+    </div>
+  );
+}
+
+export function BulkRequestButtons({ ids }: { ids: string[] }) {
+  const { pending, error, go } = useAction();
+  if (ids.length === 0) return null;
+  return (
+    <div className="space-y-1">
+      <div className="flex gap-2">
+        <button
+          disabled={pending}
+          onClick={() => {
+            if (confirm(`Decline all ${ids.length} pending requests?`)) go(() => reviewAdjustments(ids, false));
+          }}
+          className="flex-1 rounded-md border border-red-600 px-3 py-1.5 text-sm font-semibold text-red-700 hover:bg-red-50 disabled:opacity-60"
+        >
+          Decline all
+        </button>
+        <button
+          disabled={pending}
+          onClick={() => {
+            if (confirm(`Approve all ${ids.length} pending requests? Their hours go on the clients' bills.`)) go(() => reviewAdjustments(ids, true));
+          }}
+          className="flex-1 rounded-md border border-green-700 px-3 py-1.5 text-sm font-semibold text-green-800 hover:bg-green-50 disabled:opacity-60"
+        >
+          {pending ? "Working..." : "Approve all"}
+        </button>
+      </div>
       <Err error={error} />
     </div>
   );

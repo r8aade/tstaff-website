@@ -177,58 +177,78 @@ export async function approveEntries(ids: string[]): Promise<ActionResult> {
  * An employee's fix or missed-shift request. Approving applies the new times and approves the
  * shift (re-posting the client's billing line if it was already billed).
  */
+async function applyAdjustment(id: string, approve: boolean, note: string, reviewerId: string): Promise<void> {
+  const adj = await prisma.timeAdjustment.findUnique({ where: { id }, include: { timeEntry: true } });
+  if (!adj || adj.status !== "PENDING") throw new Error("This request was already handled.");
+
+  if (!approve) {
+    await prisma.timeAdjustment.update({
+      where: { id },
+      data: { status: "REJECTED", adminNote: note.trim() || null, reviewedById: reviewerId, reviewedAt: new Date() }
+    });
+    return;
+  }
+
+  if (adj.timeEntryId && !adj.timeEntry) throw new Error("That shift no longer exists. Decline this request.");
+  if (adj.timeEntry?.status === "OPEN") throw new Error("They are still clocked in on that shift. Clock them out first.");
+  const overlap = await findOverlap(adj.employeeId, adj.clockIn, adj.clockOut, adj.timeEntryId);
+  if (overlap) throw new Error("The new times overlap another shift of theirs. Fix that shift in Timesheets first.");
+
+  await prisma.$transaction(async (tx) => {
+    let entryId = adj.timeEntryId;
+    if (entryId) {
+      await tx.timeEntry.update({
+        where: { id: entryId },
+        data: { clockIn: adj.clockIn, clockOut: adj.clockOut, breakMinutes: adj.breakMinutes, breakStartedAt: null }
+      });
+    } else {
+      const created = await tx.timeEntry.create({
+        data: {
+          employeeId: adj.employeeId,
+          assignmentId: adj.assignmentId,
+          clockIn: adj.clockIn,
+          clockOut: adj.clockOut,
+          breakMinutes: adj.breakMinutes,
+          notes: `Missed shift: ${adj.reason}`.slice(0, 500),
+          status: "SUBMITTED"
+        }
+      });
+      entryId = created.id;
+    }
+    await approveAndPost(tx, entryId, reviewerId);
+    await tx.timeAdjustment.update({
+      where: { id },
+      data: { status: "APPROVED", timeEntryId: entryId, adminNote: note.trim() || null, reviewedById: reviewerId, reviewedAt: new Date() }
+    });
+  });
+}
+
+/**
+ * An employee's fix or missed-shift request. Approving applies the new times and approves the
+ * shift (re-posting the client's billing line if it was already billed).
+ */
 export async function reviewAdjustment(id: string, approve: boolean, note: string): Promise<ActionResult> {
   return run(async () => {
     const me = await admin();
-    const adj = await prisma.timeAdjustment.findUnique({ where: { id }, include: { timeEntry: true } });
-    if (!adj || adj.status !== "PENDING") throw new Error("This request was already handled.");
+    await applyAdjustment(id, approve, note, me.id);
+  });
+}
 
-    if (!approve) {
-      await prisma.timeAdjustment.update({
-        where: { id },
-        data: { status: "REJECTED", adminNote: note.trim() || null, reviewedById: me.id, reviewedAt: new Date() }
-      });
-      return;
-    }
-
-    if (adj.timeEntryId && !adj.timeEntry) throw new Error("That shift no longer exists. Reject this request.");
-    if (adj.timeEntry?.status === "OPEN") throw new Error("They are still clocked in on that shift. Clock them out first.");
-    const overlap = await findOverlap(adj.employeeId, adj.clockIn, adj.clockOut, adj.timeEntryId);
-    if (overlap) throw new Error("The new times overlap another shift of theirs. Fix that shift in Timesheets first.");
-
-    await prisma.$transaction(async (tx) => {
-      let entryId = adj.timeEntryId;
-      if (entryId) {
-        await tx.timeEntry.update({
-          where: { id: entryId },
-          data: { clockIn: adj.clockIn, clockOut: adj.clockOut, breakMinutes: adj.breakMinutes, breakStartedAt: null }
-        });
-      } else {
-        const created = await tx.timeEntry.create({
-          data: {
-            employeeId: adj.employeeId,
-            assignmentId: adj.assignmentId,
-            clockIn: adj.clockIn,
-            clockOut: adj.clockOut,
-            breakMinutes: adj.breakMinutes,
-            notes: `Missed shift: ${adj.reason}`.slice(0, 500),
-            status: "SUBMITTED"
-          }
-        });
-        entryId = created.id;
+/** Approve all / Decline all. Keeps going past ones that fail and reports them. */
+export async function reviewAdjustments(ids: string[], approve: boolean): Promise<ActionResult> {
+  return run(async () => {
+    const me = await admin();
+    const failed: string[] = [];
+    for (const id of ids.slice(0, 200)) {
+      try {
+        await applyAdjustment(id, approve, "", me.id);
+      } catch (e) {
+        failed.push(e instanceof Error ? e.message : "failed");
       }
-      await approveAndPost(tx, entryId, me.id);
-      await tx.timeAdjustment.update({
-        where: { id },
-        data: {
-          status: "APPROVED",
-          timeEntryId: entryId,
-          adminNote: note.trim() || null,
-          reviewedById: me.id,
-          reviewedAt: new Date()
-        }
-      });
-    });
+    }
+    if (failed.length) {
+      throw new Error(`${ids.length - failed.length} done, ${failed.length} need a look: ${Array.from(new Set(failed)).join(" ")}`);
+    }
   });
 }
 
