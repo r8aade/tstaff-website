@@ -8,6 +8,7 @@ import {
   assignToOverhead,
   restoreEmployee,
   rollOffEmployee,
+  setSchedule,
   approveEntries,
   createAdmin,
   createEmployee,
@@ -312,6 +313,96 @@ export function EndAssignmentButton({ id }: { id: string }) {
       </button>
       <Err error={error} />
     </span>
+  );
+}
+
+const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+/** Set or change an assignment's work schedule (client's time). */
+export function ScheduleForm({
+  id,
+  current,
+  summary,
+  tzName
+}: {
+  id: string;
+  current: { days: number[]; start: string; end: string } | null;
+  summary: string | null;
+  tzName: string;
+}) {
+  const { pending, error, go } = useAction();
+  const [open, setOpen] = useState(false);
+  const [days, setDays] = useState<number[]>(current?.days ?? [1, 2, 3, 4, 5]);
+  const [start, setStart] = useState(current?.start ?? "08:00");
+  const [end, setEnd] = useState(current?.end ?? "17:00");
+  if (!open) {
+    return (
+      <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
+        {summary ? (
+          <span className="text-ink-700">
+            Schedule: <span className="font-medium text-ink-900">{summary}</span> {tzName}
+          </span>
+        ) : (
+          <span className="font-medium text-amber-700">No schedule set, so punches can&apos;t be checked</span>
+        )}
+        <button type="button" onClick={() => setOpen(true)} className="font-medium text-brand-600">
+          {summary ? "Change" : "Set schedule"}
+        </button>
+      </div>
+    );
+  }
+  const toggle = (d: number) => setDays(days.includes(d) ? days.filter((x) => x !== d) : [...days, d].sort());
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        go(() => setSchedule(id, days, start, end), () => setOpen(false));
+      }}
+      className="mt-2 space-y-3 rounded-md border border-ink-900/10 bg-paper p-3"
+    >
+      <div className="flex flex-wrap gap-1.5">
+        {WEEKDAYS.map((w, i) => (
+          <button
+            key={w}
+            type="button"
+            onClick={() => toggle(i)}
+            className={`rounded-md px-2.5 py-1.5 text-sm font-medium ${days.includes(i) ? "bg-brand-600 text-white" : "border border-ink-900/15 bg-white text-ink-900"}`}
+          >
+            {w}
+          </button>
+        ))}
+      </div>
+      <div className="grid grid-cols-2 gap-3 sm:max-w-sm">
+        <Field label="Start">
+          <input type="time" value={start} onChange={(e) => setStart(e.target.value)} className={inputCls} />
+        </Field>
+        <Field label="End">
+          <input type="time" value={end} onChange={(e) => setEnd(e.target.value)} className={inputCls} />
+        </Field>
+      </div>
+      <p className="text-xs text-ink-700">
+        In the client&apos;s time ({tzName}). Punches more than 15 minutes off this get flagged.
+      </p>
+      <div className="flex flex-wrap gap-2">
+        <button disabled={pending} className={btnPrimary}>
+          {pending ? "Saving..." : "Save schedule"}
+        </button>
+        <button type="button" onClick={() => setOpen(false)} className={btnGhost}>
+          Cancel
+        </button>
+        {current && (
+          <button
+            type="button"
+            disabled={pending}
+            onClick={() => go(() => setSchedule(id, [], "", ""), () => setOpen(false))}
+            className="text-sm font-medium text-red-700"
+          >
+            Remove schedule
+          </button>
+        )}
+      </div>
+      <Err error={error} />
+    </form>
   );
 }
 

@@ -3,6 +3,8 @@ import { requireEmployee } from "@/lib/session";
 import { COMPANY_TIMEZONE, fmtDate, fmtDuration, fmtTime, toLocalInput, workedMinutes, ymdInTz } from "@/lib/time";
 import { ADJUST_WINDOW_DAYS } from "@/lib/timeApproval";
 import StatusBadge from "@/components/employee/StatusBadge";
+import ScheduleFlags, { flagsFor } from "@/components/admin/ScheduleFlags";
+import { scheduleOf, shiftNear } from "@/lib/schedule";
 import { CancelAdjustmentButton, FixShiftButton, MissedShiftForm } from "@/components/employee/AdjustmentForms";
 
 export const dynamic = "force-dynamic";
@@ -72,6 +74,19 @@ export default async function MyHoursPage() {
         </span>
       </div>
 
+      {assignments.map((a) => {
+        const sched = scheduleOf(a, a.client.timezone);
+        const sh = sched && shiftNear(sched, now);
+        if (!sched) return null;
+        return (
+          <p key={a.id} className="rounded-xl bg-paper p-3 text-sm text-ink-700">
+            <span className="font-semibold text-ink-900">{a.client.companyName || a.client.name} schedule:</span>{" "}
+            {sh ? `${fmtTime(sh.start, tz)} – ${fmtTime(sh.end, tz)} your time` : "see your manager"} on scheduled days. Time more than 15
+            minutes outside it, including fixes and missed shifts, is flagged for review.
+          </p>
+        );
+      })}
+
       <MissedShiftForm
         assignments={assignments.map((a) => ({ id: a.id, label: a.client.companyName || a.client.name }))}
         defaultStart={`${today}T09:00`}
@@ -137,6 +152,11 @@ export default async function MyHoursPage() {
                           {e.assignment.client.companyName || e.assignment.client.name}
                         </div>
                         <div className="text-ink-700">{span(e)} your time</div>
+                        {e.status !== "APPROVED" && (
+                          <div className="mt-1 flex flex-wrap gap-1">
+                            <ScheduleFlags flags={flagsFor(e.assignment, e.clockIn, e.clockOut, now, tz)} />
+                          </div>
+                        )}
                         <div className="text-xs text-ink-700">
                           {fmtTime(e.clockIn, COMPANY_TIMEZONE)} – {e.clockOut ? fmtTime(e.clockOut, COMPANY_TIMEZONE) : "now"} Talnt time
                           {e.breakMinutes > 0 ? ` · ${e.breakMinutes}m break` : ""}

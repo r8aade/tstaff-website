@@ -2,6 +2,7 @@ import Link from "next/link";
 import PunchLocation from "@/components/admin/PunchLocation";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { scheduleOf, scheduleText } from "@/lib/schedule";
 import { VACATION_CAP_HOURS, VACATION_ELIGIBLE_MONTHS, bankFor, fmtHrs, vacationEligibleFrom } from "@/lib/timeoff";
 import { formatCents } from "@/lib/billing";
 import {
@@ -13,7 +14,8 @@ import {
   fmtTime,
   minutesToHours,
   workedMinutes,
-  ymdInTz
+  ymdInTz,
+  tzLabel
 } from "@/lib/time";
 import StatusBadge from "@/components/employee/StatusBadge";
 import OnboardingSection from "@/components/admin/Onboarding";
@@ -26,6 +28,7 @@ import {
   RestoreEmployeeButton,
   RollOffForm,
   EndAssignmentButton,
+  ScheduleForm,
   ManualEntryForm,
   ResetPasswordForm
 } from "@/components/admin/forms";
@@ -113,8 +116,8 @@ export default async function EmployeeDetailPage({ params }: { params: { id: str
         ) : (
           <ul className="mt-3 divide-y divide-ink-900/10">
             {active.map((a) => (
-              <li key={a.id} className="flex items-center justify-between py-2.5 text-sm">
-                <span>
+              <li key={a.id} className="flex items-start justify-between gap-3 py-2.5 text-sm">
+                <div className="min-w-0">
                   <Link
                     href={a.client.isInternal ? "/admin/overhead" : `/admin/clients/${a.clientId}`}
                     className="font-medium text-ink-900 hover:text-brand-600"
@@ -125,7 +128,18 @@ export default async function EmployeeDetailPage({ params }: { params: { id: str
                     {a.client.isInternal ? " · internal, not billed" : ` · billed ${formatCents(a.billRateCents)}/hr`} · since{" "}
                     {fmtCalendarDate(a.startDate)}
                   </span>
-                </span>
+                  {(() => {
+                    const sched = scheduleOf(a, a.client.timezone);
+                    return (
+                      <ScheduleForm
+                        id={a.id}
+                        current={sched && { days: sched.days, start: sched.start, end: sched.end }}
+                        summary={sched && scheduleText(sched)}
+                        tzName={tzLabel(a.client.timezone)}
+                      />
+                    );
+                  })()}
+                </div>
                 <EndAssignmentButton id={a.id} />
               </li>
             ))}

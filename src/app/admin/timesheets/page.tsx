@@ -13,6 +13,8 @@ import {
   workedMinutes
 } from "@/lib/time";
 import StatusBadge from "@/components/employee/StatusBadge";
+import ScheduleFlags, { flagsFor } from "@/components/admin/ScheduleFlags";
+import { hasExtra } from "@/lib/schedule";
 import { BulkApproveButton, EntryActions } from "@/components/admin/forms";
 
 const TABS = [
@@ -65,7 +67,7 @@ export default async function TimesheetsPage({ searchParams }: { searchParams: {
           >
             Hours by day, week, pay period
           </Link>
-          {status === "SUBMITTED" && <BulkApproveButton ids={entries.map((e) => e.id)} />}
+          {status === "SUBMITTED" && <BulkApproveButton ids={entries.filter((e) => !hasExtra(flagsFor(e.assignment, e.clockIn, e.clockOut, now))).map((e) => e.id)} />}
         </div>
       </div>
 
@@ -112,6 +114,7 @@ export default async function TimesheetsPage({ searchParams }: { searchParams: {
                       Fix requested, see Approvals
                     </Link>
                   )}
+                  <ScheduleFlags flags={flagsFor(e.assignment, e.clockIn, e.clockOut, now)} />
                   {long && <span className="rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700">Over 12 hours, check it</span>}
                   {missingLocation(e) && <span className="rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">No location</span>}
                 </div>

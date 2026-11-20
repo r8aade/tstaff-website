@@ -17,6 +17,8 @@ import {
 } from "@/lib/time";
 import StatusBadge from "@/components/employee/StatusBadge";
 import TimeOffBankNote from "@/components/admin/TimeOffBankNote";
+import ScheduleFlags, { flagsFor } from "@/components/admin/ScheduleFlags";
+import { hasExtra } from "@/lib/schedule";
 import PunchLocation, { missingLocation } from "@/components/admin/PunchLocation";
 import { AdjustmentReview, BulkApproveButton, EntryActions, TimeOffReview } from "@/components/admin/forms";
 
@@ -78,7 +80,9 @@ export default async function ApprovalsPage() {
     prisma.clientIntake.findMany({ where: { status: "NEW" }, orderBy: { createdAt: "desc" } })
   ]);
   const total = adjustments.length + shifts.length + timeOff.length + intakes.length;
-  const shiftsWithoutFix = shifts.filter((s) => s.adjustments.length === 0);
+  const shiftFlags = new Map(shifts.map((s) => [s.id, flagsFor(s.assignment, s.clockIn, s.clockOut, now)]));
+  const shiftsWithoutFix = shifts.filter((s) => s.adjustments.length === 0 && !hasExtra(shiftFlags.get(s.id) ?? []));
+  const heldForSchedule = shifts.filter((s) => s.adjustments.length === 0 && hasExtra(shiftFlags.get(s.id) ?? [])).length;
 
   return (
     <div className="space-y-8">
@@ -112,6 +116,7 @@ export default async function ApprovalsPage() {
                   <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${missed ? "bg-blue-50 text-blue-700" : "bg-amber-50 text-amber-800"}`}>
                     {missed ? "Missed shift" : "Time fix"}
                   </span>
+                  <ScheduleFlags flags={flagsFor(a.assignment, a.clockIn, a.clockOut, now)} />
                   {billed && (
                     <span className="rounded-full bg-ink-900/5 px-2 py-0.5 text-xs font-medium text-ink-700">Already billed, will re-bill</span>
                   )}
@@ -155,7 +160,9 @@ export default async function ApprovalsPage() {
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="text-sm text-ink-700">
             Approving adds the hours to the client&apos;s bill.
-            {shifts.length > shiftsWithoutFix.length && " Shifts with a fix requested are left out of Approve all."}
+            {shifts.length - heldForSchedule > shiftsWithoutFix.length && " Shifts with a fix requested are left out of Approve all."}
+            {heldForSchedule > 0 &&
+              ` ${heldForSchedule} shift${heldForSchedule === 1 ? " has" : "s have"} time outside the schedule, so ${heldForSchedule === 1 ? "it's" : "they're"} left out of Approve all. Check ${heldForSchedule === 1 ? "it" : "them"} one by one.`}
           </p>
           <BulkApproveButton ids={shiftsWithoutFix.map((s) => s.id)} />
         </div>
@@ -173,6 +180,7 @@ export default async function ApprovalsPage() {
                   {e.adjustments.length > 0 && (
                     <span className="rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-800">Fix requested, see above</span>
                   )}
+                  <ScheduleFlags flags={shiftFlags.get(e.id) ?? []} />
                   {mins > 12 * 60 && <span className="rounded-full bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700">Over 12 hours, check it</span>}
                   {missingLocation(e) && <span className="rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">No location</span>}
                 </div>

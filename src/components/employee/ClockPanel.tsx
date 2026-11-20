@@ -6,11 +6,13 @@ import { clockIn, clockOut, endBreak, startBreak, type ActionResult } from "@/ap
 import { fmtDuration, fmtTime, tzAbbr, tzLabel } from "@/lib/time";
 import { readLocation, type GeoReading } from "@/lib/geo";
 
-type Assignment = { id: string; clientName: string; clientTz: string };
+type Shift = { start: string; end: string } | null;
+type Assignment = { id: string; clientName: string; clientTz: string; shift: Shift };
 type Open = {
   clientName: string;
   clientTz: string;
   clockIn: string;
+  shift: Shift;
   breakMinutes: number;
   breakStartedAt: string | null;
 };
@@ -22,6 +24,44 @@ function useNow(intervalMs = 1000) {
     return () => clearInterval(t);
   }, [intervalMs]);
   return now;
+}
+
+const GRACE = 15;
+const m = (ms: number) => Math.round(ms / 60000);
+const dur = (mins: number) => (mins >= 60 ? `${Math.floor(mins / 60)}h ${String(mins % 60).padStart(2, "0")}m` : `${mins}m`);
+
+/** A heads-up about the schedule, or null when they're on time. */
+function scheduleNote(shift: Shift, now: Date, tz: string, clockedInAt: Date | null): { text: string; warn: boolean } | null {
+  if (!shift) return null;
+  const start = new Date(shift.start);
+  const end = new Date(shift.end);
+  const t = (d: Date) => fmtTime(d, tz);
+  if (!clockedInAt) {
+    const late = m(now.getTime() - start.getTime());
+    if (now > end) return null;
+    if (late > GRACE) return { text: `Your shift started at ${t(start)}. You're ${dur(late)} late; this punch will be flagged. Your shift still ends at ${t(end)}.`, warn: true };
+    if (-late > GRACE) return { text: `Your shift starts at ${t(start)}. Time before that is flagged for review.`, warn: true };
+    return { text: `Your shift: ${t(start)} – ${t(end)} your time.`, warn: false };
+  }
+  const cameLate = m(clockedInAt.getTime() - start.getTime()) > GRACE;
+  const over = m(now.getTime() - end.getTime());
+  if (over > GRACE) {
+    return {
+      text: `Your shift ended at ${t(end)}. Time after that is flagged for review${cameLate ? ", and staying late doesn't make up for coming in late" : ""}. Clock out unless you were asked to stay.`,
+      warn: true
+    };
+  }
+  if (cameLate) return { text: `You came in late. Your shift still ends at ${t(end)}; staying late to make it up gets flagged.`, warn: true };
+  return { text: `Your shift ends at ${t(end)} your time.`, warn: false };
+}
+
+function ScheduleNote({ note }: { note: { text: string; warn: boolean } | null }) {
+  if (!note) return null;
+  return (
+    <p suppressHydrationWarning className={`rounded-xl p-3 text-sm ${note.warn ? "bg-amber-50 font-medium text-amber-900" : "bg-paper text-ink-700"}`}>
+      {note.text}
+    </p>
+  );
 }
 
 function ZoneRow({ label, tz, now, strong }: { label: string; tz: string; now: Date; strong?: boolean }) {
@@ -148,6 +188,7 @@ export default function ClockPanel({
                   Working for <span className="font-semibold text-ink-900">{assignments[0].clientName}</span>
                 </p>
               )}
+              <ScheduleNote note={scheduleNote(assignments.find((a) => a.id === selected)?.shift ?? null, now, employeeTz, null)} />
               <button
                 disabled={busy || !selected}
                 onClick={() => actWithLocation((geo) => clockIn(selected, geo))}
@@ -172,6 +213,8 @@ export default function ClockPanel({
               {open.breakMinutes + onBreakFor >= 1 ? ` · ${Math.round(open.breakMinutes + onBreakFor)}m break` : ""}
             </p>
           </div>
+
+          <ScheduleNote note={scheduleNote(open.shift, now, employeeTz, new Date(open.clockIn))} />
 
           {open.breakStartedAt ? (
             <button

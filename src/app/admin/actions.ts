@@ -3,6 +3,7 @@
 import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { parseSchedule } from "@/lib/schedule";
 import { requireRole } from "@/lib/session";
 import { getOverheadClient } from "@/lib/overhead";
 import { ensureOnboarding, saveDocument } from "@/lib/onboarding";
@@ -182,6 +183,14 @@ export async function addAssignment(employeeId: string, clientId: string, billRa
       }
     });
     return a.id;
+  });
+}
+
+/** Work schedule for an assignment, in the client's time. Blank everything to clear it. */
+export async function setSchedule(id: string, days: number[], start: string, end: string): Promise<ActionResult> {
+  return run(async () => {
+    await admin();
+    await prisma.assignment.update({ where: { id }, data: parseSchedule(days, start, end) });
   });
 }
 

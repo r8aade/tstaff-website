@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { COMPANY_TIMEZONE, fmtTime, tzAbbr, workedMinutes, ymdInTz } from "@/lib/time";
 import { addDays, dayStart } from "@/lib/hours";
 import StatusBadge from "@/components/employee/StatusBadge";
+import ScheduleFlags, { flagsFor } from "@/components/admin/ScheduleFlags";
+import { scheduleOf, scheduleText } from "@/lib/schedule";
 import { BulkRequestButtons, RequestDecision } from "@/components/admin/forms";
 
 export const dynamic = "force-dynamic";
@@ -328,6 +330,28 @@ export default async function RequestsPage({ searchParams }: { searchParams: { t
                   </p>
                 )}
               </div>
+
+              {(() => {
+                const sched = scheduleOf(selected.assignment, selected.assignment.client.timezone);
+                const flags = flagsFor(selected.assignment, selected.clockIn, selected.clockOut);
+                return (
+                  <div className="flex flex-wrap items-center gap-2 text-sm">
+                    <span className="text-ink-700">
+                      {sched ? (
+                        <>
+                          Schedule: <span className="font-medium text-ink-900">{scheduleText(sched)}</span> {tzAbbr(sched.tz)}
+                        </>
+                      ) : (
+                        <span className="text-amber-700">No schedule set for this client</span>
+                      )}
+                    </span>
+                    {sched && flags.length === 0 && (
+                      <span className="rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700">Matches schedule</span>
+                    )}
+                    <ScheduleFlags flags={flags} />
+                  </div>
+                );
+              })()}
 
               <div className="flex flex-col items-center justify-center gap-4 lg:flex-row lg:items-start">
                 {original && (

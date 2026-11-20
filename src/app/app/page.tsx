@@ -4,6 +4,7 @@ import { COMPANY_TIMEZONE, fmtDuration, fmtTime, workedMinutes, ymdInTz } from "
 import ClockPanel from "@/components/employee/ClockPanel";
 import Link from "next/link";
 import { ensureOnboarding } from "@/lib/onboarding";
+import { scheduleOf, shiftNear } from "@/lib/schedule";
 
 export const dynamic = "force-dynamic";
 
@@ -37,6 +38,14 @@ export default async function ClockPage() {
   const todayMins = todays.reduce((s, e) => s + workedMinutes(e, now), 0);
 
   const clientName = (c: { companyName: string | null; name: string }) => c.companyName || c.name;
+  const shiftFor = (
+    a: { schedDays: string | null; schedStart: string | null; schedEnd: string | null; client: { timezone: string } },
+    at: Date
+  ) => {
+    const sched = scheduleOf(a, a.client.timezone);
+    const sh = sched && shiftNear(sched, at);
+    return sh ? { start: sh.start.toISOString(), end: sh.end.toISOString() } : null;
+  };
 
   return (
     <div className="space-y-5">
@@ -60,7 +69,8 @@ export default async function ClockPage() {
         assignments={assignments.map((a) => ({
           id: a.id,
           clientName: clientName(a.client),
-          clientTz: a.client.timezone
+          clientTz: a.client.timezone,
+          shift: shiftFor(a, now)
         }))}
         open={
           open
@@ -68,6 +78,7 @@ export default async function ClockPage() {
                 clientName: clientName(open.assignment.client),
                 clientTz: open.assignment.client.timezone,
                 clockIn: open.clockIn.toISOString(),
+                shift: shiftFor(open.assignment, open.clockIn),
                 breakMinutes: open.breakMinutes,
                 breakStartedAt: open.breakStartedAt?.toISOString() ?? null
               }

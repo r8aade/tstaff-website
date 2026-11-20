@@ -121,6 +121,10 @@ model Assignment {
   active        Boolean   @default(true)
   startDate     DateTime  @default(now())
   endDate       DateTime?
+  // Work schedule in the client's time. schedDays = weekday digits, Sunday 0 ("12345" = Mon–Fri).
+  schedDays     String?
+  schedStart    String? // "08:00"
+  schedEnd      String? // "17:00" (earlier than start = ends next day)
   createdAt     DateTime  @default(now())
 
   employee    Employee         @relation(fields: [employeeId], references: [id], onDelete: Cascade)
