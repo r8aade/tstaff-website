@@ -22,6 +22,21 @@ async function main() {
 
   // Never print the password: build logs are visible to anyone with access to the Vercel project.
   console.log(`Admin user ready: ${admin.email}`);
+
+  // One-time admin password reset. Set ADMIN_RESET_PASSWORD in Vercel, redeploy,
+  // sign in, then DELETE the variable (otherwise every deploy resets it again).
+  const resetPassword = process.env.ADMIN_RESET_PASSWORD;
+  if (resetPassword) {
+    if (resetPassword.length < 10) {
+      console.log("ADMIN_RESET_PASSWORD is shorter than 10 characters, so the password was NOT reset.");
+    } else {
+      await prisma.user.update({
+        where: { id: admin.id },
+        data: { passwordHash: await bcrypt.hash(resetPassword, 10), role: "ADMIN" }
+      });
+      console.log(`Admin password reset for ${admin.email}. Now delete ADMIN_RESET_PASSWORD from Vercel.`);
+    }
+  }
 }
 
 main()
