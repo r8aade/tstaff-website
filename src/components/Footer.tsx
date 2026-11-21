@@ -17,6 +17,9 @@ export default function Footer() {
             <a href="/resources" className="inline-block py-2 hover:text-white">
               Resources
             </a>
+            <a href="/compare" className="inline-block py-2 hover:text-white">
+              Compare
+            </a>
             <a href="/faq" className="inline-block py-2 hover:text-white">
               FAQ
             </a>

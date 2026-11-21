@@ -1,12 +1,18 @@
+import { comparisonPosts } from "./comparisons";
+
 export type ContentBlock =
   | { type: "p"; text: string }
   | { type: "h2"; text: string }
   | { type: "ul"; items: string[] }
-  | { type: "quote"; text: string };
+  | { type: "quote"; text: string }
+  | { type: "table"; head: string[]; rows: string[][]; note?: string }
+  | { type: "links"; items: { href: string; label: string }[] };
 
 export type ResourcePost = {
   slug: string;
   title: string;
+  /** Optional shorter <title> for search results; the H1 still uses `title`. */
+  seoTitle?: string;
   description: string;
   category: string;
   publishedAt: string;
@@ -15,7 +21,7 @@ export type ResourcePost = {
   relatedIndustry?: { href: string; label: string };
 };
 
-export const resources: ResourcePost[] = [
+const guides: ResourcePost[] = [
   {
     slug: "cost-to-outsource-customer-service",
     title: "How Much Does It Cost to Outsource Customer Service? A Hourly Rate Guide",
@@ -315,3 +321,5 @@ export const resources: ResourcePost[] = [
     relatedIndustry: { href: "/industries/ecommerce", label: "See ecommerce staffing" }
   }
 ];
+
+export const resources: ResourcePost[] = [...guides, ...comparisonPosts];

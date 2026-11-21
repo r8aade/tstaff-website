@@ -3,7 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import JsonLd from "@/components/JsonLd";
 import HomeScripts from "@/components/HomeScripts";
-import { resources, type ContentBlock } from "@/content/resources";
+import ArticleBlock from "@/components/ArticleBlock";
+import { resources } from "@/content/resources";
 
 export function generateStaticParams() {
   return resources.map((post) => ({ slug: post.slug }));
@@ -13,29 +14,10 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   const post = resources.find((p) => p.slug === params.slug);
   if (!post) return {};
   return {
-    title: post.title,
+    title: post.seoTitle ?? post.title,
     description: post.description,
     alternates: { canonical: `/resources/${post.slug}` }
   };
-}
-
-function Block({ block }: { block: ContentBlock }) {
-  switch (block.type) {
-    case "h2":
-      return <h2>{block.text}</h2>;
-    case "p":
-      return <p>{block.text}</p>;
-    case "quote":
-      return <blockquote>{block.text}</blockquote>;
-    case "ul":
-      return (
-        <ul>
-          {block.items.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-      );
-  }
 }
 
 export default function ResourcePostPage({ params }: { params: { slug: string } }) {
@@ -76,7 +58,7 @@ export default function ResourcePostPage({ params }: { params: { slug: string } 
       <article className="article reveal">
         <div className="article__body">
           {post.body.map((block, i) => (
-            <Block key={i} block={block} />
+            <ArticleBlock key={i} block={block} />
           ))}
         </div>
         {post.relatedIndustry && (

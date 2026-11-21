@@ -20,7 +20,8 @@ const routes = [
   "/industries/marketing-agencies",
   "/industries/insurance",
   "/industries/back-office",
-  "/resources"
+  "/resources",
+  "/compare"
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
