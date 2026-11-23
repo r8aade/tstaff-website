@@ -97,10 +97,31 @@ export async function createEmployee(input: {
   });
 }
 
+/** Checks a new login email and makes sure nobody else uses it. Returns it cleaned up. */
+async function checkNewEmail(userId: string, raw: string): Promise<string> {
+  const email = String(raw ?? "").toLowerCase().trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 200) throw new Error("Enter a valid email address.");
+  const other = await prisma.user.findUnique({ where: { email } });
+  if (other && other.id !== userId) throw new Error("Someone else already uses that email.");
+  return email;
+}
+
+/** Change an admin's login email (e.g. a typo when the account was made). */
+export async function updateAdminEmail(userId: string, email: string): Promise<ActionResult> {
+  return run(async () => {
+    await admin();
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user || user.role !== "ADMIN") throw new Error("Admin not found.");
+    const clean = await checkNewEmail(userId, email);
+    await prisma.user.update({ where: { id: userId }, data: { email: clean } });
+  });
+}
+
 export async function updateEmployee(
   id: string,
   input: {
     name: string;
+    email: string;
     title: string;
     country: string;
     timezone: string;
@@ -114,6 +135,7 @@ export async function updateEmployee(
     await admin();
     const emp = await prisma.employee.findUnique({ where: { id } });
     if (!emp) throw new Error("Employee not found.");
+    const email = await checkNewEmail(emp.userId, input.email);
     await prisma.employee.update({
       where: { id },
       data: {
@@ -128,7 +150,7 @@ export async function updateEmployee(
         ...(emp.archivedAt && input.status !== "INACTIVE"
           ? { archivedAt: null, endDate: null, rollOffReason: null, rollOffNote: null, rehireEligible: null }
           : {}),
-        user: { update: { name: input.name.trim(), timezone: input.timezone } }
+        user: { update: { name: input.name.trim(), email, timezone: input.timezone } }
       }
     });
   });

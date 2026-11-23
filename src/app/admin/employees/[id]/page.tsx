@@ -277,6 +277,7 @@ export default async function EmployeeDetailPage({ params }: { params: { id: str
             employee={{
               id: employee.id,
               name: employee.user.name,
+              email: employee.user.email,
               title: employee.title ?? "",
               country: employee.country,
               timezone: employee.timezone,

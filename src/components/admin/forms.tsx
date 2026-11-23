@@ -21,6 +21,7 @@ import {
   reviewAdjustments,
   reviewTimeOff,
   updateBalances,
+  updateAdminEmail,
   updateEmployee,
   updateIntake,
   type ActionResult
@@ -161,6 +162,7 @@ export function EditEmployeeForm({
   employee: {
     id: string;
     name: string;
+    email: string;
     title: string;
     country: string;
     timezone: string;
@@ -187,6 +189,7 @@ export function EditEmployeeForm({
       className="grid gap-4 sm:grid-cols-2"
     >
       <Field label="Full name"><input required value={f.name} onChange={set("name")} className={inputCls} /></Field>
+      <Field label="Email (used to log in)"><input required type="email" value={f.email} onChange={set("email")} className={inputCls} /></Field>
       <Field label="Role / title"><input value={f.title} onChange={set("title")} className={inputCls} /></Field>
       <Field label="Country">
         <select value={f.country} onChange={set("country")} className={inputCls}>
@@ -757,6 +760,34 @@ export function NewAdminForm() {
         {done && <span className="text-sm text-green-700">Admin created.</span>}
         <Err error={error} />
       </div>
+    </form>
+  );
+}
+
+/** Inline "Change email" for an admin on the Admins page. */
+export function AdminEmailForm({ userId, email }: { userId: string; email: string }) {
+  const { pending, error, go } = useAction();
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(email);
+  if (!open) {
+    return (
+      <button type="button" onClick={() => setOpen(true)} className="text-sm font-medium text-brand-600">
+        Change email
+      </button>
+    );
+  }
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        go(() => updateAdminEmail(userId, value), () => setOpen(false));
+      }}
+      className="flex flex-wrap items-center gap-2"
+    >
+      <input type="email" required value={value} onChange={(e) => setValue(e.target.value)} className={inputCls + " max-w-xs"} />
+      <button type="submit" disabled={pending} className={btnPrimary}>{pending ? "Saving..." : "Save"}</button>
+      <button type="button" onClick={() => { setOpen(false); setValue(email); }} className={btnGhost}>Cancel</button>
+      <Err error={error} />
     </form>
   );
 }

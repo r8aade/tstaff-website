@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { NewAdminForm } from "@/components/admin/forms";
+import { AdminEmailForm, NewAdminForm } from "@/components/admin/forms";
 
 export default async function AdminsPage() {
   const admins = await prisma.user.findMany({ where: { role: "ADMIN" }, orderBy: { createdAt: "asc" } });
@@ -11,9 +11,12 @@ export default async function AdminsPage() {
       </div>
       <ul className="divide-y divide-ink-900/10 rounded-lg border border-ink-900/10 bg-white">
         {admins.map((a) => (
-          <li key={a.id} className="px-4 py-3 text-sm">
-            <span className="font-medium text-ink-900">{a.name}</span>
-            <span className="text-ink-700"> · {a.email}</span>
+          <li key={a.id} className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-sm">
+            <span>
+              <span className="font-medium text-ink-900">{a.name}</span>
+              <span className="text-ink-700"> · {a.email}</span>
+            </span>
+            <AdminEmailForm userId={a.id} email={a.email} />
           </li>
         ))}
       </ul>
