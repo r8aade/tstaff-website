@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
-import { AdminEmailForm, NewAdminForm } from "@/components/admin/forms";
+import { AdminEmailForm, NewAdminForm, WelcomeEmailButton } from "@/components/admin/forms";
+import { COMPANY_TIMEZONE, fmtDateTime } from "@/lib/time";
 
 export default async function AdminsPage() {
   const admins = await prisma.user.findMany({ where: { role: "ADMIN" }, orderBy: { createdAt: "asc" } });
@@ -16,7 +17,14 @@ export default async function AdminsPage() {
               <span className="font-medium text-ink-900">{a.name}</span>
               <span className="text-ink-700"> · {a.email}</span>
             </span>
-            <AdminEmailForm userId={a.id} email={a.email} />
+            <span className="flex flex-wrap items-center gap-4">
+              <WelcomeEmailButton
+                userId={a.id}
+                compact
+                sentAt={a.welcomeSentAt ? fmtDateTime(a.welcomeSentAt, COMPANY_TIMEZONE) : null}
+              />
+              <AdminEmailForm userId={a.id} email={a.email} />
+            </span>
           </li>
         ))}
       </ul>

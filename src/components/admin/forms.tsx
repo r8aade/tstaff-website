@@ -21,6 +21,7 @@ import {
   reviewAdjustments,
   reviewTimeOff,
   updateBalances,
+  sendWelcome,
   updateAdminEmail,
   updateEmployee,
   updateIntake,
@@ -110,7 +111,7 @@ export function NewEmployeeForm({
     <form onSubmit={submit} className="grid gap-4 sm:grid-cols-2">
       <Field label="Full name"><input required value={f.name} onChange={set("name")} className={inputCls} /></Field>
       <Field label="Email (their login)"><input type="email" required value={f.email} onChange={set("email")} className={inputCls} /></Field>
-      <Field label="Temporary password (8+ characters)"><input required minLength={8} value={f.password} onChange={set("password")} className={inputCls} /></Field>
+      <Field label="Temporary password (optional)"><input minLength={8} value={f.password} onChange={set("password")} placeholder="Leave blank: they set their own" className={inputCls} /></Field>
       <Field label="Role / title"><input value={f.title} onChange={set("title")} placeholder="e.g. Customer Service Rep" className={inputCls} /></Field>
       <Field label="Country">
         <select
@@ -754,10 +755,10 @@ export function NewAdminForm() {
     >
       <Field label="Name"><input required value={f.name} onChange={set("name")} className={inputCls} /></Field>
       <Field label="Email"><input type="email" required value={f.email} onChange={set("email")} className={inputCls} /></Field>
-      <Field label="Temporary password"><input required minLength={8} value={f.password} onChange={set("password")} className={inputCls} /></Field>
+      <Field label="Temporary password (optional)"><input minLength={8} value={f.password} onChange={set("password")} placeholder="Leave blank: they set their own" className={inputCls} /></Field>
       <div className="flex items-center gap-3 sm:col-span-3">
         <button type="submit" disabled={pending} className={btnPrimary}>{pending ? "Creating..." : "Create Admin"}</button>
-        {done && <span className="text-sm text-green-700">Admin created.</span>}
+        {done && <span className="text-sm text-green-700">Admin created. A welcome email with a set-password link was sent.</span>}
         <Err error={error} />
       </div>
     </form>
@@ -789,6 +790,33 @@ export function AdminEmailForm({ userId, email }: { userId: string; email: strin
       <button type="button" onClick={() => { setOpen(false); setValue(email); }} className={btnGhost}>Cancel</button>
       <Err error={error} />
     </form>
+  );
+}
+
+/** Sends (or re-sends) the welcome email with a one-time set-your-password link. */
+export function WelcomeEmailButton({ userId, sentAt, compact }: { userId: string; sentAt: string | null; compact?: boolean }) {
+  const { pending, error, go } = useAction();
+  const [justSent, setJustSent] = useState(false);
+  return (
+    <span className="inline-flex flex-wrap items-center gap-2 text-sm">
+      {!compact && (
+        <span className="text-ink-700">
+          {justSent ? "Welcome email sent just now." : sentAt ? `Welcome email sent ${sentAt}.` : "Welcome email not sent yet."}
+        </span>
+      )}
+      <button
+        type="button"
+        disabled={pending}
+        onClick={() => {
+          if (sentAt && !confirm("Send a new welcome email? The link in the older one will stop working.")) return;
+          go(() => sendWelcome(userId), () => setJustSent(true));
+        }}
+        className={compact ? "font-medium text-brand-600 disabled:opacity-60" : btnGhost}
+      >
+        {pending ? "Sending..." : compact ? (justSent ? "Sent" : "Send welcome email") : sentAt || justSent ? "Send again" : "Send welcome email"}
+      </button>
+      <Err error={error} />
+    </span>
   );
 }
 

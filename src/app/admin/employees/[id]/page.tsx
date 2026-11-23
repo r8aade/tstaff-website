@@ -7,6 +7,7 @@ import { VACATION_CAP_HOURS, VACATION_ELIGIBLE_MONTHS, bankFor, fmtHrs, vacation
 import { formatCents } from "@/lib/billing";
 import {
   COMPANY_TIMEZONE,
+  fmtDateTime,
   calendarDate,
   fmtCalendarDate,
   fmtDate,
@@ -30,7 +31,8 @@ import {
   EndAssignmentButton,
   ScheduleForm,
   ManualEntryForm,
-  ResetPasswordForm
+  ResetPasswordForm,
+  WelcomeEmailButton
 } from "@/components/admin/forms";
 
 export default async function EmployeeDetailPage({ params }: { params: { id: string } }) {
@@ -287,6 +289,18 @@ export default async function EmployeeDetailPage({ params }: { params: { id: str
               startDate: employee.startDate ? employee.startDate.toISOString().slice(0, 10) : ""
             }}
           />
+        </div>
+        <div className="mt-6 border-t border-ink-900/10 pt-5">
+          <h3 className="text-sm font-semibold text-ink-900">Login</h3>
+          <p className="mt-1 text-xs text-ink-700">
+            The welcome email comes from hire@talntstaffing.com with a link to set their own password (works once, for 7 days).
+          </p>
+          <div className="mt-2">
+            <WelcomeEmailButton
+              userId={employee.userId}
+              sentAt={employee.user.welcomeSentAt ? fmtDateTime(employee.user.welcomeSentAt, COMPANY_TIMEZONE) : null}
+            />
+          </div>
         </div>
         <div className="mt-6 border-t border-ink-900/10 pt-5">
           <ResetPasswordForm userId={employee.userId} />

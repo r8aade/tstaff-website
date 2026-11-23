@@ -5,6 +5,9 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { parseSchedule } from "@/lib/schedule";
 import { getAgreement, isAgreementKey } from "@/lib/agreements";
+import crypto from "crypto";
+import { sendWelcomeEmail } from "@/lib/email";
+import { SETUP_LINK_DAYS, createSetupLink, siteUrl } from "@/lib/passwordToken";
 import { requireRole } from "@/lib/session";
 import { getOverheadClient } from "@/lib/overhead";
 import { ensureOnboarding, saveDocument } from "@/lib/onboarding";
@@ -54,9 +57,8 @@ export async function createEmployee(input: {
     const email = input.email.toLowerCase().trim();
     const client = input.clientId ? await prisma.user.findUnique({ where: { id: input.clientId } }) : null;
     if (input.clientId && (!client || client.role !== "CLIENT")) throw new Error("Pick a client from the list.");
-    if (!input.name.trim() || !email || input.password.length < 8) {
-      throw new Error("Name, email, and a temporary password of at least 8 characters are required.");
-    }
+    if (!input.name.trim() || !email) throw new Error("Name and email are required.");
+    if (input.password && input.password.length < 8) throw new Error("A temporary password needs at least 8 characters.");
     if (await prisma.user.findUnique({ where: { email } })) {
       throw new Error("Someone already uses that email.");
     }
@@ -65,7 +67,7 @@ export async function createEmployee(input: {
       data: {
         email,
         name: input.name.trim(),
-        passwordHash: await bcrypt.hash(input.password, 10),
+        passwordHash: await bcrypt.hash(input.password || randomPassword(), 10),
         role: "EMPLOYEE",
         timezone,
         employee: {
@@ -93,6 +95,7 @@ export async function createEmployee(input: {
         }
       });
     }
+    await deliverWelcome(user.id).catch((e) => console.error("Welcome email failed:", e));
     return user.employee!.id;
   });
 }
@@ -430,19 +433,19 @@ export async function createAdmin(input: { name: string; email: string; password
   return run(async () => {
     await admin();
     const email = input.email.toLowerCase().trim();
-    if (!input.name.trim() || !email || input.password.length < 8) {
-      throw new Error("Name, email, and a temporary password of at least 8 characters are required.");
-    }
+    if (!input.name.trim() || !email) throw new Error("Name and email are required.");
+    if (input.password && input.password.length < 8) throw new Error("A temporary password needs at least 8 characters.");
     if (await prisma.user.findUnique({ where: { email } })) throw new Error("Someone already uses that email.");
     const u = await prisma.user.create({
       data: {
         email,
         name: input.name.trim(),
-        passwordHash: await bcrypt.hash(input.password, 10),
+        passwordHash: await bcrypt.hash(input.password || randomPassword(), 10),
         role: "ADMIN",
         timezone: COMPANY_TIMEZONE
       }
     });
+    await deliverWelcome(u.id).catch((e) => console.error("Welcome email failed:", e));
     return u.id;
   });
 }
@@ -605,5 +608,37 @@ export async function saveAgreement(key: string, title: string, body: string): P
       create: { key, title: t, body: b, version: current.version + 1 },
       update: { title: t, body: b, version: current.version + 1 }
     });
+  });
+}
+
+// ---------- Welcome emails ----------
+
+/** A long random password nobody knows, used when the person will set their own from the email. */
+function randomPassword() {
+  return crypto.randomBytes(24).toString("base64url");
+}
+
+/** Emails an employee or admin a one-time link to set their password, from hire@talntstaffing.com. */
+async function deliverWelcome(userId: string) {
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user || user.isInternal || (user.role !== "EMPLOYEE" && user.role !== "ADMIN")) throw new Error("Person not found.");
+  const link = await createSetupLink(user.id);
+  await sendWelcomeEmail({
+    to: user.email,
+    name: user.name,
+    role: user.role,
+    setupLink: link,
+    siteUrl: siteUrl(),
+    linkDays: SETUP_LINK_DAYS
+  });
+  await prisma.user.update({ where: { id: user.id }, data: { welcomeSentAt: new Date() } });
+}
+
+/** "Send welcome email" button: sends (or re-sends) the set-your-password email.
+ *  A new email makes any older link stop working. */
+export async function sendWelcome(userId: string): Promise<ActionResult> {
+  return run(async () => {
+    await admin();
+    await deliverWelcome(userId);
   });
 }

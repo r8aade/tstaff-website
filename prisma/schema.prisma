@@ -63,6 +63,8 @@ model User {
   timezone         String   @default("America/Chicago")
   // true only for the built-in "Talnt Staffing (Overhead)" client: internal work, never billed, can't log in
   isInternal       Boolean  @default(false)
+  // Last time the welcome email (with a set-your-password link) was sent
+  welcomeSentAt    DateTime?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
@@ -78,6 +80,7 @@ model User {
   completedOnboarding OnboardingItem[]   @relation("OnboardingCompleter")
   uploadedDocuments   EmployeeDocument[] @relation("DocumentUploader")
   reviewedAdjustments TimeAdjustment[]   @relation("AdjustmentReviewer")
+  passwordTokens      PasswordToken[]
 }
 
 model Employee {
@@ -374,4 +377,19 @@ model Signature {
   employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   @@index([employeeId])
+}
+
+// One-time "set your password" links sent in welcome emails. Only a SHA-256 hash of the
+// token is stored; the link works once and expires.
+model PasswordToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
