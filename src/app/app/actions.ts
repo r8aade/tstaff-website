@@ -3,11 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireEmployee } from "@/lib/session";
-import { calendarDate, fmtCalendarDate, fromLocalInput } from "@/lib/time";
+import { calendarDate, fmtCalendarDate, fromLocalInput, tzAbbr } from "@/lib/time";
 import { VACATION_ELIGIBLE_MONTHS, requestHours, vacationEligibleFrom } from "@/lib/timeoff";
 import { checkShiftTimes, findOverlap } from "@/lib/timeApproval";
 import { saveDocument } from "@/lib/onboarding";
 import { cleanGeo } from "@/lib/geo";
+import { headers } from "next/headers";
+import { AGREEMENT_STEP_LABEL, getAgreement, isAgreementKey } from "@/lib/agreements";
+import { buildSignedPdf } from "@/lib/signedPdf";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -167,6 +170,96 @@ export async function uploadMyDocument(formData: FormData): Promise<ActionResult
       file: formData.get("file") as File,
       uploadedById: employee.userId
     });
+  });
+}
+
+// ---------- Signing agreements ----------
+
+/** Employee signs the contractor agreement or NDA in the app. Saves an exact copy of the
+ *  text, the drawn signature, IP and time, makes a signed PDF with the Talnt logo, files it
+ *  under the matching onboarding step, and checks that step off. */
+export async function signAgreement(input: {
+  key: string;
+  version: number;
+  signerName: string;
+  signature: string;
+  consent: boolean;
+}): Promise<ActionResult> {
+  return run(async () => {
+    const employee = await requireEmployee();
+    if (!isAgreementKey(input.key)) throw new Error("Agreement not found.");
+    const name = String(input.signerName ?? "").replace(/\s+/g, " ").trim();
+    if (name.length < 3 || name.length > 120) throw new Error("Type your full legal name.");
+    if (!input.consent) throw new Error("Tick the box to agree to sign electronically.");
+    const sig = String(input.signature ?? "");
+    if (!/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(sig) || sig.length < 1500) throw new Error("Draw your signature in the box.");
+    if (sig.length > 400_000) throw new Error("That signature is too large. Clear it and sign again.");
+
+    const agreement = await getAgreement(input.key);
+    if (agreement.version !== Number(input.version)) {
+      throw new Error("This agreement was just updated. Reload the page to read the latest version before signing.");
+    }
+    const already = await prisma.signature.findFirst({
+      where: { employeeId: employee.id, agreementKey: input.key, version: agreement.version }
+    });
+    if (already) throw new Error("You already signed this agreement.");
+
+    const h = headers();
+    const ip = (h.get("x-forwarded-for")?.split(",")[0] || h.get("x-real-ip") || "").trim().slice(0, 64) || null;
+    const userAgent = h.get("user-agent")?.slice(0, 300) ?? null;
+    const now = new Date();
+
+    const item = await prisma.onboardingItem.findFirst({
+      where: { employeeId: employee.id, label: { equals: AGREEMENT_STEP_LABEL[input.key], mode: "insensitive" } }
+    });
+
+    const sigRow = await prisma.signature.create({
+      data: {
+        employeeId: employee.id,
+        agreementKey: input.key,
+        title: agreement.title,
+        version: agreement.version,
+        body: agreement.body,
+        signerName: name,
+        signatureImage: sig,
+        ip,
+        userAgent,
+        signedAt: now
+      }
+    });
+
+    const pdf = await buildSignedPdf({
+      title: agreement.title,
+      body: agreement.body,
+      version: agreement.version,
+      signerName: name,
+      email: employee.user.email,
+      signatureDataUrl: sig,
+      signedAtText: `${new Intl.DateTimeFormat("en-US", { timeZone: employee.timezone, dateStyle: "medium", timeStyle: "short" }).format(now)} ${tzAbbr(employee.timezone, now)}`,
+      ip,
+      signatureId: sigRow.id
+    });
+
+    const safeName = name.replace(/[^\w\- ]/g, "").trim() || "Signed";
+    const doc = await prisma.employeeDocument.create({
+      data: {
+        employeeId: employee.id,
+        onboardingItemId: item?.id ?? null,
+        fileName: `${agreement.title} - ${safeName} - signed.pdf`,
+        mimeType: "application/pdf",
+        size: pdf.length,
+        data: Buffer.from(pdf),
+        uploadedById: employee.userId
+      },
+      select: { id: true }
+    });
+    await prisma.signature.update({ where: { id: sigRow.id }, data: { documentId: doc.id } });
+    if (item && !item.completedAt) {
+      await prisma.onboardingItem.update({
+        where: { id: item.id },
+        data: { completedAt: now, completedById: employee.userId }
+      });
+    }
   });
 }
 

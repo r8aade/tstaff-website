@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { parseSchedule } from "@/lib/schedule";
+import { getAgreement, isAgreementKey } from "@/lib/agreements";
 import { requireRole } from "@/lib/session";
 import { getOverheadClient } from "@/lib/overhead";
 import { ensureOnboarding, saveDocument } from "@/lib/onboarding";
@@ -558,6 +559,29 @@ export async function updateIntake(id: string, input: { status: string; adminNot
     await prisma.clientIntake.update({
       where: { id },
       data: { status, adminNote: input.adminNote.trim().slice(0, 3000) || null }
+    });
+  });
+}
+
+// ---------- Agreements ----------
+
+/** Save new agreement text. Each change becomes a new version; people who signed an older
+ *  version keep their signed copy and are asked to sign the new one. */
+export async function saveAgreement(key: string, title: string, body: string): Promise<ActionResult> {
+  return run(async () => {
+    await requireRole("ADMIN");
+    if (!isAgreementKey(key)) throw new Error("Agreement not found.");
+    const t = title.trim();
+    const b = body.replace(/\r\n/g, "\n").trim();
+    if (!t) throw new Error("Give the agreement a title.");
+    if (b.length < 50) throw new Error("The agreement text is too short.");
+    if (b.length > 50000) throw new Error("The agreement text is too long.");
+    const current = await getAgreement(key);
+    if (current.title === t && current.body === b) return;
+    await prisma.agreementTemplate.upsert({
+      where: { key },
+      create: { key, title: t, body: b, version: current.version + 1 },
+      update: { title: t, body: b, version: current.version + 1 }
     });
   });
 }

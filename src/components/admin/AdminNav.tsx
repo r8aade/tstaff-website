@@ -11,6 +11,7 @@ const LINKS = [
   { href: "/admin/timesheets", label: "Timesheets" },
   { href: "/admin/time-off", label: "Time Off" },
   { href: "/admin/overhead", label: "Overhead" },
+  { href: "/admin/agreements", label: "Agreements" },
   { href: "/admin/admins", label: "Admins" }
 ];
 

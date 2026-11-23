@@ -110,6 +110,7 @@ model Employee {
   adjustments TimeAdjustment[]
   onboarding  OnboardingItem[]
   documents   EmployeeDocument[]
+  signatures  Signature[]
 }
 
 // Which employee works for which client, and what the client is billed per hour.
@@ -340,4 +341,37 @@ model ClientIntake {
   updatedAt   DateTime     @updatedAt
 
   @@index([status, createdAt])
+}
+
+// Agreement text employees sign in the app (contractor agreement, NDA). Admins edit it at
+// /admin/agreements; each save bumps the version. Rows are created on first edit, until then
+// the defaults in src/lib/agreements.ts are used.
+model AgreementTemplate {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  title     String
+  body      String
+  version   Int      @default(1)
+  updatedAt DateTime @updatedAt
+}
+
+// One electronic signature. Keeps an exact copy of the text that was signed, plus the
+// signed PDF (an EmployeeDocument) with the Talnt logo.
+model Signature {
+  id             String   @id @default(cuid())
+  employeeId     String
+  agreementKey   String
+  title          String
+  version        Int
+  body           String
+  signerName     String
+  signatureImage String // PNG data URL of the drawn signature
+  ip             String?
+  userAgent      String?
+  documentId     String?  @unique
+  signedAt       DateTime @default(now())
+
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([employeeId])
 }

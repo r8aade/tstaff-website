@@ -3,6 +3,7 @@ import { requireEmployee } from "@/lib/session";
 import { loadOnboarding } from "@/lib/onboarding-view";
 import { uploadMyDocument } from "../actions";
 import DocumentUpload from "@/components/DocumentUpload";
+import { agreementForLabel } from "@/lib/agreements";
 
 export const dynamic = "force-dynamic";
 
@@ -17,14 +18,15 @@ export default async function MyOnboardingPage() {
       <div>
         <h1 className="text-xl font-bold text-ink-900">Getting started</h1>
         <p className="text-sm text-ink-700">
-          {done} of {items.length} done. Talnt Staffing checks each step off. Where a file is needed, you can take a
-          photo or upload a PDF here.
+          {done} of {items.length} done. Sign your agreements right here. Where a file is needed, take a photo or upload a
+          PDF. Talnt Staffing checks the other steps off.
         </p>
       </div>
 
       <ul className="space-y-2">
         {items.map((i) => {
           const isDone = !!i.completedAt;
+          const signKey = agreementForLabel(i.label);
           const sent = !isDone && i.docs.length > 0;
           return (
             <li key={i.id} className="rounded-2xl border border-ink-900/10 bg-white p-4">
@@ -52,7 +54,15 @@ export default async function MyOnboardingPage() {
                       ))}
                     </ul>
                   )}
-                  {i.needsDocument && !isDone && (
+                  {signKey && !isDone && (
+                    <Link
+                      href={`/app/sign/${signKey}`}
+                      className="mt-2 inline-block rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white"
+                    >
+                      Read and sign
+                    </Link>
+                  )}
+                  {i.needsDocument && !isDone && !signKey && (
                     <div className="mt-2">
                       <DocumentUpload
                         action={uploadMyDocument}
